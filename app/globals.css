@@ -3,19 +3,17 @@
 @tailwind utilities;
 
 body {
-  background-color: #09090b; /* Equates to zinc-950 */
+  background-color: #09090b; /* zinc-950 */
   color: #ffffff;
   font-family: sans-serif;
   overflow-x: hidden;
 }
 
-/* Helper class to hide ugly scrollbars on responsive menus */
-@layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+/* Helper class to hide scrollbars on responsive menus */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
