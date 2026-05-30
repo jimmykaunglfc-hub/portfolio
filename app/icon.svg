@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="pillarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#94A3B8" />
+    </linearGradient>
+    <linearGradient id="vectorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#adc6ff" />
+      <stop offset="100%" stop-color="#4d8eff" />
+    </linearGradient>
+  </defs>
+  <path d="M9 5v22" stroke="url(#pillarGrad)" stroke-width="3.5" stroke-linecap="round" />
+  <path d="M24 5L14 15" stroke="url(#pillarGrad)" stroke-width="3.5" stroke-linecap="round" />
+  <path d="M15 15l10 12" stroke="url(#vectorGrad)" stroke-width="3.5" stroke-linecap="round" />
+</svg>
