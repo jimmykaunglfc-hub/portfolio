@@ -1,9 +1,9 @@
 import './globals.css';
-import Navbar from '../components/Navbar'; // Fixed path to go up one folder level
+import Navbar from '../components/Navbar';
 
 export const metadata = {
-  title: 'Kaung Htet Nyein Chan Oo | Portfolio',
-  description: 'Project & Channel Management Leader Portfolio',
+  title: 'KHNCO. | Executive Portfolio',
+  description: 'Architecting Digital Excellence for Global Leaders.',
 };
 
 export default function RootLayout({
@@ -13,7 +13,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-zinc-950 text-zinc-50 antialiased selection:bg-blue-500/30">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+      </head>
+      <body className="bg-[#09090b] text-[#e5e1e4] antialiased">
         <Navbar />
         {children}
       </body>

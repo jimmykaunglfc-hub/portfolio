@@ -1,9 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --color-primary: #adc6ff;
+  --color-primary-container: #4d8eff;
+  --color-on-primary: #002e6a;
+  --color-secondary: #c0c1ff;
+  --color-tertiary: #ddb7ff;
+  --color-tertiary-container: #b76dff;
+  --color-surface: #131315;
+  --color-surface-container: #201f22;
+  --color-on-surface: #e5e1e4;
+  --color-on-surface-variant: #c2c6d6;
+  --color-background: #09090b;
+}
 
 body {
   background-color: #09090b;
@@ -12,12 +21,14 @@ body {
   overflow-x: hidden;
 }
 
-/* Material Symbols Metric Configurations */
+/* Material Symbols Glyph Metrics */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  vertical-align: middle;
 }
 
-/* Fluid Floating Ambient Engine Physics */
+/* Smooth Fluid Ambient Light Core Engines */
 @keyframes float {
   0%, 100% { transform: translate(0, 0); }
   33% { transform: translate(20px, -20px); }
@@ -37,7 +48,7 @@ body {
 .flare-2 { animation-delay: -5s; animation-duration: 18s; }
 .flare-3 { animation-delay: -10s; animation-duration: 20s; }
 
-/* Interactive Glass Cards Architecture */
+/* Luxury Glass Architecture Containers */
 .glass-card {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(20px);
@@ -46,7 +57,7 @@ body {
   position: relative;
 }
 
-/* High-Fidelity Floating Left Border Accent Indicator */
+/* Floating Vertical Accent Cues on Hover */
 .glass-card::before {
   content: '';
   position: absolute;
@@ -71,18 +82,9 @@ body {
   opacity: 1;
 }
 
-/* Metallic Text Mask Gradient Overlays */
+/* Masked Heading Metallic Typography Scale */
 .text-gradient {
   background: linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-/* Respect Client Native Motion Accessibility Thresholds */
-@media (prefers-reduced-motion: reduce) {
-  .glow-flare, .glass-card, button, a {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
-  }
 }
