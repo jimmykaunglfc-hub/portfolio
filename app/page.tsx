@@ -1,43 +1,61 @@
-export default function Home() {
-  return (
-    <main className="flex flex-col items-center justify-center pt-20 pb-10 px-4">
-      {/* Hero Section */}
-      <section className="max-w-4xl text-center">
-        <p className="text-lg text-gray-500 mb-4">Hello, I'm</p>
-        <h1 className="text-6xl font-bold mb-6 text-gray-900">
-          Kaung Htet Nyein Chan Oo {/*[cite: 1] */}
-        </h1>
-        <h2 className="text-2xl text-blue-600 font-semibold mb-6">
-          Project & Channel Management Leader {/*[cite: 1] */}
-        </h2>
-        <p className="text-xl text-gray-600 leading-relaxed mb-10">
-          Leading high-impact initiatives to optimize financial operations, drive customer engagement, 
-          and streamline banking processes in digital financial services. {/*[cite: 1] */}
-        </p>
-        
-        <div className="flex justify-center gap-4">
-          <a href="/contact" className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition">
-            Let's Talk
-          </a>
-          <a href="/projects" className="border border-gray-400 text-gray-700 px-8 py-3 rounded-lg hover:bg-gray-50 transition">
-            View Experience
-          </a>
-        </div>
-      </section>
+import Hero from '../components/Hero'; // Fixed path to step out of the app folder
 
-      {/* Key Metrics Section */}
-      <section className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl w-full text-center">
-        <div className="p-6 bg-gray-50 rounded-xl border border-gray-100">
-          <h3 className="text-4xl font-bold text-blue-600 mb-2">Platform</h3>
-          <p className="text-gray-600 font-medium">Migration & UI/UX Strategy {/*[cite: 1] */}</p>
+export default function Home() {
+  const strategicPillars = [
+    {
+      label: "Platform",
+      title: "Migration & UI/UX Strategy",
+      description: "Leading seamless platform shifts with a razor-sharp focus on user-centric flow and interactive digital banking design."
+    },
+    {
+      label: "FinTech",
+      title: "Product Development",
+      description: "Managing full lifecycle deployment of digital financial ecosystems, driving deep customer engagement and channel expansion."
+    },
+    {
+      label: "Process",
+      title: "Automation & Optimization",
+      description: "Streamlining complex banking back-office workflows, minimizing execution latency, and orchestrating agile system metrics."
+    }
+  ];
+
+  return (
+    <main className="min-h-screen bg-zinc-950">
+      {/* Premium Dynamic Hero Section */}
+      <Hero />
+
+      {/* Clean Grid Architecture Section */}
+      <section className="mx-auto max-w-7xl px-6 pb-32 pt-4">
+        <div className="mb-12 border-t border-zinc-900 pt-12">
+          <h2 className="text-xs font-mono uppercase tracking-widest text-blue-500">
+            Core Competencies
+          </h2>
+          <p className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            Strategic Value & Execution
+          </p>
         </div>
-        <div className="p-6 bg-gray-50 rounded-xl border border-gray-100">
-          <h3 className="text-4xl font-bold text-blue-600 mb-2">FinTech</h3>
-          <p className="text-gray-600 font-medium">Product Development {/*[cite: 1] */}</p>
-        </div>
-        <div className="p-6 bg-gray-50 rounded-xl border border-gray-100">
-          <h3 className="text-4xl font-bold text-blue-600 mb-2">Process</h3>
-          <p className="text-gray-600 font-medium">Automation & Optimization {/*[cite: 1] */}</p>
+
+        {/* Minimalist Tech Portfolio Grid */}
+        <div className="grid gap-6 sm:grid-cols-3">
+          {strategicPillars.map((pillar, index) => (
+            <div 
+              key={index} 
+              className="group relative rounded-2xl border border-zinc-900 bg-zinc-900/20 p-8 backdrop-blur-md transition-all duration-300 hover:border-zinc-800 hover:bg-zinc-900/50"
+            >
+              {/* Left Subtle Glow Border Accent on Hover */}
+              <div className="absolute left-0 top-0 h-full w-[2px] bg-gradient-to-b from-blue-500 to-indigo-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              
+              <span className="mb-4 block font-mono text-xs font-medium uppercase tracking-wider text-zinc-500">
+                {pillar.label}
+              </span>
+              <h3 className="text-lg font-bold tracking-tight text-white transition-colors duration-200 group-hover:text-blue-400">
+                {pillar.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+                {pillar.description}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
     </main>

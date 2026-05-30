@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import Navbar from "../components/Navbar";
+import './globals.css';
+import Navbar from '../components/Navbar'; // Fixed path to go up one folder level
 
-export const metadata: Metadata = {
-  title: "Kaung Htet Nyein Chan Oo | Digital Transformation Leader",
-  description: "Portfolio of a Digital Transformation Leader",
+export const metadata = {
+  title: 'Kaung Htet Nyein Chan Oo | Portfolio',
+  description: 'Project & Channel Management Leader Portfolio',
 };
 
 export default function RootLayout({
@@ -13,12 +12,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-white min-h-screen flex flex-col">
+    <html lang="en" className="dark">
+      <body className="bg-zinc-950 text-zinc-50 antialiased selection:bg-blue-500/30">
         <Navbar />
-        <div className="flex-grow">
-          {children}
-        </div>
+        {children}
       </body>
     </html>
   );
