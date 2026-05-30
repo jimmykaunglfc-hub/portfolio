@@ -12,34 +12,77 @@ body {
   overflow-x: hidden;
 }
 
-/* Luxury Glass Cards */
+/* Material Symbols Metric Configurations */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Fluid Floating Ambient Engine Physics */
+@keyframes float {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(20px, -20px); }
+  66% { transform: translate(-20px, 10px); }
+}
+
+.glow-flare {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: -1;
+  opacity: 0.15;
+  pointer-events: none;
+  animation: float 15s ease-in-out infinite;
+}
+
+.flare-2 { animation-delay: -5s; animation-duration: 18s; }
+.flare-3 { animation-delay: -10s; animation-duration: 20s; }
+
+/* Interactive Glass Cards Architecture */
 .glass-card {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+/* High-Fidelity Floating Left Border Accent Indicator */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 3px;
+  background: #adc6ff;
+  opacity: 0;
+  transition: all 0.4s ease;
+  box-shadow: 0 0 15px #adc6ff;
+  border-radius: 0 4px 4px 0;
 }
 
 .glass-card:hover {
   border-color: rgba(173, 198, 255, 0.4);
   background: rgba(255, 255, 255, 0.05);
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: -4px 0 0 0 #adc6ff;
+  transform: translateY(-8px);
 }
 
-/* Premium Metallic Text Gradient */
+.glass-card:hover::before {
+  opacity: 1;
+}
+
+/* Metallic Text Mask Gradient Overlays */
 .text-gradient {
   background: linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Neon Back-Lighting Flares */
-.glow-flare {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
-  z-index: -1;
-  opacity: 0.12;
-  pointer-events: none;
+/* Respect Client Native Motion Accessibility Thresholds */
+@media (prefers-reduced-motion: reduce) {
+  .glow-flare, .glass-card, button, a {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
 }
