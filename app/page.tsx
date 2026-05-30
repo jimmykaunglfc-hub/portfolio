@@ -1,63 +1,92 @@
-import Hero from '../components/Hero'; // Fixed path to step out of the app folder
+import Hero from '../components/Hero';
 
 export default function Home() {
-  const strategicPillars = [
+  const competencies = [
     {
-      label: "Platform",
-      title: "Migration & UI/UX Strategy",
-      description: "Leading seamless platform shifts with a razor-sharp focus on user-centric flow and interactive digital banking design."
+      title: "Platform Architecture",
+      desc: "Designing scalable, resilient cloud infrastructures and multi-tenant ecosystems that power enterprise operations.",
+      icon: "hub",
+      badges: ["Cloud Native", "Microservices"],
+      color: "text-blue-300"
     },
     {
-      label: "FinTech",
-      title: "Product Development",
-      description: "Managing full lifecycle deployment of digital financial ecosystems, driving deep customer engagement and channel expansion."
+      title: "FinTech Solutions",
+      desc: "Engineered secure payment gateways and compliance-first financial systems for high-frequency transactions.",
+      icon: "payments",
+      badges: ["PCI-DSS", "Blockchain"],
+      color: "text-purple-300"
     },
     {
-      label: "Process",
-      title: "Automation & Optimization",
-      description: "Streamlining complex banking back-office workflows, minimizing execution latency, and orchestrating agile system metrics."
+      title: "Strategic Process",
+      desc: "Optimizing SDLC through automated governance, metrics-driven leadership, and agile operational excellence.",
+      icon: "precision_manufacturing",
+      badges: ["Agile", "CI/CD"],
+      color: "text-zinc-300"
     }
   ];
 
   return (
-    <main className="min-h-screen bg-zinc-950">
-      {/* Premium Dynamic Hero Section */}
+    <main className="relative min-h-screen bg-zinc-950 pb-24">
       <Hero />
 
-      {/* Clean Grid Architecture Section */}
-      <section className="mx-auto max-w-7xl px-6 pb-32 pt-4">
-        <div className="mb-12 border-t border-zinc-900 pt-12">
-          <h2 className="text-xs font-mono uppercase tracking-widest text-blue-500">
-            Core Competencies
-          </h2>
-          <p className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Strategic Value & Execution
-          </p>
+      {/* Competencies Dashboard Panel */}
+      <section id="expertise" className="py-24 px-6 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 border-b border-white/5 pb-8">
+          <div className="max-w-xl">
+            <h2 className="text-3xl font-bold text-zinc-100 mb-3 tracking-tight">Core Competencies</h2>
+            <p className="text-zinc-400 font-light text-base">Strategic execution across critical digital domains, combining engineering rigor with executive oversight.</p>
+          </div>
+          <div className="flex gap-2 h-1 bg-white/5 w-32 rounded-full overflow-hidden">
+            <div className="w-1/3 h-full bg-blue-400/30" />
+            <div className="w-2/3 h-full bg-blue-400" />
+          </div>
         </div>
 
-        {/* Minimalist Tech Portfolio Grid */}
-        <div className="grid gap-6 sm:grid-cols-3">
-          {strategicPillars.map((pillar, index) => (
-            <div 
-              key={index} 
-              className="group relative rounded-2xl border border-zinc-900 bg-zinc-900/20 p-8 backdrop-blur-md transition-all duration-300 hover:border-zinc-800 hover:bg-zinc-900/50"
-            >
-              {/* Left Subtle Glow Border Accent on Hover */}
-              <div className="absolute left-0 top-0 h-full w-[2px] bg-gradient-to-b from-blue-500 to-indigo-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              
-              <span className="mb-4 block font-mono text-xs font-medium uppercase tracking-wider text-zinc-500">
-                {pillar.label}
-              </span>
-              <h3 className="text-lg font-bold tracking-tight text-white transition-colors duration-200 group-hover:text-blue-400">
-                {pillar.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-                {pillar.description}
-              </p>
+        {/* 3-Column Glassmorphic Architecture Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {competencies.map((item, i) => (
+            <div key={i} className="glass-card p-8 rounded-2xl flex flex-col justify-between gap-8 group">
+              <div className="space-y-6">
+                <div className={`w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center ${item.color}`}>
+                  <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-xl font-semibold text-zinc-100 group-hover:text-blue-300 transition-colors duration-300">{item.title}</h3>
+                  <p className="text-zinc-400 text-sm font-light leading-relaxed">{item.desc}</p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2 pt-4">
+                {item.badges.map((badge, bIdx) => (
+                  <span key={bIdx} className="bg-white/5 px-3 py-1 rounded-full text-xs font-medium text-zinc-400 border border-white/5">
+                    {badge}
+                  </span>
+                ))}
+              </div>
             </div>
           ))}
         </div>
       </section>
+
+      {/* High-Impact Partnership CTA Section */}
+      <section id="contact" className="px-6 max-w-7xl mx-auto mt-12">
+        <div className="glass-card rounded-3xl p-12 md:p-16 text-center relative overflow-hidden bg-gradient-to-br from-zinc-900/40 to-transparent">
+          <h2 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-4 tracking-tight">Ready to scale your next initiative?</h2>
+          <p className="text-zinc-400 font-light text-base md:text-lg max-w-xl mx-auto mb-10">
+            I am currently considering executive advisory roles and strategic partnerships for upcoming roadmap cycles.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <button className="bg-blue-400 hover:bg-blue-500 text-zinc-950 font-semibold px-8 py-4 rounded-full text-sm transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(59,130,246,0.3)]">
+              Schedule a Strategy Session
+            </button>
+            <button className="bg-zinc-900 border border-white/10 hover:bg-zinc-800 text-zinc-200 px-8 py-4 rounded-full font-semibold text-sm transition-colors duration-300">
+              Download Portfolio PDF
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Lower Decorative Ambient Lighting Anchor */}
+      <div className="glow-flare absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-purple-500" />
     </main>
   );
 }

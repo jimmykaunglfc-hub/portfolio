@@ -1,19 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  background-color: #09090b; /* zinc-950 */
-  color: #ffffff;
-  font-family: sans-serif;
+  background-color: #09090b;
+  color: #e5e1e4;
+  font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
 }
 
-/* Helper class to hide scrollbars on responsive menus */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+/* Luxury Glass Cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+.glass-card:hover {
+  border-color: rgba(173, 198, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: -4px 0 0 0 #adc6ff;
+}
+
+/* Premium Metallic Text Gradient */
+.text-gradient {
+  background: linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Neon Back-Lighting Flares */
+.glow-flare {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  z-index: -1;
+  opacity: 0.12;
+  pointer-events: none;
 }
