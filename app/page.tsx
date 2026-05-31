@@ -174,6 +174,9 @@ export default function Home() {
   return (
     <main className="w-full max-w-7xl mx-auto px-4 md:px-8 pb-24 relative z-20">
       
+      {/* RESTORED: Bringing back the central Hero introduction block */}
+      <Hero />
+
       {/* Capabilities Section */}
       <section id="expertise" className="py-24 max-w-7xl mx-auto relative z-20 pointer-events-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 border-b border-zinc-300/80 dark:border-zinc-800 pb-8">
@@ -263,7 +266,7 @@ export default function Home() {
                       <p className="text-xs font-mono text-zinc-400 dark:text-zinc-500">{role.period}</p>
                     </div>
 
-                    <p className="text-sm font-light text-zinc-700 dark:text-zinc-300 leading-relaxed">{role.desc}</p>
+                    <p className="text-sm font-light text-zinc-700 dark:text-slate-300 leading-relaxed">{role.desc}</p>
                     
                     <ul className="space-y-2.5 pt-2">
                       {role.bullets.map((bullet, bIdx) => (
@@ -390,7 +393,7 @@ export default function Home() {
                   </div>
                   <div className="p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.01] border border-zinc-100 dark:border-white/5 space-y-1">
                     <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{mapItem.executiveSummary}</p>
-                    <p className="text-xs font-light text-zinc-600 dark:text-zinc-400 leading-relaxed">{mapItem.context}</p>
+                    <p className="text-xs font-light text-zinc-600 dark:text-slate-400 leading-relaxed">{mapItem.context}</p>
                   </div>
                 </div>
               ))}
