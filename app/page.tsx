@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import Hero from '../components/Hero';
 
 export default function Home() {
@@ -173,10 +172,9 @@ export default function Home() {
   ];
 
   return (
-    /* ENHANCEMENT #3: Outer-Canvas-Frame handles left/right empty gutters with an architectural grid pattern */
     <div className="w-full outer-canvas-frame min-h-screen">
-      {/* Central Content Container forces clean desktop framing while preserving outer gutter styling */}
-      <div className="max-w-[1440px] mx-auto min-h-screen bg-white dark:bg-[#09090b] shadow-[0_0_80px_rgba(0,0,0,0.08)] dark:shadow-none border-x border-zinc-200/50 dark:border-zinc-900/50 transition-colors duration-500">
+      {/* Central Content Panel with dual theme background binding */}
+      <div className="max-w-[1440px] mx-auto min-h-screen bg-white dark:bg-[#09090b] text-zinc-900 dark:text-slate-100 shadow-[0_0_80px_rgba(0,0,0,0.15)] border-x border-zinc-200/40 dark:border-zinc-900/40 transition-colors duration-400">
         
         <Hero />
 
@@ -184,8 +182,10 @@ export default function Home() {
         <section id="expertise" className="py-24 px-6 md:px-12 max-w-7xl mx-auto relative z-20 pointer-events-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 border-b border-zinc-200 dark:border-white/5 pb-8">
             <div className="max-w-xl">
-              <h2 className="text-sm font-mono uppercase tracking-widest text-[#4d8eff] dark:text-[#adc6ff] mb-2 flex items-center gap-2"><span className="material-symbols-outlined text-base">layers</span> Capabilities</h2>
-              <h3 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Core Operational Matrix</h3>
+              <h2 className="text-sm font-mono uppercase tracking-widest text-[#4d8eff] dark:text-[#adc6ff] mb-2 flex items-center gap-2">
+                <span className="material-symbols-outlined text-base">layers</span> Capabilities
+              </h2>
+              <h3 className="text-3xl font-bold tracking-tight">Core Operational Matrix</h3>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-12 h-1 bg-zinc-200 dark:bg-white/10 rounded-full" />
@@ -195,13 +195,13 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {coreCompetencies.map((item, index) => (
-              <div key={index} className="glass-card p-8 rounded-2xl flex flex-col justify-between gap-8 group border border-zinc-200/60 dark:border-zinc-800/40">
+              <div key={index} className="glass-card p-8 rounded-2xl flex flex-col justify-between gap-8 group">
                 <div className="space-y-6">
                   <div className="w-12 h-12 bg-zinc-100 dark:bg-white/5 rounded-xl flex items-center justify-center border border-zinc-200 dark:border-white/10 group-hover:scale-110 transition-transform duration-300">
                     <span className={`material-symbols-outlined text-2xl ${item.color}`}>{item.icon}</span>
                   </div>
                   <div className="space-y-3">
-                    <h4 className="text-xl font-semibold text-zinc-900 dark:text-white tracking-tight group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff] transition-colors duration-300">{item.title}</h4>
+                    <h4 className="text-xl font-semibold tracking-tight group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff] transition-colors duration-300">{item.title}</h4>
                     <p className="text-zinc-600 dark:text-slate-400 font-light text-sm leading-relaxed">{item.desc}</p>
                   </div>
                 </div>
@@ -221,8 +221,10 @@ export default function Home() {
         <section id="experience" className="py-16 px-6 md:px-12 max-w-7xl mx-auto relative z-20 pointer-events-auto">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12 border-b border-zinc-200 dark:border-white/5 pb-8">
             <div>
-              <h2 className="text-sm font-mono uppercase tracking-widest text-[#4d8eff] dark:text-[#adc6ff] mb-2 flex items-center gap-2"><span className="material-symbols-outlined text-base">timeline</span> Track Record</h2>
-              <h3 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Professional Trajectory</h3>
+              <h2 className="text-sm font-mono uppercase tracking-widest text-[#4d8eff] dark:text-[#adc6ff] mb-2 flex items-center gap-2">
+                <span className="material-symbols-outlined text-base">timeline</span> Track Record
+              </h2>
+              <h3 className="text-3xl font-bold tracking-tight">Professional Trajectory</h3>
             </div>
 
             <div className="flex items-center gap-3 self-start sm:self-center">
@@ -243,9 +245,9 @@ export default function Home() {
 
           <div className="space-y-12 transition-all duration-500">
             {paginatedExperience[activePage as 1 | 2].map((block, idx) => (
-              <div key={idx} className="glass-card p-6 md:p-10 rounded-2xl grid grid-cols-1 md:grid-cols-4 gap-8 border border-zinc-200/60 dark:border-zinc-800/40">
+              <div key={idx} className="glass-card p-6 md:p-10 rounded-2xl grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-1 space-y-2">
-                  <h4 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">{block.company}</h4>
+                  <h4 className="text-2xl font-bold tracking-tight">{block.company}</h4>
                   <div className="space-y-1">
                     <p className="text-xs font-mono text-[#4d8eff] dark:text-[#adc6ff]">{block.timeline}</p>
                     <span className="inline-block bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 px-2 py-0.5 rounded text-[10px] font-mono uppercase text-zinc-600 dark:text-slate-400">{block.type}</span>
@@ -259,8 +261,8 @@ export default function Home() {
                       
                       <div className="space-y-1">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                          <h5 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 group-hover/role:text-[#4d8eff] dark:group-hover/role:text-[#adc6ff] transition-colors duration-300">{role.title}</h5>
-                          <span className="text-xs text-zinc-500 dark:text-slate-500 font-mono tracking-wide">{role.location}</span>
+                          <h5 className="text-xl font-semibold group-hover/role:text-[#4d8eff] dark:group-hover/role:text-[#adc6ff] transition-colors duration-300">{role.title}</h5>
+                          <span className="text-xs text-zinc-500 font-mono tracking-wide">{role.location}</span>
                         </div>
                         <p className="text-xs font-mono text-zinc-400 dark:text-slate-500">{role.period}</p>
                       </div>
@@ -293,37 +295,39 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ENHANCEMENT #4: Call-to-Action Card Element with Click State Icons */}
+        {/* Call-to-Action Panel with custom-bound button icon contrasts */}
         <section id="contact" className="px-6 md:px-12 max-w-7xl mx-auto mb-16 relative z-20 pointer-events-auto">
-          <div className="glass-card rounded-3xl p-12 md:p-20 text-center overflow-hidden border border-zinc-200/60 dark:border-zinc-800/40 bg-gradient-to-br from-zinc-50 to-transparent dark:from-white/[0.02] dark:to-transparent">
-            <h4 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4 tracking-tight">Let's Orchestrate What's Next.</h4>
+          <div className="glass-card rounded-3xl p-12 md:p-20 text-center overflow-hidden bg-gradient-to-br from-zinc-50 to-transparent dark:from-white/[0.02] dark:to-transparent">
+            <h4 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight">Let's Orchestrate What's Next.</h4>
             <p className="text-zinc-600 dark:text-slate-400 font-light text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
               I am open to strategic technology partnerships, digital banking ecosystem consulting, and senior enterprise operations leadership roles.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-30">
               <button 
                 onClick={() => setIsContactOpen(true)}
-                className="cursor-pointer bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] font-semibold px-8 py-4 rounded-full text-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(173,198,255,0.4)] active:scale-95 text-center flex items-center justify-center gap-2"
+                className="cursor-pointer bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] font-semibold px-8 py-4 rounded-full text-sm transition-all duration-300 hover:scale-105 active:scale-95 text-center flex items-center justify-center gap-2"
               >
-                <span className="material-symbols-outlined text-lg">rocket_launch</span> Initiate Consultation
+                <span className="material-symbols-outlined text-lg text-white dark:text-[#002e6a]">rocket_launch</span> 
+                Initiate Consultation
               </button>
               <button 
                 onClick={() => setIsMapOpen(true)}
                 className="cursor-pointer bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-900 dark:text-white px-8 py-4 rounded-full font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 text-center flex items-center justify-center gap-2"
               >
-                <span className="material-symbols-outlined text-lg">route</span> Review Trajectory Map
+                <span className="material-symbols-outlined text-lg text-zinc-900 dark:text-white">route</span> 
+                Review Trajectory Map
               </button>
             </div>
           </div>
         </section>
 
-        {/* MODULE 1: Luxury Executive Contact Gateway Overlay */}
+        {/* MODULE 1: Contact Popover Component */}
         {isContactOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/60 dark:bg-zinc-950/80 backdrop-blur-xl">
-            <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-lg rounded-2xl p-8 relative shadow-2xl space-y-6">
+            <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-lg rounded-2xl p-8 relative shadow-2xl space-y-6 text-zinc-900 dark:text-white">
               <div className="flex justify-between items-start pb-4 border-b border-zinc-100 dark:border-white/5">
                 <div>
-                  <h5 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">Direct Engagement Channels</h5>
+                  <h5 className="text-xl font-bold tracking-tight">Direct Engagement Channels</h5>
                   <p className="text-xs text-zinc-500 dark:text-slate-400 mt-1">Senior Digital Operations Leadership Coordination</p>
                 </div>
                 <button onClick={() => setIsContactOpen(false)} className="text-zinc-400 hover:text-zinc-950 dark:hover:text-white material-symbols-outlined p-1 cursor-pointer">
@@ -336,7 +340,7 @@ export default function Home() {
                   <span className="material-symbols-outlined text-[#002e6a] dark:text-[#adc6ff] text-2xl">mail</span>
                   <div className="text-left">
                     <p className="text-xs text-zinc-400 dark:text-slate-500 uppercase tracking-widest font-mono">Secure Email Link</p>
-                    <p className="text-sm font-medium text-zinc-900 dark:text-white group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff]">jimmykg.spacex@gmail.com</p>
+                    <p className="text-sm font-medium group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff]">jimmykg.spacex@gmail.com</p>
                   </div>
                 </a>
 
@@ -344,7 +348,7 @@ export default function Home() {
                   <span className="material-symbols-outlined text-[#002e6a] dark:text-[#c0c1ff] text-2xl">share</span>
                   <div className="text-left">
                     <p className="text-xs text-zinc-400 dark:text-slate-500 uppercase tracking-widest font-mono">LinkedIn Executive Network</p>
-                    <p className="text-sm font-medium text-zinc-900 dark:text-white group-hover:text-[#4d8eff] dark:group-hover:text-[#c0c1ff]">kaung-htet-nyein-chan-oo</p>
+                    <p className="text-sm font-medium group-hover:text-[#4d8eff] dark:group-hover:text-[#c0c1ff]">kaung-htet-nyein-chan-oo</p>
                   </div>
                 </a>
 
@@ -352,7 +356,7 @@ export default function Home() {
                   <span className="material-symbols-outlined text-[#002e6a] dark:text-[#ddb7ff] text-2xl">call</span>
                   <div className="text-left">
                     <p className="text-xs text-zinc-400 dark:text-slate-500 uppercase tracking-widest font-mono">Direct Communication Link</p>
-                    <p className="text-sm font-medium text-zinc-900 dark:text-white group-hover:text-[#4d8eff] dark:group-hover:text-[#ddb7ff]">+66 62 098 3201</p>
+                    <p className="text-sm font-medium group-hover:text-[#4d8eff] dark:group-hover:text-[#ddb7ff]">+66 62 098 3201</p>
                   </div>
                 </a>
               </div>
@@ -364,13 +368,13 @@ export default function Home() {
           </div>
         )}
 
-        {/* MODULE 2: Architecture Executive Trajectory Map Overlay */}
+        {/* MODULE 2: Visual Timeline Blueprint Popover Component */}
         {isMapOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/60 dark:bg-zinc-950/85 backdrop-blur-xl overflow-y-auto">
-            <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-3xl rounded-2xl p-6 md:p-10 relative shadow-2xl my-8 space-y-8">
+            <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-3xl rounded-2xl p-6 md:p-10 relative shadow-2xl my-8 space-y-8 text-zinc-900 dark:text-white">
               <div className="flex justify-between items-start pb-4 border-b border-zinc-100 dark:border-white/5">
                 <div>
-                  <h5 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">Strategic Trajectory Blueprint</h5>
+                  <h5 className="text-2xl font-bold tracking-tight">Strategic Trajectory Blueprint</h5>
                   <p className="text-sm text-[#4d8eff] dark:text-[#adc6ff] font-mono mt-1">Cross-Functional Transition Map</p>
                 </div>
                 <button onClick={() => setIsMapOpen(false)} className="text-zinc-400 hover:text-zinc-950 dark:hover:text-white material-symbols-outlined p-1 cursor-pointer">
@@ -381,12 +385,12 @@ export default function Home() {
               <div className="relative pl-6 md:pl-8 space-y-8 before:content-[''] before:absolute before:left-[11px] md:before:left-[15px] before:top-2 before:bottom-2 before:width-[2px] before:bg-gradient-to-b before:from-[#4d8eff] before:via-[#c0c1ff] before:to-zinc-200 dark:before:to-white/5">
                 {visualTrajectoryMap.map((mapItem, mIdx) => (
                   <div key={mIdx} className="relative group/map-node space-y-2">
-                    <div className="absolute -left-[21px] md:-left-[29px] top-1.5 w-4 h-4 rounded-full bg-white dark:bg-zinc-900 border-2 border-[#4d8eff] dark:border-[#adc6ff] group-hover/map-node:bg-[#adc6ff] transition-colors duration-300 flex items-center justify-center shadow-[0_0_10px_rgba(173,198,255,0.4)]">
-                      <div className="w-1 h-1 rounded-full bg-zinc-400 dark:bg-zinc-950" />
+                    <div className="absolute -left-[21px] md:-left-[29px] top-1.5 w-4 h-4 rounded-full bg-white dark:bg-zinc-900 border-2 border-[#4d8eff] dark:border-[#adc6ff] transition-colors duration-300 flex items-center justify-center shadow-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-950" />
                     </div>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
                       <span className="text-xs font-mono font-semibold text-[#002e6a] dark:text-[#adc6ff] bg-[#4d8eff]/10 dark:bg-[#adc6ff]/10 border border-[#4d8eff]/20 dark:border-[#adc6ff]/20 px-2.5 py-0.5 rounded-full w-max">{mapItem.year}</span>
-                      <h6 className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">{mapItem.company}</h6>
+                      <h6 className="text-lg font-bold tracking-tight">{mapItem.company}</h6>
                     </div>
                     <div className="p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.01] border border-zinc-100 dark:border-white/5 space-y-1">
                       <p className="text-sm font-medium text-zinc-800 dark:text-slate-200">{mapItem.executiveSummary}</p>
