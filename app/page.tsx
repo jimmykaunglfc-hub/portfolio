@@ -5,8 +5,10 @@ import Link from 'next/link';
 import Hero from '../components/Hero';
 
 export default function Home() {
-  // Pagination State for Experience Track
+  // Navigation & Interactive Popover States
   const [activePage, setActivePage] = useState(1);
+  const [isContactOpen, setIsContactOpen] = useState(false);
+  const [isMapOpen, setIsMapOpen] = useState(false);
 
   const coreCompetencies = [
     {
@@ -32,7 +34,6 @@ export default function Home() {
     }
   ];
 
-  // Full high-density profile ledger data structured across two clean pages
   const paginatedExperience = {
     1: [
       {
@@ -165,6 +166,13 @@ export default function Home() {
     ]
   };
 
+  const visualTrajectoryMap = [
+    { year: "2025 - Present", company: "digit7s", executiveSummary: "Head of Digital Operations & Product Development", context: "Orchestrating multi-tiered product workflows, agile scaling configurations, and cross-functional engineering management inside major tech hubs across Thailand." },
+    { year: "2018 - 2025", company: "KBZ Bank", executiveSummary: "Manager - Digital Channels (KBZPay Ecosystem)", context: "Directing foundational user growth arrays and security matrices for key regional mobile banking channels." },
+    { year: "2014 - 2022", company: "Media & Professional Advisory", executiveSummary: "Communications Consultant & Localization Lead", context: "Anchoring cross-border media translation networks, language localized pipelines, and communications architecture frameworks." },
+    { year: "2013 - 2016", company: "Institutional Frameworks", executiveSummary: "State Liaison Officer & Executive Coordinator", context: "Facilitating international stakeholder relations, diplomatic logistics configurations, and inter-departmental operations syncs." }
+  ];
+
   return (
     <main className="relative min-h-screen bg-[#09090b] pb-24 select-text">
       <Hero />
@@ -206,7 +214,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* STATEFUL PAGINATED EXPERIENCE TIMELINE */}
+      {/* Stateful Experience Section */}
       <section id="experience" className="py-16 px-6 max-w-7xl mx-auto relative z-20 pointer-events-auto">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12 border-b border-white/5 pb-8">
           <div>
@@ -214,7 +222,6 @@ export default function Home() {
             <h3 className="text-3xl font-bold text-white tracking-tight">Professional Trajectory</h3>
           </div>
 
-          {/* Luxury Metric Pagination Navigation Elements */}
           <div className="flex items-center gap-3 self-start sm:self-center">
             <button 
               onClick={() => setActivePage(1)} 
@@ -231,11 +238,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Dynamic Slate Render View */}
-        <div className="space-y-12 transition-all duration-500 animate-fade-in">
+        <div className="space-y-12 transition-all duration-500">
           {paginatedExperience[activePage as 1 | 2].map((block, idx) => (
             <div key={idx} className="glass-card p-6 md:p-10 rounded-2xl grid grid-cols-1 md:grid-cols-4 gap-8 bg-gradient-to-br from-white/[0.01] to-transparent">
-              {/* Firm Information Blocks */}
               <div className="md:col-span-1 space-y-2">
                 <h4 className="text-2xl font-bold text-white tracking-tight">{block.company}</h4>
                 <div className="space-y-1">
@@ -244,11 +249,9 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Roles Ledger Frame */}
               <div className="md:col-span-3 space-y-12 border-l border-white/5 pl-6 md:pl-10">
                 {block.roles.map((role, rIdx) => (
                   <div key={rIdx} className="space-y-4 relative group/role">
-                    {/* Glowing Architectural Timeline Anchor Dot */}
                     <div className="absolute -left-[31px] md:-left-[47px] top-2 w-2.5 h-2.5 rounded-full bg-zinc-800 border-2 border-[#adc6ff] group-hover/role:bg-[#adc6ff] transition-colors duration-300 shadow-[0_0_8px_rgba(173,198,255,0.5)]" />
                     
                     <div className="space-y-1">
@@ -261,7 +264,6 @@ export default function Home() {
 
                     <p className="text-sm font-light text-slate-300 leading-relaxed">{role.desc}</p>
                     
-                    {/* High-Density Responsibility Bullet Arrays */}
                     <ul className="space-y-2.5 pt-2">
                       {role.bullets.map((bullet, bIdx) => (
                         <li key={bIdx} className="text-sm text-slate-400 font-light flex items-start gap-2.5 leading-relaxed">
@@ -271,7 +273,6 @@ export default function Home() {
                       ))}
                     </ul>
 
-                    {/* Skill Tag Aggregates if defined */}
                     {'skills' in role && (
                       <div className="flex flex-wrap gap-2 pt-3">
                         {role.skills?.map((skill, sIdx) => (
@@ -289,23 +290,116 @@ export default function Home() {
         </div>
       </section>
 
-      {/* High-Impact Partnership Conversion Section */}
+      {/* Call-to-Action Card Element with Click State Logic */}
       <section id="contact" className="px-6 max-w-7xl mx-auto mb-16 relative z-20 pointer-events-auto">
-        <div className="glass-card rounded-3xl p-12 md:p-20 text-center overflow-hidden bg-gradient-to-br from-white/[0.02] to-transparent group">
+        <div className="glass-card rounded-3xl p-12 md:p-20 text-center overflow-hidden bg-gradient-to-br from-white/[0.02] to-transparent">
           <h4 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">Let's Orchestrate What's Next.</h4>
           <p className="text-slate-400 font-light text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
             I am open to strategic technology partnerships, digital banking ecosystem consulting, and senior enterprise operations leadership roles.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-30">
-            <a href="mailto:your-email@example.com" className="bg-[#adc6ff] hover:bg-[#94b3f8] text-[#002e6a] font-semibold px-8 py-4 rounded-full text-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(173,198,255,0.4)] active:scale-95 text-center">
+            <button 
+              onClick={() => setIsContactOpen(true)}
+              className="cursor-pointer bg-[#adc6ff] hover:bg-[#94b3f8] text-[#002e6a] font-semibold px-8 py-4 rounded-full text-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(173,198,255,0.4)] active:scale-95 text-center"
+            >
               Initiate Consultation
-            </a>
-            <Link href="#experience" className="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-8 py-4 rounded-full font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 text-center">
+            </button>
+            <button 
+              onClick={() => setIsMapOpen(true)}
+              className="cursor-pointer bg-white/5 border border-white/10 hover:bg-white/10 text-white px-8 py-4 rounded-full font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 text-center"
+            >
               Review Trajectory Map
-            </Link>
+            </button>
           </div>
         </div>
       </section>
+
+      {/* MODULE 1: Luxury Executive Contact Gateway Overlay */}
+      {isContactOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-xl animate-fade-in">
+          <div className="bg-[#131315] border border-white/10 w-full max-w-lg rounded-2xl p-8 relative shadow-2xl space-y-6">
+            <div className="flex justify-between items-start pb-4 border-b border-white/5">
+              <div>
+                <h5 className="text-xl font-bold text-white tracking-tight">Direct Engagement Channels</h5>
+                <p className="text-xs text-slate-400 mt-1">Senior Digital Operations Leadership Coordination</p>
+              </div>
+              <button onClick={() => setIsContactOpen(false)} className="text-slate-400 hover:text-white material-symbols-outlined p-1 cursor-pointer">
+                close
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <a href="mailto:jimmykg.spacex@gmail.com" className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#adc6ff]/30 hover:bg-white/[0.04] transition-all duration-300 group">
+                <span className="material-symbols-outlined text-[#adc6ff] text-2xl">mail</span>
+                <div className="text-left">
+                  <p className="text-xs text-slate-500 uppercase tracking-widest font-mono">Secure Email Link</p>
+                  <p className="text-sm font-medium text-white group-hover:text-[#adc6ff]">jimmykg.spacex@gmail.com</p>
+                </div>
+              </a>
+
+              <a href="https://www.linkedin.com/in/kaung-htet-nyein-chan-oo-593952167/" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#c0c1ff]/30 hover:bg-white/[0.04] transition-all duration-300 group">
+                <span className="material-symbols-outlined text-[#c0c1ff] text-2xl">share</span>
+                <div className="text-left">
+                  <p className="text-xs text-slate-500 uppercase tracking-widest font-mono">LinkedIn Executive Network</p>
+                  <p className="text-sm font-medium text-white group-hover:text-[#c0c1ff]">kaung-htet-nyein-chan-oo</p>
+                </div>
+              </a>
+
+              <a href="tel:+66620983201" className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#ddb7ff]/30 hover:bg-white/[0.04] transition-all duration-300 group">
+                <span className="material-symbols-outlined text-[#ddb7ff] text-2xl">call</span>
+                <div className="text-left">
+                  <p className="text-xs text-slate-500 uppercase tracking-widest font-mono">Direct Communication Link</p>
+                  <p className="text-sm font-medium text-white group-hover:text-[#ddb7ff]">+66 62 098 3201</p>
+                </div>
+              </a>
+            </div>
+
+            <button onClick={() => setIsContactOpen(false)} className="w-full py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs font-semibold uppercase tracking-wider transition-colors border border-white/5 cursor-pointer">
+              Dismiss Gateway
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* MODULE 2: Architecture Executive Trajectory Map Overlay */}
+      {isMapOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/85 backdrop-blur-xl overflow-y-auto animate-fade-in">
+          <div className="bg-[#131315] border border-white/10 w-full max-w-3xl rounded-2xl p-6 md:p-10 relative shadow-2xl my-8 space-y-8">
+            <div className="flex justify-between items-start pb-4 border-b border-white/5">
+              <div>
+                <h5 className="text-2xl font-bold text-white tracking-tight">Strategic Trajectory Blueprint</h5>
+                <p className="text-sm text-[#adc6ff] font-mono mt-1">Cross-Functional Transition Map</p>
+              </div>
+              <button onClick={() => setIsMapOpen(false)} className="text-slate-400 hover:text-white material-symbols-outlined p-1 cursor-pointer">
+                close
+              </button>
+            </div>
+
+            {/* Micro Graphic Architectural Path Grid */}
+            <div className="relative pl-6 md:pl-8 space-y-8 before:content-[''] before:absolute before:left-[11px] md:before:left-[15px] before:top-2 before:bottom-2 before:width-[2px] before:bg-gradient-to-b before:from-[#adc6ff] before:via-[#c0c1ff] before:to-white/5">
+              {visualTrajectoryMap.map((mapItem, mIdx) => (
+                <div key={mIdx} className="relative group/map-node space-y-2">
+                  <div className="absolute -left-[21px] md:-left-[29px] top-1.5 w-4 h-4 rounded-full bg-zinc-900 border-2 border-[#adc6ff] group-hover/map-node:bg-[#adc6ff] transition-colors duration-300 flex items-center justify-center shadow-[0_0_10px_rgba(173,198,255,0.4)]">
+                    <div className="w-1 h-1 rounded-full bg-zinc-950" />
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                    <span className="text-xs font-mono font-semibold text-[#adc6ff] bg-[#adc6ff]/10 border border-[#adc6ff]/20 px-2.5 py-0.5 rounded-full w-max">{mapItem.year}</span>
+                    <h6 className="text-lg font-bold text-white tracking-tight">{mapItem.company}</h6>
+                  </div>
+                  <div className="p-4 rounded-xl bg-white/[0.01] border border-white/5 space-y-1">
+                    <p className="text-sm font-medium text-slate-200">{mapItem.executiveSummary}</p>
+                    <p className="text-xs font-light text-slate-400 leading-relaxed">{mapItem.context}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button onClick={() => setIsMapOpen(false)} className="w-full py-4 bg-[#adc6ff] hover:bg-[#94b3f8] text-[#002e6a] rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shadow-lg cursor-pointer">
+              Close Blueprint View
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
