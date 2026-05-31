@@ -8,10 +8,21 @@
   --color-tertiary: #ddb7ff;
 }
 
+/* FULL WINDOW BACKGROUND & INTERACTIVE PATTERN CORE */
 body {
   font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
-  transition: background-color 0.4s ease, color 0.4s ease;
+  background-color: #f8fafc;
+  background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+  color: #09090b;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s ease;
+}
+
+body.dark {
+  background-color: #09090b;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1.2px, transparent 1.2px);
+  color: #f8fafc;
 }
 
 .material-symbols-outlined {
@@ -20,44 +31,26 @@ body {
   vertical-align: middle;
 }
 
-/* 
-  ENHANCEMENT #5 & #6: DYNAMIC OPPOSITE CANVASES
-  - Main Page is Light -> Outer side gutters are deep architectural Dark
-  - Main Page is Dark -> Outer side gutters are clean technical Light
-*/
-.outer-canvas-frame {
-  background-color: #09090b;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 24px 24px;
-  transition: background-color 0.4s ease;
-}
-
-.dark .outer-canvas-frame {
-  background-color: #f1f5f9;
-  background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-/* Glassmorphic elements that shift flawlessly with themes */
+/* Glassmorphic Blocks mapping seamlessly to dark and light backgrounds */
 .glass-card {
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .glass-card {
-  background: rgba(20, 20, 25, 0.6);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(18, 18, 22, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .glow-flare {
   position: absolute;
   pointer-events: none;
-  filter: blur(130px);
+  filter: blur(140px);
   opacity: 0.12;
   z-index: 1;
   border-radius: 50%;
