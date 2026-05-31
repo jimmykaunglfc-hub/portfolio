@@ -34,7 +34,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Background Lighting Anchors */}
       <div className="glow-flare w-[500px] h-[500px] bg-[#adc6ff] top-[-200px] left-[-100px]" />
       <div className="glow-flare w-[400px] h-[400px] bg-[#3131c0] top-[30%] right-[5%]" />
 
@@ -61,28 +60,27 @@ export default function Navbar() {
             <span className="font-sans font-extrabold tracking-tight">KHNCO<span className="text-[#4d8eff] dark:text-[#adc6ff]">.</span></span>
           </Link>
           
-          {/* PC Layout Navigation links with unified theme responsive icon mapping */}
+          {/* FIXED: Icons now dynamically invert to crisp black on light mode / white on dark mode */}
           <div className="hidden md:flex items-center gap-8 pointer-events-auto">
-            <a className="flex items-center gap-2 text-zinc-800 dark:text-zinc-200 font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-200 group" href="/#expertise">
-              <span className="material-symbols-outlined text-base text-zinc-900 dark:text-white group-hover:text-inherit">layers</span> 
+            <a className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-200" href="/#expertise">
+              <span className="material-symbols-outlined text-base text-inherit">layers</span> 
               Capabilities
             </a>
-            <a className="flex items-center gap-2 text-zinc-800 dark:text-zinc-200 font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-200 group" href="/#experience">
-              <span className="material-symbols-outlined text-base text-zinc-900 dark:text-white group-hover:text-inherit">timeline</span> 
+            <a className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-200" href="/#experience">
+              <span className="material-symbols-outlined text-base text-inherit">timeline</span> 
               Trajectory
             </a>
-            <a className="flex items-center gap-2 text-zinc-800 dark:text-zinc-200 font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-200 group" href="/#contact">
-              <span className="material-symbols-outlined text-base text-zinc-900 dark:text-white group-hover:text-inherit">alternate_email</span> 
+            <a className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-200" href="/#contact">
+              <span className="material-symbols-outlined text-base text-inherit">alternate_email</span> 
               Contact
             </a>
 
-            {/* Custom Luxury Theme Control Node */}
             <button 
               onClick={toggleTheme} 
-              className="flex items-center justify-center p-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-800 dark:text-slate-300 hover:bg-zinc-200 dark:hover:bg-white/10 hover:text-zinc-950 dark:hover:text-white transition-all cursor-pointer hover:scale-105 active:scale-95"
-              title="Change Workspace Layout Colors"
+              className="flex items-center justify-center p-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-white/10 transition-all cursor-pointer hover:scale-105 active:scale-95"
+              title="Change Theme Mode"
             >
-              <span className="material-symbols-outlined text-lg block">
+              <span className="material-symbols-outlined text-lg block text-inherit">
                 {isDark ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
@@ -93,9 +91,9 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* Mobile Navigation Anchor Layouts */}
+          {/* Mobile Navigation controls */}
           <div className="flex items-center gap-4 md:hidden pointer-events-auto">
-            <button onClick={toggleTheme} className="p-2 text-zinc-700 dark:text-slate-300 material-symbols-outlined text-xl cursor-pointer">
+            <button onClick={toggleTheme} className="p-2 text-zinc-900 dark:text-white material-symbols-outlined text-xl cursor-pointer">
               {isDark ? 'light_mode' : 'dark_mode'}
             </button>
             <button onClick={() => setIsMenuOpen(true)} className="text-zinc-900 dark:text-white material-symbols-outlined text-2xl p-2 cursor-pointer">
@@ -105,12 +103,12 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Screen Mobile Menu Overlays */}
+      {/* Mobile Slide-Over Screen Panel */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-50 bg-white/95 dark:bg-[#131315]/95 backdrop-blur-2xl flex flex-col items-center justify-center gap-8 transition-all duration-300">
-          <a onClick={() => setIsMenuOpen(false)} className="text-2xl font-medium text-zinc-800 dark:text-white flex items-center gap-2" href="/#expertise"><span className="material-symbols-outlined">layers</span> Capabilities</a>
-          <a onClick={() => setIsMenuOpen(false)} className="text-2xl font-medium text-zinc-800 dark:text-white flex items-center gap-2" href="/#experience"><span className="material-symbols-outlined">timeline</span> Trajectory</a>
-          <a onClick={() => setIsMenuOpen(false)} className="text-2xl font-medium text-zinc-800 dark:text-white flex items-center gap-2" href="/#contact"><span className="material-symbols-outlined">alternate_email</span> Contact</a>
+          <a onClick={() => setIsMenuOpen(false)} className="text-2xl font-medium text-zinc-900 dark:text-white flex items-center gap-2" href="/#expertise"><span className="material-symbols-outlined">layers</span> Capabilities</a>
+          <a onClick={() => setIsMenuOpen(false)} className="text-2xl font-medium text-zinc-900 dark:text-white flex items-center gap-2" href="/#experience"><span className="material-symbols-outlined">timeline</span> Trajectory</a>
+          <a onClick={() => setIsMenuOpen(false)} className="text-2xl font-medium text-zinc-900 dark:text-white flex items-center gap-2" href="/#contact"><span className="material-symbols-outlined">alternate_email</span> Contact</a>
           <button onClick={() => setIsMenuOpen(false)} className="bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] px-8 py-3 rounded-full font-bold text-sm w-64 mt-6 tracking-wide uppercase shadow-lg cursor-pointer">
             Close Menu
           </button>
