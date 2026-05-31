@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Force Tailwind v4 to trigger dark: utilities on manual button toggle */
+/* Forces Tailwind to listen to manual theme selector toggles */
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
@@ -11,7 +11,7 @@
   --color-tertiary: #ddb7ff;
 }
 
-/* UNIFIED GLOBAL CANVAS SYSTEM */
+/* UNIFIED GLOBAL BACKGROUND & PATTERN LAYER */
 body {
   font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
@@ -34,7 +34,7 @@ body.dark {
   vertical-align: middle;
 }
 
-/* Glassmorphic Blocks mapping seamlessly to dark and light backgrounds */
+/* Glassmorphic Balance Elements */
 .glass-card {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(20px);
