@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Hero from '../components/Hero';
+import Footer from '../components/Footer';
 
 export default function Home() {
   const [activePage, setActivePage] = useState(1);
@@ -172,9 +173,9 @@ export default function Home() {
   ];
 
   return (
-    <main className="w-full max-w-7xl mx-auto px-4 md:px-8 pb-24 relative z-20">
+    <main className="w-full max-w-7xl mx-auto px-4 md:px-8 pb-4 relative z-20">
       
-      {/* RESTORED: Bringing back the central Hero introduction block */}
+      {/* Hero Introduction Block */}
       <Hero />
 
       {/* Capabilities Section */}
@@ -266,7 +267,7 @@ export default function Home() {
                       <p className="text-xs font-mono text-zinc-400 dark:text-zinc-500">{role.period}</p>
                     </div>
 
-                    <p className="text-sm font-light text-zinc-700 dark:text-slate-300 leading-relaxed">{role.desc}</p>
+                    <p className="text-sm font-light text-zinc-700 dark:text-zinc-300 leading-relaxed">{role.desc}</p>
                     
                     <ul className="space-y-2.5 pt-2">
                       {role.bullets.map((bullet, bIdx) => (
@@ -405,6 +406,10 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* Interactive Connected Footer Section Layout */}
+      <Footer />
+
     </main>
   );
 }
