@@ -28,7 +28,7 @@ const matrixData = [
 ];
 
 // Animation Variants
-const containerVariants = {
+const containerVariants: any = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -36,9 +36,9 @@ const containerVariants = {
   },
 };
 
-const cardVariants = {
+const cardVariants: any = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
 export default function CapabilitiesMatrix() {
