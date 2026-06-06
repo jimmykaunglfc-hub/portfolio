@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Hero from '../components/Hero';
 import Footer from '../components/Footer';
+import CapabilitiesMatrix from '../components/Capabilities';
 
 export default function Home() {
   const [activePage, setActivePage] = useState(1);
@@ -177,6 +178,7 @@ export default function Home() {
       
       {/* Hero Introduction Block */}
       <Hero />
+      <CapabilitiesMatrix />
 
       {/* Capabilities Section */}
       <section id="expertise" className="py-24 max-w-7xl mx-auto relative z-20 pointer-events-auto">
