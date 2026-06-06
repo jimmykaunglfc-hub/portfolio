@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import CapabilitiesMatrix from '../components/Capabilities';
 import TrajectoryHubs from '../components/TrajectoryHubs';
 import StrategicNetwork from '../components/StrategicNetwork';
+import DataNexus from '../components/DataNexus';
 
 export default function Home() {
   const [activePage, setActivePage] = useState(1);
@@ -178,8 +179,21 @@ export default function Home() {
   return (
     <main className="w-full max-w-7xl mx-auto px-4 md:px-8 pb-4 relative z-20">
       
-      {/* Hero Introduction Block */}
-      <Hero />
+      {/* Interactive Hero Section with DataNexus Background */}
+        <div className="relative w-full min-h-[85vh] flex flex-col justify-center overflow-hidden mb-16 rounded-3xl bg-gray-50 dark:bg-[#09090b] border border-gray-200 dark:border-white/5">
+          
+          {/* The physics background animation */}
+          <DataNexus />
+          
+          {/* The Hero content sitting on top */}
+          <div className="relative z-10 w-full pointer-events-none">
+            {/* pointer-events-auto allows your buttons inside Hero to still be clickable */}
+            <div className="pointer-events-auto">
+              <Hero />
+            </div>
+          </div>
+
+        </div>
       <CapabilitiesMatrix />
       <TrajectoryHubs />
       <StrategicNetwork />
