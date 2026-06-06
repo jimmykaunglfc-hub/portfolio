@@ -1,5 +1,6 @@
 import './globals.css';
 import Navbar from '../components/Navbar';
+import { Analytics } from '@vercel/analytics/react'
 
 export const metadata = {
   title: 'KHNCO. | Executive Portfolio',
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body className="bg-[#09090b] text-[#e5e1e4] antialiased">
         <Navbar />
         {children}
+        <Analytics />
       </body>
     </html>
   );
