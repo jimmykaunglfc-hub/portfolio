@@ -1,10 +1,12 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -31,6 +33,11 @@ export default function Navbar() {
       setIsDark(true);
     }
   };
+
+  // THE INVISIBILITY CLOAK: If the URL contains /studio, hide the Navbar completely
+  if (pathname?.startsWith('/studio')) {
+    return null;
+  }
 
   return (
     <>
