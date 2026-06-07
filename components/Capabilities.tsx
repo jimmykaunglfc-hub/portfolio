@@ -23,7 +23,7 @@ const matrixData = [
     description: "Spearheading multi-phased product roadmaps from deep initial market ideation up to high-frequency deployment execution, ensuring absolute harmonization with corporate vision.",
     tags: ["Roadmap Architecture", "UX/UI Focus", "Market Analysis"],
     icon: Cpu,
-    highlightTitle: true, // This matches the blue text in your screenshot
+    highlightTitle: false, // This matches the blue text in your screenshot
   },
 ];
 
