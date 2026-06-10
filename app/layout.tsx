@@ -6,7 +6,38 @@ import { Analytics } from '@vercel/analytics/react'
 export const metadata: Metadata = {
   title: "Jimmy Kaung | Head of Digital Operations & Product",
   description: "Portfolio of Jimmy Kaung. Orchestrating high-impact digital platforms, optimizing operational infrastructure, and leading cross-functional teams in FinTech.",
-  keywords: ["Jimmy Kaung", "Digital Operations", "Product Management", "FinTech", "Next.js", "Portfolio", "KHNCO"],
+  keywords: [
+    // Personal & Brand Identity
+    "Jimmy Kaung", 
+    "Kaung Htet Oo", 
+    "KHNCO", 
+    "Jimmy Kaung Portfolio",
+    
+    // Core Roles & Titles
+    "Head of Digital Operations", 
+    "Product Manager", 
+    "Senior Product Owner", 
+    "Digital Transformation Lead",
+    "Tech Lead",
+
+    // Industry & Expertise
+    "FinTech", 
+    "Financial Technology", 
+    "Digital Platforms", 
+    "Enterprise Systems", 
+    "Operations Infrastructure", 
+    "Cross-functional Leadership",
+    "Product Lifecycle Management",
+
+    // Past Experience Context (Helps if people search your old roles)
+    "KBZ Bank", 
+    "digit7s",
+
+    // Technical Context
+    "Next.js", 
+    "React", 
+    "Technical Portfolio"
+  ],
   openGraph: {
     title: "Jimmy Kaung | Head of Digital Operations",
     description: "Driving end-to-end product lifecycles and leading market-leading enterprise systems.",
