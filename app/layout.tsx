@@ -1,10 +1,24 @@
+import type { Metadata } from "next";
 import './globals.css';
 import Navbar from '../components/Navbar';
 import { Analytics } from '@vercel/analytics/react'
 
-export const metadata = {
-  title: 'KHNCO. | Executive Portfolio',
-  description: 'Architecting Digital Excellence for Global Leaders.',
+export const metadata: Metadata = {
+  title: "Jimmy Kaung | Head of Digital Operations & Product",
+  description: "Portfolio of Jimmy Kaung. Orchestrating high-impact digital platforms, optimizing operational infrastructure, and leading cross-functional teams in FinTech.",
+  keywords: ["Jimmy Kaung", "Digital Operations", "Product Management", "FinTech", "Next.js", "Portfolio", "KHNCO"],
+  openGraph: {
+    title: "Jimmy Kaung | Head of Digital Operations",
+    description: "Driving end-to-end product lifecycles and leading market-leading enterprise systems.",
+    url: "https://kghtetoo.com",
+    siteName: "Jimmy Kaung Portfolio",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Jimmy Kaung | Digital Operations & Product",
+    description: "Orchestrating high-impact digital platforms and FinTech channels.",
+  },
 };
 
 export default function RootLayout({
