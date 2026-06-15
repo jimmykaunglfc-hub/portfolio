@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false); // Controls mobile dropdown
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isDark, setIsDark] = useState(true);
   const pathname = usePathname();
 
@@ -68,50 +68,45 @@ export default function Navbar() {
           
           <div className="hidden md:flex items-center gap-8 pointer-events-auto">
             
-            {/* 1. PROFILE DROPDOWN (Hover) */}
             <div className="relative group py-6">
-              <button className="flex items-center gap-1 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-200">
+              <button className="flex items-center gap-1 text-zinc-900 dark:text-white font-semibold text-sm group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff] transition-colors duration-300">
                 <span className="material-symbols-outlined text-base">account_circle</span>
                 Profile
-                <span className="material-symbols-outlined text-base transition-transform group-hover:rotate-180">expand_more</span>
+                <span className="material-symbols-outlined text-base transition-transform duration-300 group-hover:rotate-180">expand_more</span>
               </button>
               
-              {/* Dropdown Menu Box */}
-              <div className="absolute top-[85%] left-[-10px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 rounded-xl shadow-xl min-w-[200px] overflow-hidden py-2">
-                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors" href="/#expertise">
+              <div className="absolute top-[85%] left-[-10px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 rounded-xl shadow-xl min-w-[200px] overflow-hidden py-2">
+                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#expertise">
                   <span className="material-symbols-outlined text-lg">layers</span> Capabilities
                 </Link>
-                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors" href="/#experience">
+                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#experience">
                   <span className="material-symbols-outlined text-lg">timeline</span> Trajectory
                 </Link>
-                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors" href="/#contact">
+                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#contact">
                   <span className="material-symbols-outlined text-lg">alternate_email</span> Contact
                 </Link>
               </div>
             </div>
 
-            {/* 2. BLOG PAGE */}
-            <Link href="/blog" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-200">
+            <Link href="/blog" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
               <span className="material-symbols-outlined text-base text-inherit">article</span> 
               Blog Post
             </Link>
 
-            {/* 3. GAMES PAGE */}
-            <Link href="/games" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-200">
+            <Link href="/games" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
               <span className="material-symbols-outlined text-base text-inherit">sports_esports</span> 
               Games
             </Link>
 
             <button 
               onClick={toggleTheme} 
-              className="flex items-center justify-center p-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-white/10 transition-all cursor-pointer hover:scale-105 active:scale-95"
+              className="flex items-center justify-center p-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95"
             >
               <span className="material-symbols-outlined text-lg block text-inherit">
                 {isDark ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
 
-            {/* GET IN TOUCH FIX: Now points cleanly to the #contact section */}
             <Link href="/#contact" className="bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] px-5 py-2.5 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 hover:scale-105 shadow-sm flex items-center gap-1.5">
               <span className="material-symbols-outlined text-sm font-bold text-white dark:text-[#002e6a]">mail</span> 
               Get in Touch
@@ -119,53 +114,50 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-4 md:hidden pointer-events-auto">
-            <button onClick={toggleTheme} className="p-2 text-zinc-900 dark:text-white material-symbols-outlined text-xl cursor-pointer">
+            <button onClick={toggleTheme} className="p-2 text-zinc-900 dark:text-white material-symbols-outlined text-xl cursor-pointer hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
               {isDark ? 'light_mode' : 'dark_mode'}
             </button>
-            <button onClick={() => setIsMenuOpen(true)} className="text-zinc-900 dark:text-white material-symbols-outlined text-2xl p-2 cursor-pointer">
+            <button onClick={() => setIsMenuOpen(true)} className="text-zinc-900 dark:text-white material-symbols-outlined text-2xl p-2 cursor-pointer hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
               menu
             </button>
           </div>
         </div>
       </nav>
 
-      {/* MOBILE FULLSCREEN MENU */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-50 bg-white/95 dark:bg-[#131315]/95 backdrop-blur-2xl flex flex-col pt-24 px-8 overflow-y-auto transition-all duration-300">
           <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
             
-            {/* Mobile Profile Accordion */}
             <div className="border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-2">
               <button 
                 onClick={() => setIsProfileOpen(!isProfileOpen)} 
-                className="flex justify-between items-center w-full text-2xl font-medium text-zinc-900 dark:text-white py-2"
+                className="flex justify-between items-center w-full text-2xl font-medium text-zinc-900 dark:text-white py-2 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300"
               >
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined">account_circle</span>
                   Profile
                 </div>
-                <span className={`material-symbols-outlined transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`}>expand_more</span>
+                <span className={`material-symbols-outlined transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`}>expand_more</span>
               </button>
               
-              {/* Expandable Mobile Links */}
               {isProfileOpen && (
                 <div className="flex flex-col gap-5 mt-4 ml-8 border-l-2 border-zinc-200 dark:border-zinc-800 pl-4 mb-4">
-                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 flex items-center gap-3" href="/#expertise"><span className="material-symbols-outlined text-base">layers</span> Capabilities</Link>
-                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 flex items-center gap-3" href="/#experience"><span className="material-symbols-outlined text-base">timeline</span> Trajectory</Link>
-                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 flex items-center gap-3" href="/#contact"><span className="material-symbols-outlined text-base">alternate_email</span> Contact</Link>
+                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#expertise"><span className="material-symbols-outlined text-base">layers</span> Capabilities</Link>
+                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#experience"><span className="material-symbols-outlined text-base">timeline</span> Trajectory</Link>
+                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#contact"><span className="material-symbols-outlined text-base">alternate_email</span> Contact</Link>
                 </div>
               )}
             </div>
 
-            <Link onClick={() => setIsMenuOpen(false)} href="/blog" className="text-2xl font-medium text-zinc-900 dark:text-white flex items-center gap-3 py-2 border-b border-zinc-200 dark:border-zinc-800">
+            <Link onClick={() => setIsMenuOpen(false)} href="/blog" className="text-2xl font-medium text-zinc-900 dark:text-white hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3 py-2 border-b border-zinc-200 dark:border-zinc-800">
               <span className="material-symbols-outlined">article</span> Blog Post
             </Link>
 
-            <Link onClick={() => setIsMenuOpen(false)} href="/games" className="text-2xl font-medium text-zinc-900 dark:text-white flex items-center gap-3 py-2 border-b border-zinc-200 dark:border-zinc-800">
+            <Link onClick={() => setIsMenuOpen(false)} href="/games" className="text-2xl font-medium text-zinc-900 dark:text-white hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3 py-2 border-b border-zinc-200 dark:border-zinc-800">
               <span className="material-symbols-outlined">sports_esports</span> Games
             </Link>
 
-            <button onClick={() => setIsMenuOpen(false)} className="bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] px-8 py-4 rounded-full font-bold text-sm w-full mt-10 tracking-wide uppercase shadow-lg cursor-pointer">
+            <button onClick={() => setIsMenuOpen(false)} className="bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] px-8 py-4 rounded-full font-bold text-sm w-full mt-10 tracking-wide uppercase shadow-lg cursor-pointer hover:scale-105 transition-all duration-300">
               Close Menu
             </button>
           </div>
