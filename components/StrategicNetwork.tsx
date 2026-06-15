@@ -40,7 +40,6 @@ export default function StrategicNetwork() {
 
   return (
     <section className="w-full py-24 bg-gray-50 dark:bg-[#09090b] relative overflow-hidden">
-      {/* Subtle Background Grid */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(#d1d5db_1px,transparent_1px)] dark:bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px] opacity-30"></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
@@ -56,12 +55,12 @@ export default function StrategicNetwork() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
           
-          {/* LEFT SIDE: The Interactive Nodes */}
           <div className="lg:col-span-5 relative">
-            {/* Connecting Line behind nodes */}
-            <div className="absolute left-6 md:left-8 top-8 bottom-8 w-0.5 bg-gray-200 dark:bg-white/10 hidden md:block"></div>
+            
+            {/* THE FIX: Pixel-perfect timeline line. Center of icon is 40px. 39px left centers the 2px line. */}
+            <div className="absolute left-[39px] top-[40px] bottom-[40px] w-[2px] bg-gray-200 dark:bg-white/10 hidden md:block z-0"></div>
 
-            <div className="space-y-4 relative">
+            <div className="space-y-4 relative z-10">
               {networkData.map((node, index) => {
                 const isActive = activeNode === index;
                 const Icon = node.icon;
@@ -76,7 +75,6 @@ export default function StrategicNetwork() {
                         : "hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent"
                     }`}
                   >
-                    {/* THE LIGHT WAVE SHIMMER EFFECT */}
                     {isActive && (
                       <motion.div
                         initial={{ left: "-100%" }}
@@ -86,9 +84,11 @@ export default function StrategicNetwork() {
                       />
                     )}
 
-                    {/* Node Icon */}
+                    {/* THE FIX: Solid backgrounds on icons so the line seamlessly runs behind them */}
                     <div className={`relative z-10 w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${
-                      isActive ? "bg-blue-500 text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400"
+                      isActive 
+                        ? "bg-blue-500 text-white shadow-md shadow-blue-500/20" 
+                        : "bg-white dark:bg-[#18181b] border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400"
                     }`}>
                       <Icon className="w-6 h-6" />
                     </div>
@@ -114,11 +114,9 @@ export default function StrategicNetwork() {
             </div>
           </div>
 
-          {/* RIGHT SIDE: The Dynamic Glassmorphism Panel */}
           <div className="lg:col-span-7 flex items-center">
             <div className="w-full bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl min-h-[400px] flex flex-col justify-center relative overflow-hidden">
               
-              {/* Decorative Background Glow */}
               <div className="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
 
               <AnimatePresence mode="wait">
