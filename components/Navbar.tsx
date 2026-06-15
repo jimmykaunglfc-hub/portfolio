@@ -44,7 +44,8 @@ export default function Navbar() {
       <div className="glow-flare w-[500px] h-[500px] bg-[#adc6ff] top-[-200px] left-[-100px]" />
       <div className="glow-flare w-[400px] h-[400px] bg-[#3131c0] top-[30%] right-[5%]" />
 
-      <nav className="fixed top-0 w-full z-50 h-20 transition-all duration-300 bg-white/70 dark:bg-zinc-950/50 backdrop-blur-xl border-b border-zinc-200/50 dark:border-white/5">
+      {/* Added 'font-sans' here to force the custom font on the entire desktop Navbar */}
+      <nav className="font-sans fixed top-0 w-full z-50 h-20 transition-all duration-300 bg-white/70 dark:bg-zinc-950/50 backdrop-blur-xl border-b border-zinc-200/50 dark:border-white/5">
         <div className="flex justify-between items-center px-6 md:px-12 max-w-7xl mx-auto h-full w-full">
           
           <Link href="/" className="flex items-center gap-3 text-xl font-bold tracking-tighter text-zinc-900 dark:text-white pointer-events-auto group">
@@ -63,7 +64,7 @@ export default function Navbar() {
               <path d="M24 5L14 15" stroke="url(#pillarGrad)" strokeWidth="3.5" strokeLinecap="round" />
               <path d="M15 15l10 12" stroke="url(#vectorGrad)" strokeWidth="3.5" strokeLinecap="round" />
             </svg>
-            <span className="font-sans font-extrabold tracking-tight">KHNCO<span className="text-[#4d8eff] dark:text-[#adc6ff]">.</span></span>
+            <span className="font-extrabold tracking-tight">KHNCO<span className="text-[#4d8eff] dark:text-[#adc6ff]">.</span></span>
           </Link>
           
           <div className="hidden md:flex items-center gap-8 pointer-events-auto">
@@ -124,8 +125,9 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* Added 'font-sans' here to force the custom font on the mobile menu */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-50 bg-white/95 dark:bg-[#131315]/95 backdrop-blur-2xl flex flex-col pt-24 px-8 overflow-y-auto transition-all duration-300">
+        <div className="font-sans fixed inset-0 z-50 bg-white/95 dark:bg-[#131315]/95 backdrop-blur-2xl flex flex-col pt-24 px-8 overflow-y-auto transition-all duration-300">
           <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
             
             <div className="border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-2">
