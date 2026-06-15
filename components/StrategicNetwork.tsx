@@ -70,12 +70,22 @@ export default function StrategicNetwork() {
                   <button
                     key={node.id}
                     onClick={() => setActiveNode(index)}
-                    className={`w-full text-left relative flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 ${
+                    className={`w-full text-left relative flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 overflow-hidden ${
                       isActive 
                         ? "bg-white dark:bg-[#121214] shadow-lg border border-blue-500/30" 
                         : "hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent"
                     }`}
                   >
+                    {/* THE LIGHT WAVE SHIMMER EFFECT */}
+                    {isActive && (
+                      <motion.div
+                        initial={{ left: "-100%" }}
+                        animate={{ left: "200%" }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className="absolute top-0 bottom-0 w-full bg-gradient-to-r from-transparent via-blue-400/20 dark:via-blue-400/10 to-transparent -skew-x-12 pointer-events-none"
+                      />
+                    )}
+
                     {/* Node Icon */}
                     <div className={`relative z-10 w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${
                       isActive ? "bg-blue-500 text-white" : "bg-gray-200 dark:bg-white/10 text-gray-500 dark:text-gray-400"
@@ -83,14 +93,20 @@ export default function StrategicNetwork() {
                       <Icon className="w-6 h-6" />
                     </div>
                     
-                    <span className={`font-bold text-lg md:text-xl transition-colors duration-300 ${
+                    <span className={`relative z-10 font-bold text-lg md:text-xl transition-colors duration-300 ${
                       isActive ? "text-blue-500" : "text-gray-700 dark:text-gray-300"
                     }`}>
                       {node.title}
                     </span>
 
                     {isActive && (
-                      <ArrowRight className="w-5 h-5 ml-auto text-blue-500" />
+                      <motion.div 
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="relative z-10 ml-auto"
+                      >
+                        <ArrowRight className="w-5 h-5 text-blue-500" />
+                      </motion.div>
                     )}
                   </button>
                 );
