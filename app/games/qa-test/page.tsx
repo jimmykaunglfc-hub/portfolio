@@ -221,22 +221,26 @@ export default function QABugHunt() {
               </>
             )}
 
-            {/* LEVEL 4 BUGS */}
+            {/* LEVEL 4 BUGS (FIXED: 5 BUGS PRESENT) */}
             {currentLevel === 3 && (
               <>
                 <div className="text-center mb-8">
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome Back</h2>
-                  <p onClick={() => handleBugClick("l4-subtitle")} className={`text-sm cursor-pointer transition-colors ${foundBugs.includes("l4-subtitle") ? "text-red-500 line-through" : "text-gray-900 dark:text-white hover:text-gray-400"}`}>Please sign in to your acount</p> {/* Typo */}
+                  <p onClick={() => handleBugClick("l4-subtitle")} className={`text-sm cursor-pointer transition-colors ${foundBugs.includes("l4-subtitle") ? "text-red-500 line-through" : "text-gray-900 dark:text-white hover:text-gray-400"}`}>Please sign in to your acount</p>
                 </div>
                 <div className="space-y-4 mb-6">
                   <div className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white flex items-center gap-3">
-                    <User onClick={() => handleBugClick("l4-icon")} className={`w-5 h-5 cursor-pointer transition-colors ${foundBugs.includes("l4-icon") ? "text-red-500" : "text-gray-400 hover:text-gray-900 dark:hover:text-white"}`} /> {/* Wrong icon */}
+                    <User onClick={() => handleBugClick("l4-icon")} className={`w-5 h-5 cursor-pointer transition-colors ${foundBugs.includes("l4-icon") ? "text-red-500" : "text-gray-400 hover:text-gray-900 dark:hover:text-white"}`} />
                     <span className="text-gray-400">Email Address</span>
                   </div>
-                  <div className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white flex items-center gap-3"><Key className="w-5 h-5 text-gray-400" /> <span className="text-gray-400">Password</span></div>
+                  <div className="w-full bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white flex items-center gap-3">
+                    <Key className="w-5 h-5 text-gray-400" /> 
+                    {/* The 5th Bug: 'Passwrd' */}
+                    <span onClick={() => handleBugClick("l4-pass-typo")} className={`cursor-pointer transition-colors ${foundBugs.includes("l4-pass-typo") ? "text-red-500 line-through" : "text-gray-400 hover:text-gray-200"}`}>Passwrd</span>
+                  </div>
                 </div>
-                <button onClick={() => handleBugClick("l4-btn")} className={`w-full py-3 rounded-xl font-bold mb-4 transition-colors ${foundBugs.includes("l4-btn") ? "bg-red-500 text-white line-through" : "bg-gray-300 text-gray-600 dark:bg-white/20 dark:text-gray-300 hover:bg-gray-400"}`}>Sign In</button> {/* Bad contrast button */}
-                <div onClick={() => handleBugClick("l4-align")} className={`text-left text-sm font-medium cursor-pointer transition-colors ${foundBugs.includes("l4-align") ? "text-red-500 line-through text-center" : "text-blue-500"}`}>Forgot Password?</div> {/* Misaligned */}
+                <button onClick={() => handleBugClick("l4-btn")} className={`w-full py-3 rounded-xl font-bold mb-4 transition-colors ${foundBugs.includes("l4-btn") ? "bg-red-500 text-white line-through" : "bg-gray-300 text-gray-600 dark:bg-white/20 dark:text-gray-300 hover:bg-gray-400"}`}>Sign In</button>
+                <div onClick={() => handleBugClick("l4-align")} className={`text-left text-sm font-medium cursor-pointer transition-colors ${foundBugs.includes("l4-align") ? "text-red-500 line-through text-center" : "text-blue-500"}`}>Forgot Password?</div>
               </>
             )}
 
@@ -244,21 +248,21 @@ export default function QABugHunt() {
             {currentLevel === 4 && (
               <>
                 <div className="text-center mb-6">
-                  <span onClick={() => handleBugClick("l5-badge")} className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors ${foundBugs.includes("l5-badge") ? "bg-red-500/20 text-red-500 line-through" : "bg-gray-200 text-gray-500 dark:bg-white/10 dark:text-gray-400"}`}>Pro Tier</span> {/* Wrong badge color */}
+                  <span onClick={() => handleBugClick("l5-badge")} className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider cursor-pointer transition-colors ${foundBugs.includes("l5-badge") ? "bg-red-500/20 text-red-500 line-through" : "bg-gray-200 text-gray-500 dark:bg-white/10 dark:text-gray-400"}`}>Pro Tier</span>
                   <div className="text-4xl font-bold text-gray-900 dark:text-white mt-4 mb-1 flex justify-center items-baseline gap-1">
-                    <span onClick={() => handleBugClick("l5-currency")} className={`cursor-pointer transition-colors ${foundBugs.includes("l5-currency") ? "text-red-500 line-through" : "text-gray-900 dark:text-white hover:text-gray-400"}`}>€</span> {/* Euro instead of Dollar */}
+                    <span onClick={() => handleBugClick("l5-currency")} className={`cursor-pointer transition-colors ${foundBugs.includes("l5-currency") ? "text-red-500 line-through" : "text-gray-900 dark:text-white hover:text-gray-400"}`}>€</span>
                     49.00
                   </div>
-                  <div onClick={() => handleBugClick("l5-billing")} className={`text-sm cursor-pointer transition-colors ${foundBugs.includes("l5-billing") ? "text-red-500 line-through" : "text-gray-500 hover:text-gray-900 dark:hover:text-white"}`}>per year / user</div> {/* Says year instead of month */}
+                  <div onClick={() => handleBugClick("l5-billing")} className={`text-sm cursor-pointer transition-colors ${foundBugs.includes("l5-billing") ? "text-red-500 line-through" : "text-gray-500 hover:text-gray-900 dark:hover:text-white"}`}>per year / user</div>
                 </div>
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm"><CheckCircle2 className="w-4 h-4 text-green-500" /> Unlimited Projects</div>
                   <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm">
-                    <XCircle onClick={() => handleBugClick("l5-check")} className={`w-4 h-4 cursor-pointer transition-colors ${foundBugs.includes("l5-check") ? "text-red-500" : "text-gray-400 hover:text-gray-900 dark:hover:text-white"}`} /> Priority Support {/* X instead of Check */}
+                    <XCircle onClick={() => handleBugClick("l5-check")} className={`w-4 h-4 cursor-pointer transition-colors ${foundBugs.includes("l5-check") ? "text-red-500" : "text-gray-400 hover:text-gray-900 dark:hover:text-white"}`} /> Priority Support
                   </div>
                   <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 text-sm"><CheckCircle2 className="w-4 h-4 text-green-500" /> Advanced Analytics</div>
                 </div>
-                <button onClick={() => handleBugClick("l5-btn")} className={`w-full border-2 py-3 rounded-xl font-bold transition-colors ${foundBugs.includes("l5-btn") ? "bg-red-500 text-white border-red-500 line-through" : "bg-blue-500 text-white border-blue-500"}`}>Upgrade to Pro</button> {/* Solid fill instead of outline */}
+                <button onClick={() => handleBugClick("l5-btn")} className={`w-full border-2 py-3 rounded-xl font-bold transition-colors ${foundBugs.includes("l5-btn") ? "bg-red-500 text-white border-red-500 line-through" : "bg-blue-500 text-white border-blue-500"}`}>Upgrade to Pro</button>
               </>
             )}
 
