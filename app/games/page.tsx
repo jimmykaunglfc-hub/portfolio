@@ -18,23 +18,36 @@ export default function GamesIndex() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         
         {/* Neural Decrypt (Puzzle Game) Card */}
-        <div className="bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg transition-transform hover:-translate-y-1">
-          <div className="h-48 bg-gray-100 dark:bg-white/5 flex items-center justify-center border-b border-gray-200 dark:border-white/10">
-            {/* Using the BrainCircuit icon to match the puzzle theme */}
-            <BrainCircuit className="w-16 h-16 text-gray-400 dark:text-gray-500" />
+        {/* Added 'group' class to trigger hover effects on child elements */}
+        <div className="group bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-500/30">
+          
+          {/* UPGRADED: Glowing, animated game cover area */}
+          <div className="h-48 relative flex items-center justify-center border-b border-gray-200 dark:border-white/10 overflow-hidden bg-gray-900">
+            
+            {/* Deep background gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-[#0a0f1c] to-[#120b1f] dark:from-black dark:via-gray-900 dark:to-slate-900"></div>
+            
+            {/* Animated center glow */}
+            <div className="absolute inset-0 bg-blue-500/10 blur-3xl rounded-full group-hover:bg-blue-500/20 transition-colors duration-700"></div>
+            
+            {/* Tech matrix grid overlay */}
+            <div className="absolute inset-0 bg-[radial-gradient(#3b82f6_1.5px,transparent_1.5px)] opacity-[0.15] [background-size:16px_16px]"></div>
+
+            {/* The Icon: enlarged, glowing, and animated on hover */}
+            <BrainCircuit className="relative z-10 w-24 h-24 text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)] group-hover:scale-110 group-hover:rotate-[-5deg] transition-transform duration-500" />
           </div>
-          <div className="p-6">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+
+          <div className="p-6 relative z-10">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-500 transition-colors duration-300">
               Neural Decrypt
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
               Solve trivia queries across logic, language, and mathematics to unlock the core grid matrix.
             </p>
             
-            {/* THE FIX: This link now correctly points to the puzzle folder we just created */}
             <Link 
               href="/games/puzzle"
-              className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-3 rounded-xl font-bold tracking-wide hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+              className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-3 rounded-xl font-bold tracking-wide hover:bg-blue-600 dark:hover:bg-blue-500 dark:hover:text-white transition-all duration-300"
             >
               <Play className="w-4 h-4 fill-current" /> Play Now
             </Link>
