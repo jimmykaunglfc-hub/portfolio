@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Keyboard, RefreshCcw, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, Keyboard, RefreshCcw, CheckCircle2, XCircle, HelpCircle, X } from "lucide-react";
 import Link from "next/link";
 
 // Curated 5-letter Tech/Dev words
@@ -24,10 +24,13 @@ export default function TechleGame() {
   const [currentGuess, setCurrentGuess] = useState("");
   const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const [shakeRow, setShakeRow] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   // Initialize game on mount
   useEffect(() => {
     startNewGame();
+    // Briefly show help on first load, or just rely on the user clicking the icon
+    // We'll leave it closed by default here, but they can click the help icon!
   }, []);
 
   const startNewGame = () => {
@@ -39,7 +42,7 @@ export default function TechleGame() {
   };
 
   const onKeyPress = useCallback((key: string) => {
-    if (gameStatus !== "playing") return;
+    if (gameStatus !== "playing" || showHelp) return;
 
     if (key === "Backspace" || key === "DELETE") {
       setCurrentGuess((prev) => prev.slice(0, -1));
@@ -68,7 +71,7 @@ export default function TechleGame() {
     if (/^[a-zA-Z]$/.test(key) && currentGuess.length < COLS) {
       setCurrentGuess((prev) => prev + key.toUpperCase());
     }
-  }, [currentGuess, gameStatus, guesses, solution]);
+  }, [currentGuess, gameStatus, guesses, solution, showHelp]);
 
   // Global Keyboard Listener
   useEffect(() => {
@@ -104,16 +107,13 @@ export default function TechleGame() {
   };
 
   // Keyboard state calculation
-// Keyboard state calculation
   const usedKeys: Record<string, LetterStatus> = {};
   guesses.forEach((guess) => {
     const evaluation = evaluateGuess(guess);
     guess.split("").forEach((char, i) => {
       const status = evaluation[i];
+      if (usedKeys[char] === "correct") return; 
       
-      if (usedKeys[char] === "correct") return; // Don't downgrade green to yellow
-      
-      // Removed the redundant check since TS knows usedKeys[char] isn't "correct" here
       if (status === "correct" || status === "present") {
         usedKeys[char] = status;
       } else if (!usedKeys[char]) {
@@ -152,14 +152,26 @@ export default function TechleGame() {
       
       {/* Header */}
       <div className="w-full max-w-lg mb-8 flex items-center justify-between">
-        <Link href="/games" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-orange-500 transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Arcade
-        </Link>
+        <div className="w-24">
+          <Link href="/games" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-orange-500 transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Arcade
+          </Link>
+        </div>
+        
         <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white flex items-center gap-3">
           <Keyboard className="w-8 h-8 text-orange-500" />
           Tech<span className="text-orange-500">le</span>
         </h1>
-        <div className="w-20"></div> {/* Spacer for centering */}
+        
+        <div className="w-24 flex justify-end">
+          <button 
+            onClick={() => setShowHelp(true)} 
+            className="p-2 text-gray-500 hover:text-orange-500 hover:bg-orange-500/10 rounded-full transition-all"
+            aria-label="How to play"
+          >
+            <HelpCircle className="w-6 h-6" />
+          </button>
+        </div>
       </div>
 
       {/* Game Over Banner */}
@@ -234,7 +246,83 @@ export default function TechleGame() {
           </div>
         ))}
       </div>
-      
+
+      {/* Instructions Modal Overlay */}
+      <AnimatePresence>
+        {showHelp && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+            >
+              <div className="p-6 relative">
+                <button 
+                  onClick={() => setShowHelp(false)}
+                  className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+                
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">How to Play</h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                  Guess the <strong>TECHLE</strong> in 6 tries. Every word is related to programming, tech, or web development!
+                </p>
+                
+                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400 mb-6 list-disc pl-5">
+                  <li>Each guess must be a valid 5-letter word.</li>
+                  <li>Hit the enter button to submit.</li>
+                  <li>After each guess, the color of the tiles will change to show how close your guess was to the word.</li>
+                </ul>
+
+                <div className="space-y-4 mb-6">
+                  <div>
+                    <div className="flex gap-1 mb-2">
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold text-white bg-green-500 rounded-md">R</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">E</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">A</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">C</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">T</div>
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400"><strong>R</strong> is in the word and in the correct spot.</p>
+                  </div>
+                  
+                  <div>
+                    <div className="flex gap-1 mb-2">
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">B</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">U</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold text-white bg-yellow-500 rounded-md">I</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">L</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">D</div>
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400"><strong>I</strong> is in the word but in the wrong spot.</p>
+                  </div>
+
+                  <div>
+                    <div className="flex gap-1 mb-2">
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">L</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">O</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">G</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold text-gray-400 bg-gray-800 border-gray-800 rounded-md">I</div>
+                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">C</div>
+                    </div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400"><strong>I</strong> is not in the word in any spot.</p>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => setShowHelp(false)}
+                  className="w-full py-3 rounded-xl font-bold bg-orange-500 hover:bg-orange-600 text-white transition-colors"
+                >
+                  Let's Play!
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
     </main>
   );
 }
