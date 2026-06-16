@@ -80,6 +80,27 @@ export default function GamesIndex() {
             </Link>
           </div>
         </div>
+        
+{/* Game 4: Bug Blaster */}
+        <div className="group bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/10 hover:border-red-500/30">
+          <div className="h-48 relative flex items-center justify-center border-b border-gray-200 dark:border-white/10 overflow-hidden bg-gray-900">
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-[#1a0f0f] to-[#241212] dark:from-black dark:via-gray-900 dark:to-red-950"></div>
+            <div className="absolute inset-0 bg-red-500/10 blur-3xl rounded-full group-hover:bg-red-500/20 transition-colors duration-700"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(#ef4444_1.5px,transparent_1.5px)] opacity-[0.10] [background-size:16px_16px]"></div>
+            <Gamepad2 className="relative z-10 w-24 h-24 text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)] group-hover:scale-110 group-hover:rotate-[5deg] transition-transform duration-500" />
+          </div>
+          <div className="p-6 relative z-10 flex flex-col h-[calc(100%-12rem)]">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-red-500 transition-colors duration-300">
+              Bug Blaster
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">
+              A high-speed HTML5 Canvas arcade shooter. Dodge the regressions and blast the bugs before they crash the system.
+            </p>
+            <Link href="/games/bug-blaster" className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-3 rounded-xl font-bold tracking-wide hover:bg-red-600 dark:hover:bg-red-500 dark:hover:text-white transition-all duration-300 mt-auto">
+              <Play className="w-4 h-4 fill-current" /> Play Now
+            </Link>
+          </div>
+        </div>
 
       </div>
     </main>
