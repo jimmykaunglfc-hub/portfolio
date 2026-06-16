@@ -123,59 +123,111 @@ export default function SprintPlanner() {
     setCurrentLevelIndex(0);
   };
 
-  // --- CERTIFICATE GENERATOR ---
-  const downloadCertificate = () => {
+  // --- PREMIUM CERTIFICATE GENERATOR ---
+  const downloadCertificate = async () => {
     const canvas = document.createElement("canvas");
-    canvas.width = 1200; canvas.height = 800;
+    canvas.width = 1600; 
+    canvas.height = 1200;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     
-    // Dark Blue Background
-    ctx.fillStyle = "#020617";
+    // Premium Corporate Blue/Slate Gradient
+    const bgGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    bgGrad.addColorStop(0, "#0f172a"); // Slate 900
+    bgGrad.addColorStop(1, "#020617"); // Slate 950
+    ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Blue Border
-    ctx.strokeStyle = "#3b82f6";
-    ctx.lineWidth = 10;
-    ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
-    
-    // Secondary Border
-    ctx.strokeStyle = "rgba(59, 130, 246, 0.3)";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(50, 50, canvas.width - 100, canvas.height - 100);
 
+    // Subtle Blueprint Grid Overlay
+    ctx.strokeStyle = "rgba(59, 130, 246, 0.05)"; // Very faint blue
+    ctx.lineWidth = 2;
+    for(let i = 0; i < canvas.width; i+=40) {
+      ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+    }
+    for(let i = 0; i < canvas.height; i+=40) {
+      ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+    }
+    
+    // Elegant Multi-layer Borders
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(60, 60, canvas.width - 120, canvas.height - 120);
+
+    ctx.strokeStyle = "#3b82f6"; // Blue 500
+    ctx.lineWidth = 6;
+    ctx.strokeRect(80, 80, canvas.width - 160, canvas.height - 160);
+
+    // Corner Accents (Corporate Blocks)
+    ctx.fillStyle = "#3b82f6";
+    const cSize = 20;
+    ctx.fillRect(70, 70, cSize, cSize);
+    ctx.fillRect(canvas.width - 70 - cSize, 70, cSize, cSize);
+    ctx.fillRect(70, canvas.height - 70 - cSize, cSize, cSize);
+    ctx.fillRect(canvas.width - 70 - cSize, canvas.height - 70 - cSize, cSize, cSize);
+
+    // Load Favicon / Logo
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = "/favicon.ico";
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+      ctx.drawImage(img, canvas.width / 2 - 60, 160, 120, 120);
+    } catch (e) {
+      // Fallback: Stylized Target/Bullseye
+      ctx.save();
+      ctx.translate(canvas.width / 2, 220);
+      ctx.strokeStyle = "#3b82f6";
+      ctx.lineWidth = 12;
+      ctx.beginPath(); ctx.arc(0, 0, 45, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+
+    // Typography
     ctx.textAlign = "center";
     
     // Header
+    (ctx as any).letterSpacing = "8px";
     ctx.fillStyle = "#3b82f6";
-    ctx.font = "bold 25px monospace";
-    ctx.letterSpacing = "4px";
-    ctx.fillText("AGILE PRODUCT MANAGEMENT", canvas.width / 2, 160);
+    ctx.font = "bold 26px sans-serif";
+    ctx.fillText("AGILE PRODUCT MANAGEMENT", canvas.width / 2, 380);
 
     // Main Title
+    (ctx as any).letterSpacing = "2px";
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 70px sans-serif";
-    ctx.fillText("CERTIFIED SPRINT OPTIMIZER", canvas.width / 2, 280);
+    ctx.font = "bold 85px sans-serif";
+    ctx.fillText("CERTIFIED SPRINT OPTIMIZER", canvas.width / 2, 500);
+
+    // Line Separator
+    ctx.fillStyle = "#3b82f6";
+    ctx.fillRect(canvas.width / 2 - 150, 560, 300, 4);
 
     // Body Text
-    ctx.fillStyle = "#94a3b8";
-    ctx.font = "24px sans-serif";
-    ctx.fillText("This verifies the player successfully managed dependencies, technical debt, and", canvas.width / 2, 420);
-    ctx.fillText("business value across all levels of the Sprint Optimizer simulation.", canvas.width / 2, 460);
+    (ctx as any).letterSpacing = "0px";
+    ctx.fillStyle = "#94a3b8"; // Slate 400
+    ctx.font = "italic 36px sans-serif";
+    ctx.fillText("This official document verifies that the player has demonstrated", canvas.width / 2, 680);
+    ctx.fillText("exceptional skill in managing engineering capacity, technical debt,", canvas.width / 2, 740);
+    ctx.fillText("and business value across all Sprint Optimizer simulations.", canvas.width / 2, 800);
 
     // Rank
-    ctx.fillStyle = "#3b82f6";
-    ctx.font = "bold 35px sans-serif";
-    ctx.fillText("Rank Achieved: Master Product Manager", canvas.width / 2, 580);
+    (ctx as any).letterSpacing = "4px";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 40px sans-serif";
+    ctx.fillText("RANK ACHIEVED: MASTER PRODUCT MANAGER", canvas.width / 2, 960);
 
     // Date
+    (ctx as any).letterSpacing = "2px";
     const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-    ctx.fillStyle = "#64748b";
-    ctx.font = "20px monospace";
-    ctx.fillText(`VERIFIED ON: ${date}`, canvas.width / 2, 680);
+    ctx.fillStyle = "#64748b"; // Slate 500
+    ctx.font = "24px monospace";
+    ctx.fillText(`VERIFIED ON: ${date}`, canvas.width / 2, 1060);
 
     const link = document.createElement("a");
-    link.download = "Sprint-Optimizer-Certificate.png";
+    link.download = "Sprint-Optimizer-Master-Certificate.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
   };

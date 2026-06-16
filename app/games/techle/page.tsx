@@ -135,64 +135,117 @@ export default function TechleGame() {
     ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "DELETE"]
   ];
 
-  // --- CERTIFICATE GENERATOR ENGINE ---
-  const downloadCertificate = () => {
+  // --- PREMIUM CERTIFICATE GENERATOR ENGINE ---
+  const downloadCertificate = async () => {
     const canvas = document.createElement("canvas");
-    canvas.width = 1200; canvas.height = 800;
+    canvas.width = 1600; 
+    canvas.height = 1200;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     
-    // Dark Background
-    ctx.fillStyle = "#09090b";
+    // Gradient Core Matrix Background
+    const bgGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    bgGrad.addColorStop(0, "#1a0b02"); // Subtle warm orange depths
+    bgGrad.addColorStop(1, "#09090b"); 
+    ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Orange Border
-    ctx.strokeStyle = "#f97316"; 
-    ctx.lineWidth = 12;
-    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
-
-    // Grid background effect
-    ctx.strokeStyle = "rgba(249, 115, 22, 0.1)";
+    // Technical Grid Lines
+    ctx.strokeStyle = "rgba(249, 115, 22, 0.03)";
     ctx.lineWidth = 1;
-    for(let i = 100; i < canvas.width; i+=100) {
+    for(let i = 0; i < canvas.width; i+=40) {
       ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
     }
-    for(let i = 100; i < canvas.height; i+=100) {
+    for(let i = 0; i < canvas.height; i+=40) {
       ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
     }
 
+    // High-End Outlines
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(60, 60, canvas.width - 120, canvas.height - 120);
+
+    ctx.strokeStyle = "#f97316"; // Orange 500
+    ctx.lineWidth = 6;
+    ctx.strokeRect(80, 80, canvas.width - 160, canvas.height - 160);
+
+    // Terminal Tech Brackets
+    ctx.strokeStyle = "#f97316";
+    ctx.lineWidth = 10;
+    const s = 40;
+    ctx.beginPath(); ctx.moveTo(85, 85+s); ctx.lineTo(85, 85); ctx.lineTo(85+s, 85); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(canvas.width-85-s, 85); ctx.lineTo(canvas.width-85, 85); ctx.lineTo(canvas.width-85, 85+s); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(85, canvas.height-85-s); ctx.lineTo(85, canvas.height-85); ctx.lineTo(85+s, canvas.height-85); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(canvas.width-85-s, canvas.height-85); ctx.lineTo(canvas.width-85, canvas.height-85); ctx.lineTo(canvas.width-85, canvas.height-85-s); ctx.stroke();
+
+    // Fetch and Load Favicon
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = "/favicon.ico";
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+      ctx.drawImage(img, canvas.width / 2 - 50, 160, 100, 100);
+    } catch (e) {
+      // Fallback terminal prompt logo >_
+      ctx.save();
+      ctx.translate(canvas.width / 2, 210);
+      ctx.fillStyle = "#f97316";
+      ctx.font = "bold 60px monospace";
+      ctx.fillText(">_", -30, 20);
+      ctx.restore();
+    }
+
+    // Typography Setup
     ctx.textAlign = "center";
-    
-    // Header
+    (ctx as any).letterSpacing = "8px";
     ctx.fillStyle = "#f97316";
-    ctx.font = "bold 30px monospace";
-    ctx.letterSpacing = "6px";
-    ctx.fillText("TECHLE DECRYPTION PROTOCOL", canvas.width / 2, 180);
+    ctx.font = "bold 26px monospace";
+    ctx.fillText("TECHLE DECRYPTION PROTOCOL", canvas.width / 2, 380);
 
-    // Main Title
+    (ctx as any).letterSpacing = "4px";
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 80px sans-serif";
-    ctx.fillText("SYSTEM DECRYPTED", canvas.width / 2, 320);
+    ctx.font = "bold 85px sans-serif";
+    ctx.fillText("SYSTEM DECRYPTED", canvas.width / 2, 500);
 
-    // Body Text
-    ctx.fillStyle = "#a1a1aa";
-    ctx.font = "italic 30px sans-serif";
-    ctx.fillText(`The player successfully decrypted the target word in ${guesses.length} tries:`, canvas.width / 2, 450);
-
-    // Word
-    ctx.fillStyle = "#22c55e"; // Green for success
-    ctx.font = "bold 60px monospace";
-    ctx.letterSpacing = "10px";
-    ctx.fillText(`[ ${solution} ]`, canvas.width / 2, 550);
-
-    // Date
-    const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+    // Separator line
     ctx.fillStyle = "#f97316";
-    ctx.font = "24px monospace";
-    ctx.fillText(`TIMESTAMP: ${date}`, canvas.width / 2, 700);
+    ctx.fillRect(canvas.width / 2 - 150, 560, 300, 4);
 
+    // Body Text Elements
+    (ctx as any).letterSpacing = "0px";
+    ctx.fillStyle = "#94a3b8"; // Slate 400
+    ctx.font = "italic 36px sans-serif";
+    ctx.fillText("This official data log verifies that the operative successfully bypassed", canvas.width / 2, 680);
+    ctx.fillText(`mainframe protocols and parsed the system keyword within ${guesses.length} processing cycles.`, canvas.width / 2, 740);
+
+    // Solved Decrypted Word Target
+    (ctx as any).letterSpacing = "10px";
+    ctx.fillStyle = "#22c55e"; // Success green glow
+    ctx.font = "bold 55px monospace";
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#22c55e";
+    ctx.fillText(`[ ${solution} ]`, canvas.width / 2, 880);
+    ctx.shadowBlur = 0; // Reset
+
+    // Security Rating
+    (ctx as any).letterSpacing = "4px";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 38px monospace";
+    ctx.fillText("SECURITY PROFILE VALIDATION: ELITE DECRYPTER", canvas.width / 2, 1000);
+
+    // Date/Timestamp
+    (ctx as any).letterSpacing = "2px";
+    const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+    ctx.fillStyle = "#52525b"; // Zinc 600
+    ctx.font = "24px monospace";
+    ctx.fillText(`DECRYPTION LOG STAMP: ${date}`, canvas.width / 2, 1100);
+
+    // Execute Download
     const link = document.createElement("a");
-    link.download = `Techle-Victory-${solution}.png`;
+    link.download = `Techle-Decrypted-${solution}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
   };

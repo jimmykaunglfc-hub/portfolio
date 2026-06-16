@@ -66,54 +66,95 @@ export default function NeuralDecrypt() {
     }
   };
 
-  const downloadNeuralBadge = () => {
+  const downloadNeuralBadge = async () => {
     const canvas = document.createElement("canvas");
-    canvas.width = 1200; canvas.height = 800;
+    canvas.width = 1600; 
+    canvas.height = 1200;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     
-    ctx.fillStyle = "#1e1b4b"; 
+    // Premium Deep Indigo Background
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    bgGrad.addColorStop(0, "#1e1b4b"); // Indigo 950
+    bgGrad.addColorStop(1, "#020617"); // Slate 950
+    ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
+    // Glowing Cyan Thin Border
     ctx.strokeStyle = "#06b6d4"; 
-    ctx.lineWidth = 8;
-    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
-
-    ctx.strokeStyle = "#a855f7"; 
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 2;
     ctx.strokeRect(60, 60, canvas.width - 120, canvas.height - 120);
 
-    ctx.fillStyle = "#06b6d4";
-    ctx.fillRect(30, 30, 20, 20); ctx.fillRect(canvas.width - 50, 30, 20, 20);
-    ctx.fillRect(30, canvas.height - 50, 20, 20); ctx.fillRect(canvas.width - 50, canvas.height - 50, 20, 20);
+    // Tech Corner Brackets
+    ctx.strokeStyle = "#06b6d4";
+    ctx.lineWidth = 10;
+    const s = 40; // size
+    // Top Left
+    ctx.beginPath(); ctx.moveTo(80, 80+s); ctx.lineTo(80, 80); ctx.lineTo(80+s, 80); ctx.stroke();
+    // Top Right
+    ctx.beginPath(); ctx.moveTo(canvas.width-80-s, 80); ctx.lineTo(canvas.width-80, 80); ctx.lineTo(canvas.width-80, 80+s); ctx.stroke();
+    // Bottom Left
+    ctx.beginPath(); ctx.moveTo(80, canvas.height-80-s); ctx.lineTo(80, canvas.height-80); ctx.lineTo(80+s, canvas.height-80); ctx.stroke();
+    // Bottom Right
+    ctx.beginPath(); ctx.moveTo(canvas.width-80-s, canvas.height-80); ctx.lineTo(canvas.width-80, canvas.height-80); ctx.lineTo(canvas.width-80, canvas.height-80-s); ctx.stroke();
 
+    // Load Favicon / Logo
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = "/favicon.ico";
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+      ctx.drawImage(img, canvas.width / 2 - 50, 160, 100, 100);
+    } catch (e) {
+      ctx.save();
+      ctx.translate(canvas.width / 2, 210);
+      ctx.strokeStyle = "#06b6d4";
+      ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.moveTo(0, -40); ctx.lineTo(35, 20); ctx.lineTo(-35, 20); ctx.closePath(); ctx.stroke();
+      ctx.restore();
+    }
+
+    // Typography
     ctx.textAlign = "center";
-    ctx.fillStyle = "#a855f7";
-    ctx.font = "bold 25px monospace";
-    ctx.letterSpacing = "10px";
-    ctx.fillText("NEURAL NETWORK OVERRIDE", canvas.width / 2, 180);
+    (ctx as any).letterSpacing = "12px";
+    ctx.fillStyle = "#a855f7"; // Purple 500
+    ctx.font = "bold 26px monospace";
+    ctx.fillText("NEURAL NETWORK OVERRIDE", canvas.width / 2, 360);
 
+    (ctx as any).letterSpacing = "6px";
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 85px sans-serif";
-    ctx.fillText("MASTER NETRUNNER", canvas.width / 2, 320);
+    ctx.font = "bold 90px sans-serif";
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#06b6d4"; // Glowing Title
+    ctx.fillText("MASTER NETRUNNER", canvas.width / 2, 490);
+    ctx.shadowBlur = 0; // Reset
 
-    ctx.fillStyle = "#94a3b8";
-    ctx.font = "28px monospace";
-    ctx.fillText("> System security successfully bypassed.", canvas.width / 2, 440);
-    ctx.fillText("> Complex logical patterns deciphered.", canvas.width / 2, 480);
-    ctx.fillText("> Mainframe access granted.", canvas.width / 2, 520);
+    // Body Text (Properly Spaced)
+    (ctx as any).letterSpacing = "0px";
+    ctx.fillStyle = "#94a3b8"; // Slate 400
+    ctx.font = "32px monospace";
+    ctx.fillText("> System security successfully bypassed.", canvas.width / 2, 650);
+    ctx.fillText("> Complex logical memory patterns deciphered.", canvas.width / 2, 710);
+    ctx.fillText("> Mainframe access permanently granted.", canvas.width / 2, 770);
 
-    ctx.fillStyle = "#06b6d4";
-    ctx.font = "bold 40px monospace";
-    ctx.fillText("{ STATUS: FIREWALL BREACHED }", canvas.width / 2, 630);
+    // Status
+    (ctx as any).letterSpacing = "4px";
+    ctx.fillStyle = "#06b6d4"; // Cyan 500
+    ctx.font = "bold 45px monospace";
+    ctx.fillText("{ STATUS: FIREWALL BREACHED }", canvas.width / 2, 920);
 
-    const date = new Date().toLocaleDateString("en-US");
-    ctx.fillStyle = "#6366f1";
-    ctx.font = "20px monospace";
-    ctx.fillText(`SYS.DATE: ${date}`, canvas.width / 2, 720);
+    // Date
+    (ctx as any).letterSpacing = "0px";
+    const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit' });
+    ctx.fillStyle = "#6366f1"; // Indigo 500
+    ctx.font = "24px monospace";
+    ctx.fillText(`SYS.DATE: ${date}`, canvas.width / 2, 1060);
 
     const link = document.createElement("a");
-    link.download = "Neural-Decrypt-Badge.png";
+    link.download = "Neural-Decrypt-Master-Badge.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
   };

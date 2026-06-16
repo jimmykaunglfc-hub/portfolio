@@ -131,66 +131,109 @@ export default function LexiconLock() {
   const nextLevel = () => setCurrentLevel(prev => prev + 1);
   const resetGame = () => setCurrentLevel(0);
 
-  // --- CERTIFICATE GENERATOR ENGINE ---
-  const downloadCertificate = () => {
+  // --- PREMIUM CERTIFICATE GENERATOR ENGINE ---
+  const downloadCertificate = async () => {
     const canvas = document.createElement("canvas");
-    canvas.width = 1200;
-    canvas.height = 800;
+    canvas.width = 1600;
+    canvas.height = 1200;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // 1. Draw Background (Dark Theme)
-    ctx.fillStyle = "#09090b"; // Zinc 950
+    // Premium Gradient Background (Deep Rose to Slate Black)
+    const bgGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    bgGrad.addColorStop(0, "#280b1b"); 
+    bgGrad.addColorStop(1, "#020617"); 
+    ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 2. Draw Outer Border (Pink)
-    ctx.strokeStyle = "#ec4899"; // Pink 500
-    ctx.lineWidth = 15;
-    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
-
-    // 3. Draw Inner Border (Subtle white)
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+    // Elegant Borders
+    ctx.strokeStyle = "rgba(236, 72, 153, 0.2)"; // Pink 500 low opacity
     ctx.lineWidth = 4;
     ctx.strokeRect(60, 60, canvas.width - 120, canvas.height - 120);
 
-    // 4. Draw Typography
-    ctx.textAlign = "center";
-    
-    // Header
-    ctx.fillStyle = "#ec4899";
-    ctx.font = "bold 30px sans-serif";
-    ctx.letterSpacing = "5px";
-    ctx.fillText("DIGITAL ARCADE ACHIEVEMENT", canvas.width / 2, 180);
+    ctx.strokeStyle = "#ec4899"; // Pink 500
+    ctx.lineWidth = 10;
+    ctx.strokeRect(80, 80, canvas.width - 160, canvas.height - 160);
 
-    // Main Title
+    // Book/Lexicon Corner Accents (Stylized brackets)
+    ctx.fillStyle = "#ec4899";
+    const cornerLength = 40;
+    const cornerThick = 10;
+    
+    // Top Left
+    ctx.fillRect(75, 75, cornerLength, cornerThick);
+    ctx.fillRect(75, 75, cornerThick, cornerLength);
+    // Top Right
+    ctx.fillRect(canvas.width - 75 - cornerLength, 75, cornerLength, cornerThick);
+    ctx.fillRect(canvas.width - 75 - cornerThick, 75, cornerThick, cornerLength);
+    // Bottom Left
+    ctx.fillRect(75, canvas.height - 75 - cornerThick, cornerLength, cornerThick);
+    ctx.fillRect(75, canvas.height - 75 - cornerLength, cornerThick, cornerLength);
+    // Bottom Right
+    ctx.fillRect(canvas.width - 75 - cornerLength, canvas.height - 75 - cornerThick, cornerLength, cornerThick);
+    ctx.fillRect(canvas.width - 75 - cornerThick, canvas.height - 75 - cornerLength, cornerThick, cornerLength);
+
+    // Load Favicon / Logo
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = "/favicon.ico";
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+      ctx.drawImage(img, canvas.width / 2 - 60, 140, 120, 120);
+    } catch (e) {
+      // Fallback: A stylized 'A' shape
+      ctx.save();
+      ctx.translate(canvas.width / 2, 200);
+      ctx.strokeStyle = "#ec4899";
+      ctx.lineWidth = 8;
+      ctx.beginPath(); ctx.moveTo(0, -40); ctx.lineTo(40, 40); ctx.lineTo(-40, 40); ctx.closePath(); ctx.stroke();
+      ctx.fillStyle = "#ec4899";
+      ctx.fillRect(-20, 10, 40, 8);
+      ctx.restore();
+    }
+
+    // Typography
+    ctx.textAlign = "center";
+    (ctx as any).letterSpacing = "8px";
+    ctx.fillStyle = "#ec4899";
+    ctx.font = "bold 28px sans-serif";
+    ctx.fillText("DIGITAL ARCADE LINGUISTICS", canvas.width / 2, 360);
+
+    (ctx as any).letterSpacing = "2px";
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 80px sans-serif";
-    ctx.fillText("CERTIFICATE OF MASTERY", canvas.width / 2, 300);
+    ctx.font = "bold 85px serif"; // Serif for the dictionary/lexicon feel
+    ctx.fillText("CERTIFICATE OF MASTERY", canvas.width / 2, 480);
+
+    // Separator Line
+    ctx.fillStyle = "#ec4899";
+    ctx.fillRect(canvas.width / 2 - 200, 540, 400, 4);
 
     // Body Text
-    ctx.fillStyle = "#a1a1aa"; // Zinc 400
-    ctx.font = "italic 30px sans-serif";
-    ctx.fillText("This officially certifies that the player has successfully conquered", canvas.width / 2, 420);
-
-    // Game Title
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 60px sans-serif";
-    ctx.fillText("LEXICON LOCK", canvas.width / 2, 520);
+    (ctx as any).letterSpacing = "0px";
+    ctx.fillStyle = "#94a3b8"; // Slate 400
+    ctx.font = "italic 36px serif";
+    ctx.fillText("This document officially certifies that the player has demonstrated", canvas.width / 2, 660);
+    ctx.fillText("an exceptional mastery of the English language, successfully", canvas.width / 2, 720);
+    ctx.fillText("deciphering all anagrams to unlock the final Lexicon Vault.", canvas.width / 2, 780);
 
     // Rank
-    ctx.fillStyle = "#ec4899";
-    ctx.font = "bold 35px sans-serif";
-    ctx.fillText("Rank Achieved: Lexicon Master", canvas.width / 2, 600);
+    (ctx as any).letterSpacing = "6px";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 42px sans-serif";
+    ctx.fillText("RANK ACHIEVED: LEXICON MASTER", canvas.width / 2, 940);
 
-    // Date & Signature Line
+    // Date
+    (ctx as any).letterSpacing = "2px";
     const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-    ctx.fillStyle = "#a1a1aa";
-    ctx.font = "24px sans-serif";
-    ctx.fillText(`Issued on: ${date}`, canvas.width / 2, 680);
+    ctx.fillStyle = "#f472b6"; // Pink 400
+    ctx.font = "24px monospace";
+    ctx.fillText(`VAULT UNLOCKED ON: ${date}`, canvas.width / 2, 1040);
 
-    // 5. Trigger Download
     const link = document.createElement("a");
-    link.download = "Lexicon-Lock-Certificate.png";
+    link.download = "Lexicon-Lock-Master-Certificate.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
   };
