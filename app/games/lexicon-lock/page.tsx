@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Type, RefreshCcw, CheckCircle2, Shuffle, X, Unlock, Lock } from "lucide-react";
+import { ArrowLeft, Type, RefreshCcw, CheckCircle2, Shuffle, X, Unlock, Lock, Download, Award } from "lucide-react";
 import Link from "next/link";
 
 // General English vocabulary categorized by difficulty length
@@ -40,7 +40,6 @@ export default function LexiconLock() {
 
   // Initialize a level
   useEffect(() => {
-    // Pick 3 random words from the current level's bank
     const shuffledBank = [...GAME_LEVELS[currentLevel].words].sort(() => 0.5 - Math.random());
     const selected = shuffledBank.slice(0, WORDS_PER_LEVEL);
     setLevelWords(selected);
@@ -55,7 +54,6 @@ export default function LexiconLock() {
     const word = levelWords[wordIndex];
     setTargetWord(word);
     
-    // Scramble the word (make sure it isn't accidentally the exact word)
     let scrambled = word.split("");
     while (scrambled.join("") === word && word.length > 1) {
       scrambled = scrambled.sort(() => 0.5 - Math.random());
@@ -72,16 +70,13 @@ export default function LexiconLock() {
     setIsSuccess(false);
   }, [levelWords, wordIndex, isLevelComplete]);
 
-  // Handle letter tapping
   const handleSelectLetter = (letter: LetterObj) => {
     if (letter.isUsed || isSuccess || isLevelComplete) return;
 
-    // Mark as used
     setAvailableLetters(prev => prev.map(l => l.id === letter.id ? { ...l, isUsed: true } : l));
     const newSelected = [...selectedLetters, letter];
     setSelectedLetters(newSelected);
 
-    // Check win/loss condition if word is fully typed
     if (newSelected.length === targetWord.length) {
       const spelledWord = newSelected.map(l => l.char).join("");
       if (spelledWord === targetWord) {
@@ -95,12 +90,10 @@ export default function LexiconLock() {
   const handleDeselectLetter = (letter: LetterObj, index: number) => {
     if (isSuccess || isLevelComplete) return;
     
-    // Remove from selected
     const newSelected = [...selectedLetters];
     newSelected.splice(index, 1);
     setSelectedLetters(newSelected);
     
-    // Mark as available
     setAvailableLetters(prev => prev.map(l => l.id === letter.id ? { ...l, isUsed: false } : l));
   };
 
@@ -119,7 +112,6 @@ export default function LexiconLock() {
     setIsError(true);
     setTimeout(() => {
       setIsError(false);
-      // Reset the tiles
       setSelectedLetters([]);
       setAvailableLetters(prev => prev.map(l => ({ ...l, isUsed: false })));
     }, 600);
@@ -138,6 +130,70 @@ export default function LexiconLock() {
 
   const nextLevel = () => setCurrentLevel(prev => prev + 1);
   const resetGame = () => setCurrentLevel(0);
+
+  // --- CERTIFICATE GENERATOR ENGINE ---
+  const downloadCertificate = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1200;
+    canvas.height = 800;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // 1. Draw Background (Dark Theme)
+    ctx.fillStyle = "#09090b"; // Zinc 950
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 2. Draw Outer Border (Pink)
+    ctx.strokeStyle = "#ec4899"; // Pink 500
+    ctx.lineWidth = 15;
+    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+
+    // 3. Draw Inner Border (Subtle white)
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(60, 60, canvas.width - 120, canvas.height - 120);
+
+    // 4. Draw Typography
+    ctx.textAlign = "center";
+    
+    // Header
+    ctx.fillStyle = "#ec4899";
+    ctx.font = "bold 30px sans-serif";
+    ctx.letterSpacing = "5px";
+    ctx.fillText("DIGITAL ARCADE ACHIEVEMENT", canvas.width / 2, 180);
+
+    // Main Title
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 80px sans-serif";
+    ctx.fillText("CERTIFICATE OF MASTERY", canvas.width / 2, 300);
+
+    // Body Text
+    ctx.fillStyle = "#a1a1aa"; // Zinc 400
+    ctx.font = "italic 30px sans-serif";
+    ctx.fillText("This officially certifies that the player has successfully conquered", canvas.width / 2, 420);
+
+    // Game Title
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 60px sans-serif";
+    ctx.fillText("LEXICON LOCK", canvas.width / 2, 520);
+
+    // Rank
+    ctx.fillStyle = "#ec4899";
+    ctx.font = "bold 35px sans-serif";
+    ctx.fillText("Rank Achieved: Lexicon Master", canvas.width / 2, 600);
+
+    // Date & Signature Line
+    const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+    ctx.fillStyle = "#a1a1aa";
+    ctx.font = "24px sans-serif";
+    ctx.fillText(`Issued on: ${date}`, canvas.width / 2, 680);
+
+    // 5. Trigger Download
+    const link = document.createElement("a");
+    link.download = "Lexicon-Lock-Certificate.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
 
   return (
     <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto relative z-10 font-sans">
@@ -178,9 +234,9 @@ export default function LexiconLock() {
       {/* SUCCESS / LEVEL COMPLETE BANNER */}
       <AnimatePresence mode="wait">
         {isLevelComplete && (
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="mb-8 p-6 bg-pink-500/10 border border-pink-500/30 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="mb-8 p-6 bg-pink-500/10 border border-pink-500/30 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-lg">
             <div className="flex items-center gap-4">
-              <CheckCircle2 className="w-8 h-8 text-pink-500 flex-shrink-0" />
+              {isGameComplete ? <Award className="w-10 h-10 text-pink-500 flex-shrink-0" /> : <CheckCircle2 className="w-8 h-8 text-pink-500 flex-shrink-0" />}
               <div>
                 <h3 className="font-bold text-pink-500 text-lg">
                   {isGameComplete ? "Lexicon Master!" : `${levelData.title} Vault Unlocked!`}
@@ -190,15 +246,27 @@ export default function LexiconLock() {
                 </p>
               </div>
             </div>
-            {isGameComplete ? (
-              <button onClick={resetGame} className="flex items-center justify-center gap-2 w-full sm:w-auto bg-pink-500 text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-pink-600 transition-colors shadow-lg shadow-pink-500/20">
-                <RefreshCcw className="w-4 h-4" /> Play Again
-              </button>
-            ) : (
-              <button onClick={nextLevel} className="flex items-center justify-center gap-2 w-full sm:w-auto bg-pink-500 text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-pink-600 transition-colors shadow-lg shadow-pink-500/20">
-                Proceed to Level {currentLevel + 2}
-              </button>
-            )}
+            
+            <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+              {isGameComplete && (
+                <button 
+                  onClick={downloadCertificate} 
+                  className="flex items-center justify-center gap-2 w-full sm:w-auto bg-white text-pink-600 border-2 border-pink-500 px-6 py-3 rounded-full font-bold text-sm hover:bg-pink-50 transition-colors shadow-lg"
+                >
+                  <Download className="w-4 h-4" /> Get Certificate
+                </button>
+              )}
+              
+              {isGameComplete ? (
+                <button onClick={resetGame} className="flex items-center justify-center gap-2 w-full sm:w-auto bg-pink-500 text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-pink-600 transition-colors shadow-lg shadow-pink-500/20">
+                  <RefreshCcw className="w-4 h-4" /> Play Again
+                </button>
+              ) : (
+                <button onClick={nextLevel} className="flex items-center justify-center gap-2 w-full sm:w-auto bg-pink-500 text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-pink-600 transition-colors shadow-lg shadow-pink-500/20">
+                  Proceed to Level {currentLevel + 2}
+                </button>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

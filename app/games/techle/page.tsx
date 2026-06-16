@@ -2,10 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Keyboard, RefreshCcw, CheckCircle2, XCircle, HelpCircle, X } from "lucide-react";
+import { ArrowLeft, Keyboard, RefreshCcw, CheckCircle2, XCircle, HelpCircle, X, Download } from "lucide-react";
 import Link from "next/link";
 
-// Curated 5-letter Tech/Dev words
 const TECH_WORDS = [
   "REACT", "BUILD", "DEBUG", "PIXEL", "CLOUD", "LOGIC", "STACK", "ARRAY", "CACHE", 
   "TOKEN", "QUERY", "FETCH", "ROUTE", "LINUX", "MACRO", "PROXY", "SCOPE", "SWIFT", 
@@ -26,12 +25,7 @@ export default function TechleGame() {
   const [shakeRow, setShakeRow] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
 
-  // Initialize game on mount
-  useEffect(() => {
-    startNewGame();
-    // Briefly show help on first load, or just rely on the user clicking the icon
-    // We'll leave it closed by default here, but they can click the help icon!
-  }, []);
+  useEffect(() => { startNewGame(); }, []);
 
   const startNewGame = () => {
     const randomWord = TECH_WORDS[Math.floor(Math.random() * TECH_WORDS.length)];
@@ -73,40 +67,34 @@ export default function TechleGame() {
     }
   }, [currentGuess, gameStatus, guesses, solution, showHelp]);
 
-  // Global Keyboard Listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => onKeyPress(e.key);
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onKeyPress]);
 
-  // Evaluates a guess against the solution to assign colors
   const evaluateGuess = (guess: string) => {
     const result: LetterStatus[] = Array(COLS).fill("absent");
     const solutionChars = solution.split("");
     const guessChars = guess.split("");
 
-    // First pass: Find exact matches (Green)
     guessChars.forEach((char, i) => {
       if (char === solutionChars[i]) {
         result[i] = "correct";
-        solutionChars[i] = ""; // Mark as used
-        guessChars[i] = ""; // Mark as processed
+        solutionChars[i] = ""; 
+        guessChars[i] = ""; 
       }
     });
 
-    // Second pass: Find partial matches (Yellow)
     guessChars.forEach((char, i) => {
       if (char !== "" && solutionChars.includes(char)) {
         result[i] = "present";
-        solutionChars[solutionChars.indexOf(char)] = ""; // Mark as used
+        solutionChars[solutionChars.indexOf(char)] = ""; 
       }
     });
-
     return result;
   };
 
-  // Keyboard state calculation
   const usedKeys: Record<string, LetterStatus> = {};
   guesses.forEach((guess) => {
     const evaluation = evaluateGuess(guess);
@@ -147,6 +135,68 @@ export default function TechleGame() {
     ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "DELETE"]
   ];
 
+  // --- CERTIFICATE GENERATOR ENGINE ---
+  const downloadCertificate = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1200; canvas.height = 800;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    
+    // Dark Background
+    ctx.fillStyle = "#09090b";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Orange Border
+    ctx.strokeStyle = "#f97316"; 
+    ctx.lineWidth = 12;
+    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+
+    // Grid background effect
+    ctx.strokeStyle = "rgba(249, 115, 22, 0.1)";
+    ctx.lineWidth = 1;
+    for(let i = 100; i < canvas.width; i+=100) {
+      ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+    }
+    for(let i = 100; i < canvas.height; i+=100) {
+      ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+    }
+
+    ctx.textAlign = "center";
+    
+    // Header
+    ctx.fillStyle = "#f97316";
+    ctx.font = "bold 30px monospace";
+    ctx.letterSpacing = "6px";
+    ctx.fillText("TECHLE DECRYPTION PROTOCOL", canvas.width / 2, 180);
+
+    // Main Title
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 80px sans-serif";
+    ctx.fillText("SYSTEM DECRYPTED", canvas.width / 2, 320);
+
+    // Body Text
+    ctx.fillStyle = "#a1a1aa";
+    ctx.font = "italic 30px sans-serif";
+    ctx.fillText(`The player successfully decrypted the target word in ${guesses.length} tries:`, canvas.width / 2, 450);
+
+    // Word
+    ctx.fillStyle = "#22c55e"; // Green for success
+    ctx.font = "bold 60px monospace";
+    ctx.letterSpacing = "10px";
+    ctx.fillText(`[ ${solution} ]`, canvas.width / 2, 550);
+
+    // Date
+    const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+    ctx.fillStyle = "#f97316";
+    ctx.font = "24px monospace";
+    ctx.fillText(`TIMESTAMP: ${date}`, canvas.width / 2, 700);
+
+    const link = document.createElement("a");
+    link.download = `Techle-Victory-${solution}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
   return (
     <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto relative z-10 font-sans flex flex-col items-center">
       
@@ -167,7 +217,6 @@ export default function TechleGame() {
           <button 
             onClick={() => setShowHelp(true)} 
             className="p-2 text-gray-500 hover:text-orange-500 hover:bg-orange-500/10 rounded-full transition-all"
-            aria-label="How to play"
           >
             <HelpCircle className="w-6 h-6" />
           </button>
@@ -178,14 +227,21 @@ export default function TechleGame() {
       <div className="w-full max-w-lg h-16 mb-4 flex items-center justify-center">
         <AnimatePresence>
           {gameStatus !== "playing" && (
-            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className={`w-full py-3 px-6 rounded-xl flex items-center justify-between shadow-lg ${gameStatus === "won" ? "bg-green-500 text-white shadow-green-500/20" : "bg-gray-800 text-white shadow-gray-900/50 border border-gray-700"}`}>
-              <div className="flex items-center gap-3 font-bold">
-                {gameStatus === "won" ? <CheckCircle2 className="w-6 h-6" /> : <XCircle className="w-6 h-6 text-red-500" />}
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className={`w-full py-3 px-6 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg ${gameStatus === "won" ? "bg-green-500 text-white shadow-green-500/20" : "bg-gray-800 text-white shadow-gray-900/50 border border-gray-700"}`}>
+              <div className="flex items-center gap-3 font-bold text-center sm:text-left">
+                {gameStatus === "won" ? <CheckCircle2 className="w-6 h-6 flex-shrink-0" /> : <XCircle className="w-6 h-6 text-red-500 flex-shrink-0" />}
                 {gameStatus === "won" ? "System Decrypted!" : `Access Denied. Word: ${solution}`}
               </div>
-              <button onClick={startNewGame} className="flex items-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-1.5 rounded-full text-sm font-bold transition-colors">
-                <RefreshCcw className="w-4 h-4" /> Replay
-              </button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                {gameStatus === "won" && (
+                  <button onClick={downloadCertificate} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-white text-green-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-gray-100 transition-colors shadow-sm">
+                    <Download className="w-4 h-4" /> Badge
+                  </button>
+                )}
+                <button onClick={startNewGame} className="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 px-4 py-1.5 rounded-full text-sm font-bold transition-colors">
+                  <RefreshCcw className="w-4 h-4" /> Replay
+                </button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -200,25 +256,16 @@ export default function TechleGame() {
           
           return (
             <motion.div 
-              key={rowIndex} 
-              className="grid grid-cols-5 gap-2"
-              animate={isCurrentRow && shakeRow ? { x: [-5, 5, -5, 5, 0] } : {}}
-              transition={{ duration: 0.4 }}
+              key={rowIndex} className="grid grid-cols-5 gap-2"
+              animate={isCurrentRow && shakeRow ? { x: [-5, 5, -5, 5, 0] } : {}} transition={{ duration: 0.4 }}
             >
               {Array.from({ length: COLS }).map((_, colIndex) => {
                 const char = guess[colIndex] || "";
                 const status = isCurrentRow && char ? "empty" : evaluation[colIndex];
                 
                 return (
-                  <div 
-                    key={colIndex}
-                    className={`aspect-square flex items-center justify-center text-2xl md:text-3xl font-black uppercase rounded-xl border-2 transition-all duration-500 ${char && isCurrentRow ? 'border-gray-500 dark:border-gray-400 scale-[1.02]' : ''} ${getTileColor(status)}`}
-                  >
-                    {char && (
-                      <motion.span initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }}>
-                        {char}
-                      </motion.span>
-                    )}
+                  <div key={colIndex} className={`aspect-square flex items-center justify-center text-2xl md:text-3xl font-black uppercase rounded-xl border-2 transition-all duration-500 ${char && isCurrentRow ? 'border-gray-500 dark:border-gray-400 scale-[1.02]' : ''} ${getTileColor(status)}`}>
+                    {char && <motion.span initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }}>{char}</motion.span>}
                   </div>
                 );
               })}
@@ -234,11 +281,7 @@ export default function TechleGame() {
             {row.map((key) => {
               const isSpecial = key === "ENTER" || key === "DELETE";
               return (
-                <button
-                  key={key}
-                  onClick={() => onKeyPress(key)}
-                  className={`h-14 md:h-16 rounded-xl font-bold text-sm md:text-base flex items-center justify-center transition-colors active:scale-95 ${isSpecial ? 'px-3 md:px-4 text-xs' : 'flex-1 max-w-[3rem]'} ${getKeyColor(key)}`}
-                >
+                <button key={key} onClick={() => onKeyPress(key)} className={`h-14 md:h-16 rounded-xl font-bold text-sm md:text-base flex items-center justify-center transition-colors active:scale-95 ${isSpecial ? 'px-3 md:px-4 text-xs' : 'flex-1 max-w-[3rem]'} ${getKeyColor(key)}`}>
                   {key === "DELETE" ? "DEL" : key}
                 </button>
               );
@@ -247,82 +290,28 @@ export default function TechleGame() {
         ))}
       </div>
 
-      {/* Instructions Modal Overlay */}
+      {/* Instructions Modal */}
       <AnimatePresence>
         {showHelp && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
-            >
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
               <div className="p-6 relative">
-                <button 
-                  onClick={() => setShowHelp(false)}
-                  className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-                >
+                <button onClick={() => setShowHelp(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                   <X className="w-6 h-6" />
                 </button>
-                
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">How to Play</h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
-                  Guess the <strong>TECHLE</strong> in 6 tries. Every word is related to programming, tech, or web development!
-                </p>
-                
+                <p className="text-gray-600 dark:text-gray-300 mb-6">Guess the <strong>TECHLE</strong> in 6 tries. Every word is related to programming, tech, or web development!</p>
                 <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400 mb-6 list-disc pl-5">
                   <li>Each guess must be a valid 5-letter word.</li>
                   <li>Hit the enter button to submit.</li>
-                  <li>After each guess, the color of the tiles will change to show how close your guess was to the word.</li>
+                  <li>After each guess, the color of the tiles changes to show how close you were.</li>
                 </ul>
-
-                <div className="space-y-4 mb-6">
-                  <div>
-                    <div className="flex gap-1 mb-2">
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold text-white bg-green-500 rounded-md">R</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">E</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">A</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">C</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">T</div>
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400"><strong>R</strong> is in the word and in the correct spot.</p>
-                  </div>
-                  
-                  <div>
-                    <div className="flex gap-1 mb-2">
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">B</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">U</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold text-white bg-yellow-500 rounded-md">I</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">L</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">D</div>
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400"><strong>I</strong> is in the word but in the wrong spot.</p>
-                  </div>
-
-                  <div>
-                    <div className="flex gap-1 mb-2">
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">L</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">O</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">G</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold text-gray-400 bg-gray-800 border-gray-800 rounded-md">I</div>
-                      <div className="w-10 h-10 flex items-center justify-center text-lg font-bold border-2 border-gray-300 dark:border-gray-700 rounded-md">C</div>
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400"><strong>I</strong> is not in the word in any spot.</p>
-                  </div>
-                </div>
-
-                <button 
-                  onClick={() => setShowHelp(false)}
-                  className="w-full py-3 rounded-xl font-bold bg-orange-500 hover:bg-orange-600 text-white transition-colors"
-                >
-                  Let's Play!
-                </button>
+                <button onClick={() => setShowHelp(false)} className="w-full py-3 rounded-xl font-bold bg-orange-500 hover:bg-orange-600 text-white transition-colors">Let's Play!</button>
               </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
-
     </main>
   );
 }
