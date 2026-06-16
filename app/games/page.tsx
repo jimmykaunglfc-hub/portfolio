@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Play, Brain, Bug, Target, Gamepad2, Keyboard } from "lucide-react";
+import { Play, Brain, Bug, Target, Gamepad2, Keyboard, Type } from "lucide-react";
 
 export default function GamesIndex() {
   return (
@@ -15,7 +15,7 @@ export default function GamesIndex() {
         </p>
       </div>
 
-      {/* Grid Container (Updated to 3 columns to fit 5 items beautifully) */}
+      {/* Grid Container (3 columns for 6 perfectly aligned games) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
         {/* Game 1: Neural Decrypt */}
@@ -67,6 +67,8 @@ export default function GamesIndex() {
         <div className="group bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/10 hover:border-red-500/30">
           <div className="h-48 relative flex items-center justify-center border-b border-gray-200 dark:border-white/10 overflow-hidden bg-gray-900">
             <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-[#1a0f0f] to-[#241212] dark:from-black dark:via-gray-900 dark:to-red-950"></div>
+            <div className="absolute inset-0 bg-red-500/10 blur-3xl rounded-full group-hover:bg-red-500/20 transition-colors duration-700"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(#ef4444_1.5px,transparent_1.5px)] opacity-[0.10] [background-size:16px_16px]"></div>
             <Gamepad2 className="relative z-10 w-24 h-24 text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)] group-hover:scale-110 group-hover:rotate-[5deg] transition-transform duration-500" />
           </div>
           <div className="p-6 relative z-10 flex flex-col h-[calc(100%-12rem)]">
@@ -83,7 +85,7 @@ export default function GamesIndex() {
         </div>
 
         {/* Game 5: Techle */}
-        <div className="group bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/10 hover:border-orange-500/30 md:col-span-2 lg:col-span-1">
+        <div className="group bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-orange-500/10 hover:border-orange-500/30">
           <div className="h-48 relative flex items-center justify-center border-b border-gray-200 dark:border-white/10 overflow-hidden bg-gray-900">
             <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-[#1a140f] to-[#2d1c0b] dark:from-black dark:via-gray-900 dark:to-orange-950"></div>
             <div className="absolute inset-0 bg-orange-500/10 blur-3xl rounded-full group-hover:bg-orange-500/20 transition-colors duration-700"></div>
@@ -98,6 +100,27 @@ export default function GamesIndex() {
               Decrypt the 5-letter tech word of the day in 6 tries. A classic word puzzle built for developers.
             </p>
             <Link href="/games/techle" className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-3 rounded-xl font-bold tracking-wide hover:bg-orange-600 dark:hover:bg-orange-500 dark:hover:text-white transition-all duration-300 mt-auto">
+              <Play className="w-4 h-4 fill-current" /> Play Now
+            </Link>
+          </div>
+        </div>
+
+        {/* Game 6: Lexicon Lock (The New English Game) */}
+        <div className="group bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-pink-500/10 hover:border-pink-500/30">
+          <div className="h-48 relative flex items-center justify-center border-b border-gray-200 dark:border-white/10 overflow-hidden bg-gray-900">
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-[#1a0f16] to-[#2d0b1a] dark:from-black dark:via-gray-900 dark:to-pink-950"></div>
+            <div className="absolute inset-0 bg-pink-500/10 blur-3xl rounded-full group-hover:bg-pink-500/20 transition-colors duration-700"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(#ec4899_1.5px,transparent_1.5px)] opacity-[0.10] [background-size:16px_16px]"></div>
+            <Type className="relative z-10 w-24 h-24 text-pink-500 drop-shadow-[0_0_15px_rgba(236,72,153,0.5)] group-hover:scale-110 transition-transform duration-500" />
+          </div>
+          <div className="p-6 relative z-10 flex flex-col h-[calc(100%-12rem)]">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-pink-500 transition-colors duration-300">
+              Lexicon Lock
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">
+              An English anagram puzzle. Unscramble the letters to crack the vault. Difficulty scales up to 8-letter master words!
+            </p>
+            <Link href="/games/lexicon-lock" className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-3 rounded-xl font-bold tracking-wide hover:bg-pink-600 dark:hover:bg-pink-500 dark:hover:text-white transition-all duration-300 mt-auto">
               <Play className="w-4 h-4 fill-current" /> Play Now
             </Link>
           </div>
