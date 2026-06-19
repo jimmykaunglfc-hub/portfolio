@@ -1,19 +1,17 @@
 import { streamText } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google'; 
-import { client } from '@/sanity/lib/client'; 
+import { ABOUT_ME, BLOG_POSTS, GAMES_DATA } from '../../../sanity/lib/portfolioData';
 
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    // 1. Fetch live database context with a comprehensive schema net
-    const livePortfolioData = await client.fetch(`{
-      "about_me": *[_type in ["author", "about", "profile", "personalInfo"]],
-      "experience": *[_type in ["experience", "job", "career", "trajectory", "workExperience"]],
-      "projects": *[_type in ["project", "portfolio", "work", "projects"]],
-      "blogPosts": *[_type in ["post", "blog", "article"]],
-      "games": *[_type in ["game", "games", "interactive"]]
-    }`, {}, { cache: 'no-store' });
+    // 1. Package the portfolio dataset into a structured context layer
+    const livePortfolioData = {
+      aboutMe: ABOUT_ME,
+      blogPosts: BLOG_POSTS,
+      gamesData: GAMES_DATA
+    };
 
     // 2. CONSOLIDATION ENGINE: Merge consecutive same-role messages for Gemini compliance
     const alternatingMessages: any[] = [];
@@ -39,7 +37,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. Extract your clean key from whichever variable you currently have active
+    // 3. Extract your clean API key from environment variables
     const rawKeyString = process.env.GEMINI_API_KEYS || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
     const activeKey = rawKeyString.replace(/['"]/g, "").split(',')[0]?.trim();
 
@@ -49,14 +47,18 @@ export async function POST(req: Request) {
 
     const googleProvider = createGoogleGenerativeAI({ apiKey: activeKey });
 
-    // 4. Targeted the stable gemini-2.5-flash model to eliminate version support conflicts
+    // 4. Fire the generation context pass targeting the stable 2.5 flash engine
     const result = await streamText({
       model: googleProvider('gemini-2.5-flash'), 
       messages: alternatingMessages, 
       system: `You are the official AI assistant for Jimmy Kaung's portfolio website. 
-      Jimmy's Live Database Context:
+      Here is Jimmy Kaung's comprehensive, verified portfolio context:
       ${JSON.stringify(livePortfolioData)}
-      Only answer questions based on this data context layer. If asked about unrelated things, politely decline.`,
+      
+      Instructions:
+      - Thoroughly answer user queries regarding Jimmy's background, professional pillars, blog summaries, and custom games using ONLY the context provided above.
+      - Keep responses professional, clear, and context-grounded.
+      - If asked about unrelated things outside of this context, politely decline.`,
     });
 
     return result.toUIMessageStreamResponse({

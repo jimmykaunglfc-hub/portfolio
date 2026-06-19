@@ -1,9 +1,13 @@
 // Move all your hard data here so BOTH the UI and the AI can read it
 export const ABOUT_ME = `
-I am a Product Manager and QA Specialist. 
-My focus is on bridging the gap between engineering and user experience. 
-With an extensive background directing end-to-end digital engineering and operational delivery frameworks, 
-I optimize product lifecycles, manage cross-functional syncs, and establish robust quality gates to drive high-impact platform results.
+Jimmy Kaung is a seasoned Head of Digital Operations, Product Manager, and QA Specialist who excels at orchestrating high-impact digital platforms and FinTech channels.
+
+With an extensive background directing end-to-end digital engineering and operational delivery frameworks, Jimmy bridges the gap between complex software engineering and high-fidelity user experience. He specializes in driving end-to-end product lifecycles, optimizing critical operational infrastructure, and leading cross-functional engineering teams to deliver secure, market-leading enterprise and FinTech systems.
+
+Core Professional Pillars:
+1. Digital Operations & Leadership: Orchestrating cross-functional syncs, building resilient platform channels, and optimizing operational architecture for enterprise scale.
+2. Product Management: Transforming business requirements into high-velocity agile roadmaps, executing strategic product delivery loops, and prioritizing user outcomes over simple feature outputs.
+3. Quality Engineering (QA): Pioneering "Shift-Left" quality strategies, implementing automated test frameworks early in the development lifecycle, and establishing rigorous quality gates to safeguard high-velocity platform launches.
 `;
 
 export const BLOG_POSTS = [
