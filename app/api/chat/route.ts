@@ -6,11 +6,13 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    // 1. Fetch live database context from Sanity Studio
+    // 1. Fetch live database context with a comprehensive schema net
     const livePortfolioData = await client.fetch(`{
-      "careerTrajectory": *[_type == "trajectory"]{ year, company, executiveSummary },
-      "blogPosts": *[_type == "post"]{ title, excerpt, "bodyText": body },
-      "games": *[_type == "game"]{ title, description, hint }
+      "about_me": *[_type in ["author", "about", "profile", "personalInfo"]],
+      "experience": *[_type in ["experience", "job", "career", "trajectory", "workExperience"]],
+      "projects": *[_type in ["project", "portfolio", "work", "projects"]],
+      "blogPosts": *[_type in ["post", "blog", "article"]],
+      "games": *[_type in ["game", "games", "interactive"]]
     }`, {}, { cache: 'no-store' });
 
     // 2. CONSOLIDATION ENGINE: Merge consecutive same-role messages for Gemini compliance
