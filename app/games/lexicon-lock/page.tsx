@@ -173,7 +173,57 @@ export default function LexiconLock() {
     ctx.fillRect(canvas.width - 75 - cornerLength, canvas.height - 75 - cornerThick, cornerLength, cornerThick);
     ctx.fillRect(canvas.width - 75 - cornerThick, canvas.height - 75 - cornerLength, cornerThick, cornerLength);
 
-    // Load Favicon / Logo
+    // DRAW GAME ICON (Type Icon)
+    ctx.save();
+    ctx.translate(canvas.width / 2 - 60, 130); // Position at top center
+    ctx.scale(5, 5); // Scale up a standard 24x24 SVG
+    ctx.strokeStyle = "#ec4899";
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    // Native Lucide 'Type' SVG Path
+    const typePath = new Path2D("M4 7 L4 4 L20 4 L20 7 M9 20 L15 20 M12 4 L12 20");
+    ctx.stroke(typePath);
+    ctx.restore();
+
+    // Typography
+    ctx.textAlign = "center";
+    (ctx as any).letterSpacing = "8px";
+    ctx.fillStyle = "#ec4899";
+    ctx.font = "bold 28px sans-serif";
+    ctx.fillText("DIGITAL ARCADE LINGUISTICS", canvas.width / 2, 350);
+
+    (ctx as any).letterSpacing = "2px";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 85px serif"; // Serif for the dictionary/lexicon feel
+    ctx.fillText("CERTIFICATE OF MASTERY", canvas.width / 2, 470);
+
+    // Separator Line
+    ctx.fillStyle = "#ec4899";
+    ctx.fillRect(canvas.width / 2 - 200, 530, 400, 4);
+
+    // Body Text
+    (ctx as any).letterSpacing = "0px";
+    ctx.fillStyle = "#94a3b8"; // Slate 400
+    ctx.font = "italic 36px serif";
+    ctx.fillText("This document officially certifies that the player has demonstrated", canvas.width / 2, 650);
+    ctx.fillText("an exceptional mastery of the English language, successfully", canvas.width / 2, 710);
+    ctx.fillText("deciphering all anagrams to unlock the final Lexicon Vault.", canvas.width / 2, 770);
+
+    // Rank
+    (ctx as any).letterSpacing = "6px";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 42px sans-serif";
+    ctx.fillText("RANK ACHIEVED: LEXICON MASTER", canvas.width / 2, 920);
+
+    // Date
+    (ctx as any).letterSpacing = "2px";
+    const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+    ctx.fillStyle = "#f472b6"; // Pink 400
+    ctx.font = "24px monospace";
+    ctx.fillText(`VAULT UNLOCKED ON: ${date}`, canvas.width / 2, 1000);
+
+    // LOAD FAVICON AS SIGNATURE AT BOTTOM
     try {
       const img = new Image();
       img.crossOrigin = "anonymous";
@@ -182,60 +232,47 @@ export default function LexiconLock() {
         img.onload = resolve;
         img.onerror = reject;
       });
-      ctx.drawImage(img, canvas.width / 2 - 60, 140, 120, 120);
+      // Draw signature logo at bottom center
+      ctx.drawImage(img, canvas.width / 2 - 40, 1040, 80, 80);
     } catch (e) {
-      // Fallback: A stylized 'A' shape
-      ctx.save();
-      ctx.translate(canvas.width / 2, 200);
-      ctx.strokeStyle = "#ec4899";
-      ctx.lineWidth = 8;
-      ctx.beginPath(); ctx.moveTo(0, -40); ctx.lineTo(40, 40); ctx.lineTo(-40, 40); ctx.closePath(); ctx.stroke();
-      ctx.fillStyle = "#ec4899";
-      ctx.fillRect(-20, 10, 40, 8);
-      ctx.restore();
+      // Fallback text signature if image fails
+      ctx.fillStyle = "#94a3b8"; // Slate 400
+      ctx.font = "italic 20px sans-serif";
+      ctx.fillText("AUTHORIZED BY: KHNCO.", canvas.width / 2, 1080);
     }
 
-    // Typography
-    ctx.textAlign = "center";
-    (ctx as any).letterSpacing = "8px";
-    ctx.fillStyle = "#ec4899";
-    ctx.font = "bold 28px sans-serif";
-    ctx.fillText("DIGITAL ARCADE LINGUISTICS", canvas.width / 2, 360);
+    // Execute Download (Mobile & Desktop Safe)
+    canvas.toBlob(async (blob) => {
+      if (!blob) return;
+      
+      const fileName = "Lexicon-Lock-Master-Certificate.png";
+      const file = new File([blob], fileName, { type: "image/png" });
 
-    (ctx as any).letterSpacing = "2px";
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 85px serif"; // Serif for the dictionary/lexicon feel
-    ctx.fillText("CERTIFICATE OF MASTERY", canvas.width / 2, 480);
+      // 1. Try Mobile Native Share (iOS/Android "Save Image" or "Share")
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Lexicon Master!',
+            text: 'Check out my Lexicon Lock Master Certificate!',
+          });
+          return; // Stop here if native share works
+        } catch (error) {
+          console.log('Share cancelled or failed', error);
+          // Fall through to standard download if cancelled
+        }
+      }
 
-    // Separator Line
-    ctx.fillStyle = "#ec4899";
-    ctx.fillRect(canvas.width / 2 - 200, 540, 400, 4);
-
-    // Body Text
-    (ctx as any).letterSpacing = "0px";
-    ctx.fillStyle = "#94a3b8"; // Slate 400
-    ctx.font = "italic 36px serif";
-    ctx.fillText("This document officially certifies that the player has demonstrated", canvas.width / 2, 660);
-    ctx.fillText("an exceptional mastery of the English language, successfully", canvas.width / 2, 720);
-    ctx.fillText("deciphering all anagrams to unlock the final Lexicon Vault.", canvas.width / 2, 780);
-
-    // Rank
-    (ctx as any).letterSpacing = "6px";
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 42px sans-serif";
-    ctx.fillText("RANK ACHIEVED: LEXICON MASTER", canvas.width / 2, 940);
-
-    // Date
-    (ctx as any).letterSpacing = "2px";
-    const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-    ctx.fillStyle = "#f472b6"; // Pink 400
-    ctx.font = "24px monospace";
-    ctx.fillText(`VAULT UNLOCKED ON: ${date}`, canvas.width / 2, 1040);
-
-    const link = document.createElement("a");
-    link.download = "Lexicon-Lock-Master-Certificate.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+      // 2. Standard Desktop Fallback
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link); // CRITICAL: Required for iOS/Firefox fallback
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url); // Clean up memory
+    }, "image/png");
   };
 
   return (

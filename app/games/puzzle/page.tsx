@@ -66,6 +66,7 @@ export default function NeuralDecrypt() {
     }
   };
 
+  // --- PREMIUM CERTIFICATE GENERATOR ENGINE ---
   const downloadNeuralBadge = async () => {
     const canvas = document.createElement("canvas");
     canvas.width = 1600; 
@@ -98,24 +99,22 @@ export default function NeuralDecrypt() {
     // Bottom Right
     ctx.beginPath(); ctx.moveTo(canvas.width-80-s, canvas.height-80); ctx.lineTo(canvas.width-80, canvas.height-80); ctx.lineTo(canvas.width-80, canvas.height-80-s); ctx.stroke();
 
-    // Load Favicon / Logo
-    try {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = "/favicon.ico";
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-      });
-      ctx.drawImage(img, canvas.width / 2 - 50, 160, 100, 100);
-    } catch (e) {
-      ctx.save();
-      ctx.translate(canvas.width / 2, 210);
-      ctx.strokeStyle = "#06b6d4";
-      ctx.lineWidth = 6;
-      ctx.beginPath(); ctx.moveTo(0, -40); ctx.lineTo(35, 20); ctx.lineTo(-35, 20); ctx.closePath(); ctx.stroke();
-      ctx.restore();
-    }
+    // DRAW GAME ICON (Cpu)
+    ctx.save();
+    ctx.translate(canvas.width / 2 - 60, 130); // Position at top center
+    ctx.scale(5, 5); // Scale up a standard 24x24 SVG
+    ctx.strokeStyle = "#06b6d4";
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    // Native Lucide 'Cpu' SVG Paths
+    const box = new Path2D("M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z");
+    const inner = new Path2D("M9 9h6v6H9z");
+    const pins = new Path2D("M9 1v3 M15 1v3 M9 20v3 M15 20v3 M20 9h3 M20 14h3 M1 9h3 M1 14h3");
+    ctx.stroke(box);
+    ctx.stroke(inner);
+    ctx.stroke(pins);
+    ctx.restore();
 
     // Typography
     ctx.textAlign = "center";
@@ -129,34 +128,80 @@ export default function NeuralDecrypt() {
     ctx.font = "bold 90px sans-serif";
     ctx.shadowBlur = 15;
     ctx.shadowColor = "#06b6d4"; // Glowing Title
-    ctx.fillText("MASTER NETRUNNER", canvas.width / 2, 490);
+    ctx.fillText("MASTER NETRUNNER", canvas.width / 2, 480);
     ctx.shadowBlur = 0; // Reset
 
     // Body Text (Properly Spaced)
     (ctx as any).letterSpacing = "0px";
     ctx.fillStyle = "#94a3b8"; // Slate 400
     ctx.font = "32px monospace";
-    ctx.fillText("> System security successfully bypassed.", canvas.width / 2, 650);
-    ctx.fillText("> Complex logical memory patterns deciphered.", canvas.width / 2, 710);
-    ctx.fillText("> Mainframe access permanently granted.", canvas.width / 2, 770);
+    ctx.fillText("> System security successfully bypassed.", canvas.width / 2, 630);
+    ctx.fillText("> Complex logical memory patterns deciphered.", canvas.width / 2, 690);
+    ctx.fillText("> Mainframe access permanently granted.", canvas.width / 2, 750);
 
     // Status
     (ctx as any).letterSpacing = "4px";
     ctx.fillStyle = "#06b6d4"; // Cyan 500
     ctx.font = "bold 45px monospace";
-    ctx.fillText("{ STATUS: FIREWALL BREACHED }", canvas.width / 2, 920);
+    ctx.fillText("{ STATUS: FIREWALL BREACHED }", canvas.width / 2, 900);
 
     // Date
     (ctx as any).letterSpacing = "0px";
     const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit' });
     ctx.fillStyle = "#6366f1"; // Indigo 500
     ctx.font = "24px monospace";
-    ctx.fillText(`SYS.DATE: ${date}`, canvas.width / 2, 1060);
+    ctx.fillText(`SYS.DATE: ${date}`, canvas.width / 2, 980);
 
-    const link = document.createElement("a");
-    link.download = "Neural-Decrypt-Master-Badge.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    // LOAD FAVICON AS SIGNATURE AT BOTTOM
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = "/favicon.ico";
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+      // Draw signature logo at bottom center
+      ctx.drawImage(img, canvas.width / 2 - 40, 1030, 80, 80);
+    } catch (e) {
+      // Fallback text signature if image fails
+      ctx.fillStyle = "#6366f1"; // Indigo 500
+      ctx.font = "italic 20px sans-serif";
+      ctx.fillText("AUTHORIZED BY: KHNCO.", canvas.width / 2, 1070);
+    }
+
+    // Execute Download (Mobile & Desktop Safe)
+    canvas.toBlob(async (blob) => {
+      if (!blob) return;
+      
+      const fileName = "Neural-Decrypt-Master-Badge.png";
+      const file = new File([blob], fileName, { type: "image/png" });
+
+      // 1. Try Mobile Native Share (iOS/Android "Save Image" or "Share")
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Master Netrunner!',
+            text: 'Check out my Neural Decrypt Master Badge!',
+          });
+          return; // Stop here if native share works
+        } catch (error) {
+          console.log('Share cancelled or failed', error);
+          // Fall through to standard download if cancelled
+        }
+      }
+
+      // 2. Standard Desktop Fallback
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link); // CRITICAL: Required for iOS/Firefox fallback
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url); // Clean up memory
+    }, "image/png");
   };
 
   return (

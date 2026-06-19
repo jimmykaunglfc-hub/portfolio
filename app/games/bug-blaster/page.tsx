@@ -328,25 +328,20 @@ export default function BugBlaster() {
       ctx.beginPath(); ctx.moveTo(80, i); ctx.lineTo(canvas.width - 80, i); ctx.stroke();
     }
 
-    // Load Favicon / Logo
-    try {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = "/favicon.ico";
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-      });
-      ctx.drawImage(img, canvas.width / 2 - 50, 140, 100, 100);
-    } catch (e) {
-      ctx.save();
-      ctx.translate(canvas.width / 2, 190);
-      ctx.strokeStyle = "#39ff14";
-      ctx.lineWidth = 8;
-      ctx.strokeRect(-35, -35, 70, 70);
-      ctx.strokeRect(-15, -15, 30, 30);
-      ctx.restore();
-    }
+    // DRAW GAME ICON (Gamepad2)
+    ctx.save();
+    ctx.translate(canvas.width / 2 - 60, 120); // Position at top center
+    ctx.scale(5, 5); // Scale up a standard 24x24 SVG
+    ctx.strokeStyle = "#39ff14";
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    // Native Lucide Gamepad2 SVG Paths
+    const gamepadOutline = new Path2D("M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z");
+    const dpadLines = new Path2D("M6 12h4 M8 10v4 M15 13h.01 M18 11h.01");
+    ctx.stroke(gamepadOutline);
+    ctx.stroke(dpadLines);
+    ctx.restore();
 
     // Typography
     ctx.textAlign = "center";
@@ -381,12 +376,58 @@ export default function BugBlaster() {
     const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'short', day: 'numeric' });
     ctx.fillStyle = "#52525b"; // Zinc 600
     ctx.font = "24px monospace";
-    ctx.fillText(`LOG DATE: ${date}`, canvas.width / 2, 1020);
+    ctx.fillText(`LOG DATE: ${date}`, canvas.width / 2, 980);
 
-    const link = document.createElement("a");
-    link.download = "Bug-Blaster-Elite-Badge.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    // LOAD FAVICON AS SIGNATURE AT BOTTOM
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = "/favicon.ico";
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+      // Draw signature logo at bottom center
+      ctx.drawImage(img, canvas.width / 2 - 40, 1030, 80, 80);
+    } catch (e) {
+      // Fallback text signature if image fails
+      ctx.fillStyle = "#52525b";
+      ctx.font = "italic 20px sans-serif";
+      ctx.fillText("AUTHORIZED BY: KHNCO.", canvas.width / 2, 1070);
+    }
+
+    // Execute Download (Mobile & Desktop Safe)
+    canvas.toBlob(async (blob) => {
+      if (!blob) return;
+      
+      const fileName = `Bug-Blaster-Elite-${score}.png`;
+      const file = new File([blob], fileName, { type: "image/png" });
+
+      // 1. Try Mobile Native Share (iOS/Android "Save Image" or "Share")
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Sector Cleared!',
+            text: `Check out my Bug Blaster Elite badge! I scored ${score} points!`,
+          });
+          return; // Stop here if native share works
+        } catch (error) {
+          console.log('Share cancelled or failed', error);
+          // Fall through to standard download if cancelled
+        }
+      }
+
+      // 2. Standard Desktop Fallback
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link); // CRITICAL: Required for iOS/Firefox fallback
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url); // Clean up memory
+    }, "image/png");
   };
 
   return (

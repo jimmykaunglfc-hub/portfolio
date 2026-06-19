@@ -39,6 +39,7 @@ export default function QABugHunt() {
     setCurrentLevel(0);
   };
 
+  // --- PREMIUM CERTIFICATE GENERATOR ENGINE ---
   const downloadQACertificate = async () => {
     const canvas = document.createElement("canvas");
     canvas.width = 1600; 
@@ -59,18 +60,68 @@ export default function QABugHunt() {
     ctx.strokeRect(60, 60, canvas.width - 120, canvas.height - 120);
 
     ctx.strokeStyle = "#eab308"; // Yellow 500
-    ctx.lineWidth = 4;
+    ctx.lineWidth = 6;
     ctx.strokeRect(80, 80, canvas.width - 160, canvas.height - 160);
 
     // Corner Accents
     ctx.fillStyle = "#eab308";
-    const cornerSize = 15;
+    const cornerSize = 20;
     ctx.fillRect(70, 70, cornerSize, cornerSize);
     ctx.fillRect(canvas.width - 70 - cornerSize, 70, cornerSize, cornerSize);
     ctx.fillRect(70, canvas.height - 70 - cornerSize, cornerSize, cornerSize);
     ctx.fillRect(canvas.width - 70 - cornerSize, canvas.height - 70 - cornerSize, cornerSize, cornerSize);
 
-    // Load Favicon / Logo
+    // DRAW GAME ICON (Bug)
+    ctx.save();
+    ctx.translate(canvas.width / 2 - 60, 130); // Position at top center
+    ctx.scale(5, 5); // Scale up a standard 24x24 SVG
+    ctx.strokeStyle = "#eab308";
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    // Native Lucide 'Bug' SVG Path
+    const bugPath = new Path2D("m8 2 1.88 1.88 M14.12 3.88 16 2 M9 7.13v-1a3.003 3.003 0 1 1 6 0v1 M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6 M12 20v-9 M6.53 9C4.6 8.8 3 7.1 3 5 M6 13H2 M3 21c0-2.1 1.7-3.9 3.8-4 M20.97 5c0 2.1-1.6 3.8-3.5 4 M22 13h-4 M17.2 17c2.1.1 3.8 1.9 3.8 4");
+    ctx.stroke(bugPath);
+    ctx.restore();
+
+    // Typography
+    ctx.textAlign = "center";
+    (ctx as any).letterSpacing = "6px";
+    ctx.fillStyle = "#eab308";
+    ctx.font = "bold 26px sans-serif";
+    ctx.fillText("QUALITY ASSURANCE DIVISION", canvas.width / 2, 350);
+
+    (ctx as any).letterSpacing = "2px";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 85px sans-serif";
+    ctx.fillText("CERTIFIED BUG HUNTER", canvas.width / 2, 470);
+
+    // Separator Line
+    ctx.fillStyle = "#eab308";
+    ctx.fillRect(canvas.width / 2 - 150, 530, 300, 4);
+
+    // Properly Wrapped Body Text
+    (ctx as any).letterSpacing = "0px";
+    ctx.fillStyle = "#94a3b8"; // Slate 400
+    ctx.font = "italic 36px serif";
+    ctx.fillText("This official document certifies that the user has demonstrated", canvas.width / 2, 650);
+    ctx.fillText("an elite, meticulous eye for visual and functional detail,", canvas.width / 2, 710);
+    ctx.fillText("successfully identifying all discrepancies across staging environments.", canvas.width / 2, 770);
+
+    // Badge/Status
+    (ctx as any).letterSpacing = "4px";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 40px sans-serif";
+    ctx.fillText("STATUS: PASSED & READY FOR PRODUCTION", canvas.width / 2, 920);
+
+    // Date
+    (ctx as any).letterSpacing = "2px";
+    const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+    ctx.fillStyle = "#64748b"; // Slate 500
+    ctx.font = "24px monospace";
+    ctx.fillText(`OFFICIAL SIGN-OFF DATE: ${date}`, canvas.width / 2, 1000);
+
+    // LOAD FAVICON AS SIGNATURE AT BOTTOM
     try {
       const img = new Image();
       img.crossOrigin = "anonymous";
@@ -79,61 +130,47 @@ export default function QABugHunt() {
         img.onload = resolve;
         img.onerror = reject;
       });
-      ctx.drawImage(img, canvas.width / 2 - 50, 160, 100, 100);
+      // Draw signature logo at bottom center
+      ctx.drawImage(img, canvas.width / 2 - 40, 1040, 80, 80);
     } catch (e) {
-      // Geometric Fallback if no favicon is found
-      ctx.save();
-      ctx.translate(canvas.width / 2, 210);
-      ctx.rotate(Math.PI / 4);
-      ctx.strokeStyle = "#eab308";
-      ctx.lineWidth = 8;
-      ctx.strokeRect(-35, -35, 70, 70);
-      ctx.fillStyle = "#eab308";
-      ctx.fillRect(-15, -15, 30, 30);
-      ctx.restore();
+      // Fallback text signature if image fails
+      ctx.fillStyle = "#64748b"; // Slate 500
+      ctx.font = "italic 20px sans-serif";
+      ctx.fillText("AUTHORIZED BY: KHNCO.", canvas.width / 2, 1080);
     }
 
-    // Typography
-    ctx.textAlign = "center";
-    (ctx as any).letterSpacing = "6px";
-    ctx.fillStyle = "#eab308";
-    ctx.font = "bold 26px sans-serif";
-    ctx.fillText("QUALITY ASSURANCE DIVISION", canvas.width / 2, 380);
+    // Execute Download (Mobile & Desktop Safe)
+    canvas.toBlob(async (blob) => {
+      if (!blob) return;
+      
+      const fileName = "QA-Bug-Hunt-Master-Certificate.png";
+      const file = new File([blob], fileName, { type: "image/png" });
 
-    (ctx as any).letterSpacing = "2px";
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 85px sans-serif";
-    ctx.fillText("CERTIFIED BUG HUNTER", canvas.width / 2, 500);
+      // 1. Try Mobile Native Share (iOS/Android "Save Image" or "Share")
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'QA Master Certified!',
+            text: 'Check out my QA Bug Hunt Master Certificate!',
+          });
+          return; // Stop here if native share works
+        } catch (error) {
+          console.log('Share cancelled or failed', error);
+          // Fall through to standard download if cancelled
+        }
+      }
 
-    // Separator Line
-    ctx.fillStyle = "#eab308";
-    ctx.fillRect(canvas.width / 2 - 150, 560, 300, 4);
-
-    // Properly Wrapped Body Text
-    (ctx as any).letterSpacing = "0px";
-    ctx.fillStyle = "#94a3b8"; // Slate 400
-    ctx.font = "italic 36px serif";
-    ctx.fillText("This official document certifies that the user has demonstrated", canvas.width / 2, 680);
-    ctx.fillText("an elite, meticulous eye for visual and functional detail,", canvas.width / 2, 740);
-    ctx.fillText("successfully identifying all discrepancies across staging environments.", canvas.width / 2, 800);
-
-    // Badge/Status
-    (ctx as any).letterSpacing = "4px";
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 40px sans-serif";
-    ctx.fillText("STATUS: PASSED & READY FOR PRODUCTION", canvas.width / 2, 960);
-
-    // Date
-    (ctx as any).letterSpacing = "2px";
-    const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-    ctx.fillStyle = "#64748b"; // Slate 500
-    ctx.font = "24px monospace";
-    ctx.fillText(`OFFICIAL SIGN-OFF DATE: ${date}`, canvas.width / 2, 1060);
-
-    const link = document.createElement("a");
-    link.download = "QA-Bug-Hunt-Master-Certificate.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+      // 2. Standard Desktop Fallback
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link); // CRITICAL: Required for iOS/Firefox fallback
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url); // Clean up memory
+    }, "image/png");
   };
 
   return (
