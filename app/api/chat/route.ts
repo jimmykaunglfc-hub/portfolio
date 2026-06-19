@@ -1,21 +1,21 @@
 import { streamText } from 'ai';
-import { openai } from '@ai-sdk/openai';
+// 1. Import Google instead of OpenAI
+import { google } from '@ai-sdk/google'; 
 import { ABOUT_ME, BLOG_POSTS, GAMES_DATA } from '@/sanity/lib/portfolioData';
 
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    // 1. The Translator: Converts the modern frontend 'parts' format 
-    // safely into the classic 'content' strings the backend expects.
     const safeMessages = messages.map((m: any) => ({
       role: m.role,
       content: m.parts ? m.parts.map((p: any) => p.text).join('') : (m.content || "")
     }));
 
     const result = await streamText({
-      model: openai('gpt-4o-mini'), 
-      messages: safeMessages, // We pass the translated messages here!
+      // 2. Use the blazing fast Gemini 2.5 Flash model
+      model: google('gemini-2.5-flash'), 
+      messages: safeMessages, 
       system: `You are the official AI assistant for Jimmy Kaung's portfolio. 
       You are professional, concise, and helpful. 
       
@@ -33,8 +33,6 @@ export async function POST(req: Request) {
       Only answer questions based on this data. If asked something unrelated, politely decline.`,
     });
 
-    // 2. We use the specific UI Message stream response that your 
-    // upgraded frontend architecture strictly demands.
     return result.toUIMessageStreamResponse(); 
     
   } catch (error) {
