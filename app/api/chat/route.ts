@@ -1,39 +1,38 @@
-import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
-// Updated import path to match where your file actually is!
+import { openai } from '@ai-sdk/openai';
+
+// 1. Using the safe "@/" alias and importing your exact variables
 import { ABOUT_ME, BLOG_POSTS, GAMES_DATA } from '@/sanity/lib/portfolioData';
 
-export const maxDuration = 30;
-
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  try {
+    const { messages } = await req.json();
 
-  const systemPrompt = `
-    You are the official AI assistant for my portfolio website. 
-    Your job is to answer questions about my background, my blog posts, and my arcade games.
-    
-    Be helpful, concise, and professional. 
-    
-    Here is the absolute latest, up-to-date information about my website:
-    
-    ABOUT ME:
-    ${ABOUT_ME}
-    
-    MY BLOG POSTS:
-    ${JSON.stringify(BLOG_POSTS, null, 2)}
-    
-    MY GAMES & HINTS:
-    ${JSON.stringify(GAMES_DATA, null, 2)}
-    
-    If a user asks for a hint, provide it based on the data above. If they ask about a topic not covered in the data above, politely let them know you primarily answer questions regarding my portfolio, games, and articles.
-  `;
+    const result = await streamText({
+      model: openai('gpt-4o-mini'), 
+      messages,
+      system: `You are the official AI assistant for Jimmy Kaung's portfolio. 
+      You are professional, concise, and helpful. 
+      
+      Here is the absolute latest, up-to-date information about Jimmy:
+      
+      ABOUT ME:
+      ${ABOUT_ME}
+      
+      MY BLOG POSTS:
+      ${JSON.stringify(BLOG_POSTS, null, 2)}
+      
+      MY GAMES & HINTS:
+      ${JSON.stringify(GAMES_DATA, null, 2)}
+      
+      Only answer questions based on this data. If asked something unrelated, politely decline.`,
+    });
 
-  const result = await streamText({
-    model: openai('gpt-4o-mini'),
-    system: systemPrompt,
-    messages,
-  });
-
-  // Updated to match your specific AI SDK version!
-  return result.toUIMessageStreamResponse();
+    // 2. Using the exact method your TypeScript version is asking for!
+    return result.toTextStreamResponse(); 
+    
+  } catch (error) {
+    console.error("Chat API Error:", error);
+    return new Response("Internal Server Error", { status: 500 });
+  }
 }
