@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import './globals.css';
 import Navbar from '../components/Navbar';
-import AIChat from '../components/AIChat';
+import AIChat from '../components/TempChat';
 import { Analytics } from '@vercel/analytics/react'
 
 export const metadata: Metadata = {
