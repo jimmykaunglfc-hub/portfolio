@@ -1,10 +1,11 @@
+export const dynamic = 'force-dynamic';
+
 import Link from "next/link";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 
 export default async function BlogIndex() {
-  // 1. Fetch all blog entries live from your Sanity Studio database
-  // { cache: 'no-store' } forces Next.js to display your new posts instantly without freezing
+  // Fetch entries live from Sanity
   const posts = await client.fetch(
     `*[_type == "post"] | order(_createdAt desc) {
       title,
@@ -18,7 +19,7 @@ export default async function BlogIndex() {
   return (
     <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto relative z-10 font-sans">
       
-      {/* Header Layout Section */}
+      {/* Header Layout Module */}
       <div className="mb-16">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 flex items-center gap-4">
           <BookOpen className="w-10 h-10 text-blue-500" />
@@ -29,11 +30,12 @@ export default async function BlogIndex() {
         </p>
       </div>
 
-      {/* Dynamic Data Mapping Grid Layout */}
+      {/* Dynamic Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {posts.map((post: any) => {
-          // 2. Intelligent, automatic UI configuration based on post content keywords
-          const titleLower = post.title.toLowerCase();
+        {posts && posts.map((post: any) => {
+          if (!post.slug) return null;
+
+          const titleLower = (post.title || "").toLowerCase();
           
           let tagLabel = "Product Strategy";
           let tagStyle = "bg-blue-500/10 text-blue-600 dark:text-blue-400";
@@ -47,7 +49,7 @@ export default async function BlogIndex() {
             borderHover = "hover:border-indigo-500/30";
             linkStyle = "text-indigo-600 dark:text-indigo-400";
             estReadTime = "6 min read";
-          } else if (titleLower.includes("refused") || titleLower.includes("owner") || titleLower.includes("features")) {
+          } else if (titleLower.includes("refused") || titleLower.includes("owner") || titleLower.includes("features") || titleLower.includes("airbnb")) {
             tagLabel = "Product Management";
             tagStyle = "bg-orange-500/10 text-orange-600 dark:text-orange-400";
             borderHover = "hover:border-orange-500/30";
@@ -62,13 +64,17 @@ export default async function BlogIndex() {
           }
 
           return (
-            <div 
+            /* UPGRADE: The entire card container is now the <Link> element!
+              This eliminates element blocking and guarantees a hand pointer cursor.
+            */
+            <Link 
+              href={`/blog/${post.slug}`}
               key={post.slug}
-              className={`group flex flex-col bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 ${borderHover}`}
+              className={`group flex flex-col bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 ${borderHover} cursor-pointer`}
             >
-              <div className="p-8 flex flex-col h-full">
+              <div className="p-8 flex flex-col h-full w-full pointer-events-none">
                 
-                {/* Meta Details (Tag Badge & Read Time) */}
+                {/* Meta details */}
                 <div className="flex items-center gap-3 mb-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${tagStyle}`}>
                     {tagLabel}
@@ -77,38 +83,29 @@ export default async function BlogIndex() {
                 </div>
 
                 {/* Article Dynamic Title */}
-                <h3 className={`text-2xl font-bold text-gray-900 dark:text-white mb-4 transition-colors ${groupHoverStyle(tagLabel)}`}>
+                <h3 className={`text-2xl font-bold text-gray-900 dark:text-white mb-4 transition-colors ${
+                  tagLabel === "Product Management" ? "group-hover:text-orange-500" :
+                  tagLabel === "Tech Strategy" ? "group-hover:text-cyan-500" :
+                  tagLabel === "Quality Assurance" ? "group-hover:text-indigo-500" : "group-hover:text-blue-500"
+                }`}>
                   {post.title}
                 </h3>
 
-                {/* Short Description excerpt */}
+                {/* Description excerpt text */}
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-8 leading-relaxed flex-grow line-clamp-4">
-                  {post.excerpt}
+                  {post.excerpt || "Click to read full article insights breakdown."}
                 </p>
 
-                {/* Clickable Navigation Route Anchor */}
-                <Link 
-                  href={`/blog/${post.slug}`} 
-                  className={`mt-auto inline-flex items-center gap-2 font-bold text-sm hover:gap-3 transition-all ${linkStyle}`}
-                >
+                {/* Action indicator row */}
+                <div className={`mt-auto inline-flex items-center gap-2 font-bold text-sm transition-all group-hover:gap-3 ${linkStyle}`}>
                   Read Article <ArrowRight className="w-4 h-4" />
-                </Link>
+                </div>
 
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
     </main>
   );
-}
-
-// Small layout helper function to maintain hover color logic based on active categories
-function groupHoverStyle(category: string) {
-  switch (category) {
-    case "Product Management": return "group-hover:text-orange-500";
-    case "Tech Strategy": return "group-hover:text-cyan-500";
-    case "Quality Assurance": return "group-hover:text-indigo-500";
-    default: return "group-hover:text-blue-500";
-  }
 }
