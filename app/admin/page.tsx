@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   LayoutDashboard, BookOpen, Gamepad2, User, Lock, Trash2, Plus, Eye, Edit3, 
   Bold, Heading, Code, List, ExternalLink, LogOut, Search, FileText, Image, CheckCircle
@@ -27,6 +27,9 @@ export default function AdvancedAdminConsole() {
   // Image Asset Gallery States
   const [uploadedGallery, setUploadedGallery] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  
+  // Clean Reference Core to prevent erratic double-trigger label behavior
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const apiRequest = async (payload: any) => {
     try {
@@ -40,7 +43,7 @@ export default function AdvancedAdminConsole() {
       return json;
     } catch (err: any) {
       setError(err.message);
-      setTimeout(() => setError(''), 4000);
+      setTimeout(() => setError(''), 5000);
       return null;
     }
   };
@@ -70,47 +73,68 @@ export default function AdvancedAdminConsole() {
     if (gamesRes) setGames(gamesRes.data || []);
   };
 
-  // Fixed & Re-aligned: Biography content synchronization handler
   const handleUpdateAbout = async () => {
     const res = await apiRequest({ action: 'insert', table: 'about_me', record: { content: aboutContent } });
     if (res) showSuccess('Biography record updated successfully.');
   };
 
-  // Process and Upload Multiple Files into the Database Storage Cloud
+  // Robust, Protected Multi-File Binary Asset Processing Pipeline
   const handleImageFilesUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
     setIsUploading(true);
+    setError('');
     const urlsLoaded: string[] = [];
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      
-      const base64String = await new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const base64 = (reader.result as string).split(',')[1];
-          resolve(base64);
-        };
-        reader.readAsDataURL(file);
-      });
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        
+        // Safeguard to intercept files exceeding 4.5MB Vercel serverless limits early
+        if (file.size > 4.5 * 1024 * 1024) {
+          throw new Error(`"${file.name}" is too large. Please use a compressed JPG or keep assets under 4.5MB.`);
+        }
+        
+        const base64String = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            if (typeof reader.result === 'string') {
+              resolve(reader.result.split(',')[1]);
+            } else {
+              reject(new Error('Failed parsing image file binary matrix stream.'));
+            }
+          };
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(file);
+        });
 
-      const res = await apiRequest({
-        action: 'upload-image',
-        fileName: file.name,
-        fileType: file.type,
-        fileBase64: base64String
-      });
+        const res = await apiRequest({
+          action: 'upload-image',
+          fileName: file.name,
+          fileType: file.type,
+          fileBase64: base64String
+        });
 
-      if (res && res.url) {
-        urlsLoaded.push(res.url);
+        if (res && res.url) {
+          urlsLoaded.push(res.url);
+        } else {
+          throw new Error('Server cluster rejected image processing storage operations.');
+        }
       }
-    }
 
-    setUploadedGallery((prev) => [...prev, ...urlsLoaded]);
-    setIsUploading(false);
-    showSuccess(`Successfully processed and loaded ${urlsLoaded.length} image matrix assets.`);
+      if (urlsLoaded.length > 0) {
+        setUploadedGallery((prev) => [...prev, ...urlsLoaded]);
+        showSuccess(`Successfully cataloged ${urlsLoaded.length} high-fidelity assets.`);
+      }
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Asset loading processing anomaly encountered.');
+      setTimeout(() => setError(''), 6000);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = ''; // Flush DOM file selection state clean
+    }
   };
 
   const handleAddBlog = async (e: React.FormEvent) => {
@@ -307,7 +331,7 @@ export default function AdvancedAdminConsole() {
           <div className="flex items-center gap-3 text-xs">
             {message && <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium rounded-lg">{message}</span>}
             {error && <span className="px-3 py-1 bg-red-500/10 border border-red-500/20 text-red-400 font-medium rounded-lg">{error}</span>}
-            <span className="text-zinc-500">v2.2.0-prod</span>
+            <span className="text-zinc-500">v2.3.0-prod</span>
           </div>
         </header>
 
@@ -351,7 +375,7 @@ export default function AdvancedAdminConsole() {
           {activeTab === 'blogs' && (
             <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 items-start">
               
-              {/* AUTHORING FORM WITH BUILT-IN IMAGE DRAWER */}
+              {/* AUTHORING FORM WITH DECOUPLED INPUT REF */}
               <form onSubmit={handleAddBlog} className="xl:col-span-2 bg-[#0d0d11] border border-zinc-800 rounded-2xl p-6 space-y-4 shadow-sm">
                 <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                   <h2 className="text-sm font-bold text-white">Author New Insight Record</h2>
@@ -368,16 +392,28 @@ export default function AdvancedAdminConsole() {
                       <input type="text" placeholder="Title" value={newBlog.title} onChange={(e) => setNewBlog({ ...newBlog, title: e.target.value })} className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-sm outline-none" required />
                     </div>
 
-                    {/* MULTI-IMAGE ASSET DRAWER MODULE */}
+                    {/* UPGRADED: SECURE programmatic TRIGGER DRAWER */}
                     <div className="border border-zinc-800 bg-zinc-950/40 rounded-xl p-4 space-y-3">
                       <div className="flex items-center justify-between">
                         <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
                           <Image className="w-3.5 h-3.5 text-blue-400" /> Multi-Image Pipeline Locker
                         </label>
-                        <label className="cursor-pointer text-[10px] bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-1 rounded font-bold uppercase transition-colors">
+                        <button 
+                          type="button"
+                          disabled={isUploading} 
+                          onClick={() => fileInputRef.current?.click()}
+                          className="text-[10px] bg-blue-600 hover:bg-blue-500 disabled:bg-zinc-800 text-white disabled:text-zinc-500 px-2.5 py-1 rounded font-bold uppercase transition-colors"
+                        >
                           {isUploading ? 'Uploading Assets...' : 'Upload Media Bundle'}
-                          <input type="file" multiple accept="image/*" disabled={isUploading} onChange={handleImageFilesUpload} className="hidden" />
-                        </label>
+                        </button>
+                        <input 
+                          type="file" 
+                          ref={fileInputRef}
+                          multiple 
+                          accept="image/*" 
+                          onChange={handleImageFilesUpload} 
+                          className="hidden" 
+                        />
                       </div>
 
                       {uploadedGallery.length > 0 && (
