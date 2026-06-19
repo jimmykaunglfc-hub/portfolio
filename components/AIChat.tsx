@@ -11,7 +11,7 @@ export default function AIChat() {
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  // 1. Extracting 'error' so the UI stops failing silently!
+  // Extracting 'error' so the UI can dynamically report real exceptions
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat'
@@ -30,7 +30,6 @@ export default function AIChat() {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
     
-    // 2. The crucial fix: v5 requires a simple { text: string } payload!
     sendMessage({ text: inputValue });
     setInputValue("");
   };
@@ -128,12 +127,12 @@ export default function AIChat() {
                 </motion.div>
               )}
 
-              {/* 3. The Error Alert UI */}
+              {/* FIXED: The dynamic error tracking alert banner */}
               {error && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center mt-4">
-                  <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-xs px-4 py-3 rounded-xl flex items-center gap-2 max-w-[90%]">
+                  <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-xs px-4 py-3 rounded-xl flex items-center gap-2 max-w-[90%] font-mono break-all">
                     <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>Server Error: Please verify your OpenAI billing balance.</span>
+                    <span>Engine Error: {error.message || "Unknown dynamic network crash"}</span>
                   </div>
                 </motion.div>
               )}
