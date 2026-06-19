@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. Extract the first clean key from whichever variable you currently have active
+    // 3. Extract your clean key from whichever variable you currently have active
     const rawKeyString = process.env.GEMINI_API_KEYS || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
     const activeKey = rawKeyString.replace(/['"]/g, "").split(',')[0]?.trim();
 
@@ -47,9 +47,9 @@ export async function POST(req: Request) {
 
     const googleProvider = createGoogleGenerativeAI({ apiKey: activeKey });
 
-    // 4. Launch the stream immediately in a single pass with the ultra-stable 1.5-flash model
+    // 4. Targeted the stable gemini-2.5-flash model to eliminate version support conflicts
     const result = await streamText({
-      model: googleProvider('gemini-1.5-flash'), 
+      model: googleProvider('gemini-2.5-flash'), 
       messages: alternatingMessages, 
       system: `You are the official AI assistant for Jimmy Kaung's portfolio website. 
       Jimmy's Live Database Context:
