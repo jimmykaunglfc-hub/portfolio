@@ -6,21 +6,18 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    // 1. Fetch live contextual data from your Sanity Studio layer
+    // 1. Fetch fresh contextual data layers directly from Sanity Studio
     const livePortfolioData = await client.fetch(`{
       "careerTrajectory": *[_type == "trajectory"]{ year, company, executiveSummary },
       "blogPosts": *[_type == "post"]{ title, excerpt, "bodyText": body },
       "games": *[_type == "game"]{ title, description, hint }
     }`, {}, { cache: 'no-store' });
 
-    // 2. CONSOLIDATION ENGINE: Merge consecutive same-role messages
-    // This fixes the Gemini schema error permanently when a user clicks buttons sequentially!
+    // 2. CONSOLIDATION ENGINE: Merge consecutive same-role messages to satisfy Gemini schemas
     const alternatingMessages: any[] = [];
-    
     for (const msg of messages) {
       const normalizedRole = msg.role === 'user' ? 'user' : 'assistant';
       
-      // Safely parse text content string regardless of framework input formats
       let textContent = "";
       if (typeof msg.content === 'string') {
         textContent = msg.content;
@@ -30,7 +27,6 @@ export async function POST(req: Request) {
         textContent = msg.content.map((c: any) => c.text || "").join("");
       }
 
-      // If the previous message has the exact same role, combine their contents together
       if (alternatingMessages.length > 0 && alternatingMessages[alternatingMessages.length - 1].role === normalizedRole) {
         alternatingMessages[alternatingMessages.length - 1].content += "\n" + textContent;
       } else {
@@ -41,53 +37,70 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. Extract and parse your pooled environment API tokens
-    const keysString = process.env.GEMINI_API_KEYS || "";
-    const apiKeys = keysString.split(',').map(k => k.trim()).filter(Boolean);
+    // 3. BULLETPROOF KEY EXTRACTOR: Scans both environment naming schemes safely
+    const sourceVariables = [
+      process.env.GEMINI_API_KEYS,
+      process.env.GOOGLE_GENERATIVE_AI_API_KEY
+    ];
 
-    if (apiKeys.length === 0 && process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
-      apiKeys.push(process.env.GOOGLE_GENERATIVE_AI_API_KEY);
+    const apiKeys: string[] = [];
+    for (const envValue of sourceVariables) {
+      if (!envValue) continue;
+      // Strips accidental wrapping quotation marks and breaks commas into real standalone keys
+      const sanitized = envValue.replace(/['"]/g, "").trim();
+      const extracted = sanitized.split(',').map(k => k.trim()).filter(Boolean);
+      apiKeys.push(...extracted);
     }
 
+    // If both variable lookups come back completely empty, notify the UI stream directly
     if (apiKeys.length === 0) {
       return new Response(
-        JSON.stringify({ error: "Environment variable setup missing: No keys found inside GEMINI_API_KEYS." }), 
+        JSON.stringify({ error: "Missing Key Configuration: Ensure GEMINI_API_KEYS is added to Vercel Settings." }), 
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     let lastError: any = null;
 
-    // 4. Sequential API Token Rotation Loop
+    // 4. Sequential API Key Token Rotation Loop
     for (let i = 0; i < apiKeys.length; i++) {
+      const activeKey = apiKeys[i];
+      
+      // Ignore placeholder strings safely
+      if (activeKey.includes("YourFirstKey") || activeKey.includes("api_key")) {
+        continue;
+      }
+
       try {
-        const googleProvider = createGoogleGenerativeAI({ apiKey: apiKeys[i] });
+        const googleProvider = createGoogleGenerativeAI({ apiKey: activeKey });
         
+        // UPGRADE: Targeted the precise production model string 'gemini-2.0-flash'
         const result = await streamText({
-          model: googleProvider('gemini-2.5-flash'), 
-          messages: alternatingMessages, // Pass the safely alternated array here
+          model: googleProvider('gemini-2.0-flash'), 
+          messages: alternatingMessages, 
           system: `You are the official AI assistant for Jimmy Kaung's portfolio website. 
           Jimmy's Live Database Context:
           ${JSON.stringify(livePortfolioData)}
-          
           Only answer questions based on this data context layer. If asked about unrelated things, politely decline.`,
         });
 
-        // originalMessages option preserves existing message IDs to avoid rendering duplications on the client
         return result.toUIMessageStreamResponse({
           originalMessages: messages,
-          onError: (err: any) => err?.message || 'An unexpected streaming exception occurred.'
+          onError: (err: any) => err?.message || 'Streaming authentication exception occurred.'
         });
 
       } catch (err: any) {
         lastError = err;
-        console.error(`Gemini token rotation slot [${i}] validation failed:`, err);
-        continue; // Immediately fail over to the next key signature in your array
+        console.error(`Gemini token rotation slot [${i}] validation failed explicitly:`, err.message);
+        continue; // Advance to next available key string in the list array
       }
     }
 
+    // 5. Hard failure fallback response if Google rejects every single provided key token
     return new Response(
-      JSON.stringify({ error: `All pooled Gemini tokens exhausted. Last provider error: ${lastError?.message || 'Unknown provider exception'}` }), 
+      JSON.stringify({ 
+        error: `All keys in your pool were explicitly rejected by Google. Last message: ${lastError?.message || 'Auth failure'}` 
+      }), 
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
     
