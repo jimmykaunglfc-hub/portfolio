@@ -2,18 +2,18 @@ export const dynamic = 'force-dynamic';
 
 import Link from "next/link";
 import { ArrowRight, BookOpen } from "lucide-react";
-import { client } from "@/sanity/lib/client";
+import { supabase } from "../../lib/supabase";
 
 export default async function BlogIndex() {
-  const posts = await client.fetch(
-    `*[_type == "post"] | order(_createdAt desc) {
-      title,
-      "slug": slug.current,
-      excerpt
-    }`,
-    {},
-    { cache: 'no-store' }
-  );
+  // 1. Query your live entries directly from the Supabase 'blog_posts' table
+  const { data: posts, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error("Error fetching blog posts from Supabase:", error);
+  }
 
   return (
     <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto relative z-10 font-sans">
@@ -30,7 +30,13 @@ export default async function BlogIndex() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts && posts.map((post: any) => {
-          if (!post.slug) return null;
+          // 2. Generate a URL-safe route parameter from the title to handle structural routing
+          const slug = post.slug || (post.title || "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '');
+
+          if (!slug) return null;
 
           const titleLower = (post.title || "").toLowerCase();
           
@@ -62,8 +68,8 @@ export default async function BlogIndex() {
 
           return (
             <Link 
-              href={`/blog/${post.slug}`}
-              key={post.slug}
+              href={`/blog/${slug}`}
+              key={slug}
               className={`group flex flex-col bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 ${borderHover} cursor-pointer`}
             >
               <div className="p-8 flex flex-col h-full w-full pointer-events-none">
@@ -84,7 +90,7 @@ export default async function BlogIndex() {
                 </h3>
 
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-8 leading-relaxed flex-grow line-clamp-4">
-                  {post.excerpt || "Click to read full article insights breakdown."}
+                  {post.summary || "Click to read full article insights breakdown."}
                 </p>
 
                 <div className={`mt-auto inline-flex items-center gap-2 font-bold text-sm transition-all group-hover:gap-3 ${linkStyle}`}>
