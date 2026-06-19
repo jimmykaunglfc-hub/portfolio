@@ -6,9 +6,16 @@ export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
+    // 1. The Translator: Converts the modern frontend 'parts' format 
+    // safely into the classic 'content' strings the backend expects.
+    const safeMessages = messages.map((m: any) => ({
+      role: m.role,
+      content: m.parts ? m.parts.map((p: any) => p.text).join('') : (m.content || "")
+    }));
+
     const result = await streamText({
       model: openai('gpt-4o-mini'), 
-      messages,
+      messages: safeMessages, // We pass the translated messages here!
       system: `You are the official AI assistant for Jimmy Kaung's portfolio. 
       You are professional, concise, and helpful. 
       
@@ -26,7 +33,9 @@ export async function POST(req: Request) {
       Only answer questions based on this data. If asked something unrelated, politely decline.`,
     });
 
-    return result.toTextStreamResponse(); 
+    // 2. We use the specific UI Message stream response that your 
+    // upgraded frontend architecture strictly demands.
+    return result.toUIMessageStreamResponse(); 
     
   } catch (error) {
     console.error("Chat API Error:", error);
