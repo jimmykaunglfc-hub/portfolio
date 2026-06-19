@@ -11,15 +11,10 @@ export async function POST(req: Request) {
       content: m.parts ? m.parts.map((p: any) => p.text).join('') : (m.content || "")
     }));
 
-    // BROADCAST QUERY: Dynamic layout block extraction query
+    // BROADCAST QUERY: Fetch clean string records live from Sanity
     const livePortfolioData = await client.fetch(`{
       "careerTrajectory": *[_type == "trajectory"]{ year, company, executiveSummary },
-      "blogPosts": *[_type == "post"]{ 
-        title, 
-        excerpt,
-        // Grabs plain string characters directly inside Portable Text blocks for the AI
-        "bodyText": body[type == "block"].children[].text 
-      },
+      "blogPosts": *[_type == "post"]{ title, excerpt, "bodyText": body },
       "games": *[_type == "game"]{ name, description, hint }
     }`, {}, { cache: 'no-store' }); 
 
@@ -29,13 +24,13 @@ export async function POST(req: Request) {
       system: `You are the official AI assistant for Jimmy Kaung's portfolio website. 
       You are professional, clear, concise, and helpful.
       
-      You have real-time access to Jimmy's database. Here is his live portfolio data layer:
+      You have real-time access to Jimmy's database. Here is his live portfolio data:
       ${JSON.stringify(livePortfolioData, null, 2)}
       
       Instructions:
       - Use the "careerTrajectory" details to answer questions about his job history.
-      - Use the "blogPosts" details to summarize, discuss, or quote case studies he has written (like the Knight Capital release failure).
-      - Use the "games" details to give descriptions or exact hints for all 6 arcade games (Techle, Bug Blaster, Lexicon Lock, QA Bug Hunt, Sprint Planner, Neural Decrypt).
+      - Use the "blogPosts" details to summarize, discuss, or quote his articles.
+      - Use the "games" details to give descriptions or exact hints for his 6 arcade games.
       
       Only answer questions based on this provided data. If asked something completely unrelated, politely decline.`,
     });
