@@ -178,7 +178,67 @@ export default function TechleGame() {
     ctx.beginPath(); ctx.moveTo(85, canvas.height-85-s); ctx.lineTo(85, canvas.height-85); ctx.lineTo(85+s, canvas.height-85); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(canvas.width-85-s, canvas.height-85); ctx.lineTo(canvas.width-85, canvas.height-85); ctx.lineTo(canvas.width-85, canvas.height-85-s); ctx.stroke();
 
-    // Fetch and Load Favicon
+    // DRAW GAME ICON (Keyboard)
+    ctx.save();
+    ctx.translate(canvas.width / 2 - 60, 130); // Position at top center
+    ctx.scale(5, 5); // Scale up a standard 24x24 SVG
+    ctx.strokeStyle = "#f97316";
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    // Native Lucide 'Keyboard' SVG Paths
+    const kbBox = new Path2D("M4 4 h16 a2 2 0 0 1 2 2 v12 a2 2 0 0 1 -2 2 h-16 a2 2 0 0 1 -2 -2 v-12 a2 2 0 0 1 2 -2 z");
+    const kbKeys = new Path2D("M6 8h.01 M10 8h.01 M14 8h.01 M18 8h.01 M6 12h.01 M10 12h.01 M14 12h.01 M18 12h.01 M10 16h4");
+    ctx.stroke(kbBox);
+    ctx.stroke(kbKeys);
+    ctx.restore();
+
+    // Typography Setup
+    ctx.textAlign = "center";
+    (ctx as any).letterSpacing = "8px";
+    ctx.fillStyle = "#f97316";
+    ctx.font = "bold 26px monospace";
+    ctx.fillText("TECHLE DECRYPTION PROTOCOL", canvas.width / 2, 350);
+
+    (ctx as any).letterSpacing = "4px";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 85px sans-serif";
+    ctx.fillText("SYSTEM DECRYPTED", canvas.width / 2, 470);
+
+    // Separator line
+    ctx.fillStyle = "#f97316";
+    ctx.fillRect(canvas.width / 2 - 150, 530, 300, 4);
+
+    // Body Text Elements
+    (ctx as any).letterSpacing = "0px";
+    ctx.fillStyle = "#94a3b8"; // Slate 400
+    ctx.font = "italic 36px sans-serif";
+    ctx.fillText("This official data log verifies that the operative successfully bypassed", canvas.width / 2, 650);
+    ctx.fillText(`mainframe protocols and parsed the system keyword within ${guesses.length} processing cycles.`, canvas.width / 2, 710);
+
+    // Solved Decrypted Word Target
+    (ctx as any).letterSpacing = "10px";
+    ctx.fillStyle = "#22c55e"; // Success green glow
+    ctx.font = "bold 55px monospace";
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#22c55e";
+    ctx.fillText(`[ ${solution} ]`, canvas.width / 2, 850);
+    ctx.shadowBlur = 0; // Reset
+
+    // Security Rating
+    (ctx as any).letterSpacing = "4px";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 38px monospace";
+    ctx.fillText("SECURITY PROFILE VALIDATION: ELITE DECRYPTER", canvas.width / 2, 970);
+
+    // Date/Timestamp
+    (ctx as any).letterSpacing = "2px";
+    const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
+    ctx.fillStyle = "#52525b"; // Zinc 600
+    ctx.font = "24px monospace";
+    ctx.fillText(`DECRYPTION LOG STAMP: ${date}`, canvas.width / 2, 1050);
+
+    // LOAD FAVICON AS SIGNATURE AT BOTTOM
     try {
       const img = new Image();
       img.crossOrigin = "anonymous";
@@ -187,67 +247,47 @@ export default function TechleGame() {
         img.onload = resolve;
         img.onerror = reject;
       });
-      ctx.drawImage(img, canvas.width / 2 - 50, 160, 100, 100);
+      // Draw signature logo at bottom center
+      ctx.drawImage(img, canvas.width / 2 - 40, 1080, 80, 80);
     } catch (e) {
-      // Fallback terminal prompt logo >_
-      ctx.save();
-      ctx.translate(canvas.width / 2, 210);
-      ctx.fillStyle = "#f97316";
-      ctx.font = "bold 60px monospace";
-      ctx.fillText(">_", -30, 20);
-      ctx.restore();
+      // Fallback text signature if image fails
+      ctx.fillStyle = "#52525b"; // Zinc 600
+      ctx.font = "italic 20px sans-serif";
+      ctx.fillText("AUTHORIZED BY: KHNCO.", canvas.width / 2, 1120);
     }
 
-    // Typography Setup
-    ctx.textAlign = "center";
-    (ctx as any).letterSpacing = "8px";
-    ctx.fillStyle = "#f97316";
-    ctx.font = "bold 26px monospace";
-    ctx.fillText("TECHLE DECRYPTION PROTOCOL", canvas.width / 2, 380);
+    // Execute Download (Mobile & Desktop Safe)
+    canvas.toBlob(async (blob) => {
+      if (!blob) return;
+      
+      const fileName = `Techle-Decrypted-${solution}.png`;
+      const file = new File([blob], fileName, { type: "image/png" });
 
-    (ctx as any).letterSpacing = "4px";
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 85px sans-serif";
-    ctx.fillText("SYSTEM DECRYPTED", canvas.width / 2, 500);
+      // 1. Try Mobile Native Share (iOS/Android "Save Image" or "Share")
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'System Decrypted!',
+            text: `I decrypted the Techle system word [${solution}] in ${guesses.length} tries!`,
+          });
+          return; // Stop here if native share works
+        } catch (error) {
+          console.log('Share cancelled or failed', error);
+          // Fall through to standard download if cancelled
+        }
+      }
 
-    // Separator line
-    ctx.fillStyle = "#f97316";
-    ctx.fillRect(canvas.width / 2 - 150, 560, 300, 4);
-
-    // Body Text Elements
-    (ctx as any).letterSpacing = "0px";
-    ctx.fillStyle = "#94a3b8"; // Slate 400
-    ctx.font = "italic 36px sans-serif";
-    ctx.fillText("This official data log verifies that the operative successfully bypassed", canvas.width / 2, 680);
-    ctx.fillText(`mainframe protocols and parsed the system keyword within ${guesses.length} processing cycles.`, canvas.width / 2, 740);
-
-    // Solved Decrypted Word Target
-    (ctx as any).letterSpacing = "10px";
-    ctx.fillStyle = "#22c55e"; // Success green glow
-    ctx.font = "bold 55px monospace";
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "#22c55e";
-    ctx.fillText(`[ ${solution} ]`, canvas.width / 2, 880);
-    ctx.shadowBlur = 0; // Reset
-
-    // Security Rating
-    (ctx as any).letterSpacing = "4px";
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 38px monospace";
-    ctx.fillText("SECURITY PROFILE VALIDATION: ELITE DECRYPTER", canvas.width / 2, 1000);
-
-    // Date/Timestamp
-    (ctx as any).letterSpacing = "2px";
-    const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
-    ctx.fillStyle = "#52525b"; // Zinc 600
-    ctx.font = "24px monospace";
-    ctx.fillText(`DECRYPTION LOG STAMP: ${date}`, canvas.width / 2, 1100);
-
-    // Execute Download
-    const link = document.createElement("a");
-    link.download = `Techle-Decrypted-${solution}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+      // 2. Standard Desktop Fallback
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link); // CRITICAL: Required for iOS/Firefox fallback
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url); // Clean up memory
+    }, "image/png");
   };
 
   return (

@@ -165,26 +165,22 @@ export default function SprintPlanner() {
     ctx.fillRect(70, canvas.height - 70 - cSize, cSize, cSize);
     ctx.fillRect(canvas.width - 70 - cSize, canvas.height - 70 - cSize, cSize, cSize);
 
-    // Load Favicon / Logo
-    try {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = "/favicon.ico";
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-      });
-      ctx.drawImage(img, canvas.width / 2 - 60, 160, 120, 120);
-    } catch (e) {
-      // Fallback: Stylized Target/Bullseye
-      ctx.save();
-      ctx.translate(canvas.width / 2, 220);
-      ctx.strokeStyle = "#3b82f6";
-      ctx.lineWidth = 12;
-      ctx.beginPath(); ctx.arc(0, 0, 45, 0, Math.PI * 2); ctx.stroke();
-      ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
-    }
+    // DRAW GAME ICON (Target)
+    ctx.save();
+    ctx.translate(canvas.width / 2 - 60, 130); // Position at top center
+    ctx.scale(5, 5); // Scale up a standard 24x24 SVG
+    ctx.strokeStyle = "#3b82f6";
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    // Native Lucide 'Target' SVG Paths
+    const targetOuter = new Path2D("M22 12A10 10 0 1 1 12 2a10 10 0 0 1 10 10z");
+    const targetMid = new Path2D("M18 12a6 6 0 1 1-12 0 6 6 0 0 1 12 0z");
+    const targetInner = new Path2D("M14 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0z");
+    ctx.stroke(targetOuter);
+    ctx.stroke(targetMid);
+    ctx.stroke(targetInner);
+    ctx.restore();
 
     // Typography
     ctx.textAlign = "center";
@@ -224,12 +220,58 @@ export default function SprintPlanner() {
     const date = new Date().toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' });
     ctx.fillStyle = "#64748b"; // Slate 500
     ctx.font = "24px monospace";
-    ctx.fillText(`VERIFIED ON: ${date}`, canvas.width / 2, 1060);
+    ctx.fillText(`VERIFIED ON: ${date}`, canvas.width / 2, 1040);
 
-    const link = document.createElement("a");
-    link.download = "Sprint-Optimizer-Master-Certificate.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    // LOAD FAVICON AS SIGNATURE AT BOTTOM
+    try {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = "/favicon.ico";
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+      });
+      // Draw signature logo at bottom center
+      ctx.drawImage(img, canvas.width / 2 - 40, 1080, 80, 80);
+    } catch (e) {
+      // Fallback text signature if image fails
+      ctx.fillStyle = "#64748b"; // Slate 500
+      ctx.font = "italic 20px sans-serif";
+      ctx.fillText("AUTHORIZED BY: KHNCO.", canvas.width / 2, 1120);
+    }
+
+    // Execute Download (Mobile & Desktop Safe)
+    canvas.toBlob(async (blob) => {
+      if (!blob) return;
+      
+      const fileName = "Sprint-Optimizer-Master-Certificate.png";
+      const file = new File([blob], fileName, { type: "image/png" });
+
+      // 1. Try Mobile Native Share (iOS/Android "Save Image" or "Share")
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Master Product Manager!',
+            text: 'Check out my Sprint Optimizer Master Certificate!',
+          });
+          return; // Stop here if native share works
+        } catch (error) {
+          console.log('Share cancelled or failed', error);
+          // Fall through to standard download if cancelled
+        }
+      }
+
+      // 2. Standard Desktop Fallback
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link); // CRITICAL: Required for iOS/Firefox fallback
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url); // Clean up memory
+    }, "image/png");
   };
 
   const getBadgeColor = (type: string) => {
