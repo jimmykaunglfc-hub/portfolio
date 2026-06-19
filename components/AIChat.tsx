@@ -11,6 +11,7 @@ export default function AIChat() {
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
+  // 1. Using the correct DefaultChatTransport for the newest AI SDK
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat'
@@ -19,7 +20,6 @@ export default function AIChat() {
 
   const isLoading = status === "submitted" || status === "streaming";
 
-  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -30,6 +30,7 @@ export default function AIChat() {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
     
+    // 2. Using the modern 'sendMessage' with the 'parts' array
     sendMessage({ 
       role: "user", 
       parts: [{ type: "text", text: inputValue }] 
@@ -39,7 +40,6 @@ export default function AIChat() {
 
   return (
     <>
-      {/* Premium Floating Action Button - Mobile Adjusted */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button 
@@ -47,7 +47,6 @@ export default function AIChat() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            // Changed z-index to 9999 and adjusted mobile positioning
             className="fixed bottom-4 right-4 md:bottom-6 md:right-6 p-3.5 md:p-4 rounded-full z-[9999] transition-all duration-300 bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.8)] hover:-translate-y-1 group"
           >
             <MessageSquare className="w-6 h-6 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300" />
@@ -55,7 +54,6 @@ export default function AIChat() {
         )}
       </AnimatePresence>
 
-      {/* Premium Chat Window - Mobile Adjusted */}
       <AnimatePresence>
         {isOpen && (
           <motion.div 
@@ -63,10 +61,8 @@ export default function AIChat() {
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: 20, scale: 0.95, filter: "blur(10px)" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            // Changed to dynamic width (calc 100vw - 2rem) for mobile screens
             className="fixed bottom-4 right-4 md:bottom-6 md:right-6 w-[calc(100vw-2rem)] md:w-[360px] h-[75vh] md:h-[550px] max-h-[85vh] bg-white dark:bg-[#09090b] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[9999] flex flex-col overflow-hidden font-sans"
           >
-            {/* Glassmorphic Header */}
             <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#121214]/80 backdrop-blur-md flex justify-between items-center relative z-10">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
@@ -87,7 +83,6 @@ export default function AIChat() {
               </button>
             </div>
 
-            {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-slate-50 dark:bg-[#09090b] scroll-smooth">
               {messages.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-full text-center px-4 opacity-70">
@@ -110,13 +105,12 @@ export default function AIChat() {
                     key={m.id} 
                     className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
                   >
-                    {/* Avatar */}
                     <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center ${isUser ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-[#121214] border border-gray-300 dark:border-white/10 text-gray-600 dark:text-gray-400'}`}>
                       {isUser ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
                     </div>
                     
-                    {/* Message Bubble */}
                     <div className={`max-w-[75%] p-3.5 text-sm leading-relaxed break-words ${isUser ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm shadow-md' : 'bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 rounded-2xl rounded-tl-sm shadow-sm'}`}>
+                      {/* 3. Rendering message 'parts' instead of the deprecated 'content' string */}
                       {m.parts?.map((part: any, i: number) => 
                         part.type === 'text' ? <span key={i}>{part.text}</span> : null
                       )}
@@ -140,7 +134,6 @@ export default function AIChat() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Premium Input Area */}
             <form onSubmit={onSubmit} className="p-4 bg-white dark:bg-[#09090b] border-t border-gray-200 dark:border-white/10">
               <div className="relative flex items-center bg-gray-100 dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-blue-500/50 focus-within:border-blue-500 transition-all">
                 <input

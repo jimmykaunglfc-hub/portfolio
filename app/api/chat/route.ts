@@ -1,7 +1,5 @@
 import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
-
-// 1. Using the safe "@/" alias and importing your exact variables
 import { ABOUT_ME, BLOG_POSTS, GAMES_DATA } from '@/sanity/lib/portfolioData';
 
 export async function POST(req: Request) {
@@ -28,7 +26,6 @@ export async function POST(req: Request) {
       Only answer questions based on this data. If asked something unrelated, politely decline.`,
     });
 
-    // 2. Using the exact method your TypeScript version is asking for!
     return result.toTextStreamResponse(); 
     
   } catch (error) {
