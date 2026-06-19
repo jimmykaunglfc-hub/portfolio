@@ -13,7 +13,35 @@ export async function POST(req: Request) {
       "games": *[_type == "game"]{ title, description, hint }
     }`, {}, { cache: 'no-store' });
 
-    // 2. Extract and parse your pooled environment API tokens
+    // 2. CONSOLIDATION ENGINE: Merge consecutive same-role messages
+    // This fixes the Gemini schema error permanently when a user clicks buttons sequentially!
+    const alternatingMessages: any[] = [];
+    
+    for (const msg of messages) {
+      const normalizedRole = msg.role === 'user' ? 'user' : 'assistant';
+      
+      // Safely parse text content string regardless of framework input formats
+      let textContent = "";
+      if (typeof msg.content === 'string') {
+        textContent = msg.content;
+      } else if (Array.isArray(msg.parts)) {
+        textContent = msg.parts.map((p: any) => p.text || "").join("");
+      } else if (Array.isArray(msg.content)) {
+        textContent = msg.content.map((c: any) => c.text || "").join("");
+      }
+
+      // If the previous message has the exact same role, combine their contents together
+      if (alternatingMessages.length > 0 && alternatingMessages[alternatingMessages.length - 1].role === normalizedRole) {
+        alternatingMessages[alternatingMessages.length - 1].content += "\n" + textContent;
+      } else {
+        alternatingMessages.push({
+          role: normalizedRole,
+          content: textContent || "Hello"
+        });
+      }
+    }
+
+    // 3. Extract and parse your pooled environment API tokens
     const keysString = process.env.GEMINI_API_KEYS || "";
     const apiKeys = keysString.split(',').map(k => k.trim()).filter(Boolean);
 
@@ -30,14 +58,14 @@ export async function POST(req: Request) {
 
     let lastError: any = null;
 
-    // 3. Sequential API Token Rotation Loop
+    // 4. Sequential API Token Rotation Loop
     for (let i = 0; i < apiKeys.length; i++) {
       try {
         const googleProvider = createGoogleGenerativeAI({ apiKey: apiKeys[i] });
         
         const result = await streamText({
           model: googleProvider('gemini-2.5-flash'), 
-          messages: messages, 
+          messages: alternatingMessages, // Pass the safely alternated array here
           system: `You are the official AI assistant for Jimmy Kaung's portfolio website. 
           Jimmy's Live Database Context:
           ${JSON.stringify(livePortfolioData)}
@@ -45,19 +73,19 @@ export async function POST(req: Request) {
           Only answer questions based on this data context layer. If asked about unrelated things, politely decline.`,
         });
 
-        // FIXED: Utilized the official 'onError' configuration callback for type safety
+        // originalMessages option preserves existing message IDs to avoid rendering duplications on the client
         return result.toUIMessageStreamResponse({
+          originalMessages: messages,
           onError: (err: any) => err?.message || 'An unexpected streaming exception occurred.'
         });
 
       } catch (err: any) {
         lastError = err;
         console.error(`Gemini token rotation slot [${i}] validation failed:`, err);
-        continue; // Immediately cascade to your next active standby token key
+        continue; // Immediately fail over to the next key signature in your array
       }
     }
 
-    // 4. Return structural error logs if every single token in your pool fails validation
     return new Response(
       JSON.stringify({ error: `All pooled Gemini tokens exhausted. Last provider error: ${lastError?.message || 'Unknown provider exception'}` }), 
       { status: 500, headers: { 'Content-Type': 'application/json' } }
