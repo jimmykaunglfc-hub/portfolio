@@ -343,23 +343,81 @@ export default function TechleGame() {
         ))}
       </div>
 
-      {/* Instructions Modal */}
+      {/* Instructions Modal (UPDATED) */}
       <AnimatePresence>
         {showHelp && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-              <div className="p-6 relative">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }} 
+              animate={{ opacity: 1, scale: 1, y: 0 }} 
+              exit={{ opacity: 0, scale: 0.95, y: 20 }} 
+              className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-md my-auto"
+            >
+              <div className="p-6 md:p-8 relative">
                 <button onClick={() => setShowHelp(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
                   <X className="w-6 h-6" />
                 </button>
+                
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">How to Play</h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">Guess the <strong>TECHLE</strong> in 6 tries. Every word is related to programming, tech, or web development!</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
+                  Guess the <strong>TECHLE</strong> in 6 tries. Every word is related to programming, tech, or web development!
+                </p>
+                
                 <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400 mb-6 list-disc pl-5">
                   <li>Each guess must be a valid 5-letter word.</li>
                   <li>Hit the enter button to submit.</li>
-                  <li>After each guess, the color of the tiles changes to show how close you were.</li>
+                  <li>After each guess, the color of the tiles changes to show how close your guess was to the word.</li>
                 </ul>
-                <button onClick={() => setShowHelp(false)} className="w-full py-3 rounded-xl font-bold bg-orange-500 hover:bg-orange-600 text-white transition-colors">Let's Play!</button>
+
+                <hr className="border-gray-200 dark:border-slate-700 mb-6" />
+                
+                <h3 className="font-bold text-gray-900 dark:text-white mb-4">Examples</h3>
+                
+                {/* Example 1 - Green */}
+                <div className="mb-4">
+                  <div className="flex gap-1.5 mb-2">
+                    <div className="w-10 h-10 bg-green-500 text-white flex items-center justify-center font-bold text-xl rounded-lg">R</div>
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">E</div>
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">A</div>
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">C</div>
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">T</div>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    The letter <strong>R</strong> is in the word and in the correct spot.
+                  </p>
+                </div>
+
+                {/* Example 2 - Yellow */}
+                <div className="mb-4">
+                  <div className="flex gap-1.5 mb-2">
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">L</div>
+                    <div className="w-10 h-10 bg-yellow-500 text-white flex items-center justify-center font-bold text-xl rounded-lg">O</div>
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">G</div>
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">I</div>
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">C</div>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    The letter <strong>O</strong> is in the word but in the wrong spot.
+                  </p>
+                </div>
+
+                {/* Example 3 - Gray */}
+                <div className="mb-6">
+                  <div className="flex gap-1.5 mb-2">
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">S</div>
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">T</div>
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">A</div>
+                    <div className="w-10 h-10 bg-gray-600 dark:bg-gray-800 text-white dark:text-gray-400 border border-gray-600 dark:border-gray-800 flex items-center justify-center font-bold text-xl rounded-lg">C</div>
+                    <div className="w-10 h-10 border-2 border-gray-300 dark:border-slate-700 flex items-center justify-center font-bold text-xl rounded-lg dark:text-white">K</div>
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    The letter <strong>C</strong> is not in the word in any spot.
+                  </p>
+                </div>
+
+                <button onClick={() => setShowHelp(false)} className="w-full py-3.5 rounded-xl font-bold bg-orange-500 hover:bg-orange-600 text-white transition-colors shadow-lg shadow-orange-500/20">
+                  Let's Play!
+                </button>
               </div>
             </motion.div>
           </div>
