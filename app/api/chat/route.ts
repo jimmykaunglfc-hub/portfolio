@@ -59,7 +59,10 @@ export async function POST(req: Request) {
 
     return result.toUIMessageStreamResponse({
       originalMessages: messages,
-      onError: (err: any) => err?.message || 'Streaming exception occurred.'
+      onError: (err: any) => err?.message || 'Streaming exception occurred.',
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
+      }
     });
 
   } catch (globalError: any) {
