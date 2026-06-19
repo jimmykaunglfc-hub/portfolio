@@ -3,7 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { type UIMessage, DefaultChatTransport } from "ai";
 import { useState, useRef, useEffect } from "react";
-import { MessageSquare, X, Send, Sparkles, User } from "lucide-react";
+import { MessageSquare, X, Send, Sparkles, User, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AIChat() {
@@ -11,8 +11,8 @@ export default function AIChat() {
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  // 1. Using the correct DefaultChatTransport for the newest AI SDK
-  const { messages, sendMessage, status } = useChat({
+  // 1. Extracting 'error' so the UI stops failing silently!
+  const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat'
     })
@@ -24,17 +24,14 @@ export default function AIChat() {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, isLoading]);
+  }, [messages, isLoading, error]);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
     
-    // 2. Using the modern 'sendMessage' with the 'parts' array
-    sendMessage({ 
-      role: "user", 
-      parts: [{ type: "text", text: inputValue }] 
-    });
+    // 2. The crucial fix: v5 requires a simple { text: string } payload!
+    sendMessage({ text: inputValue });
     setInputValue("");
   };
 
@@ -110,7 +107,6 @@ export default function AIChat() {
                     </div>
                     
                     <div className={`max-w-[75%] p-3.5 text-sm leading-relaxed break-words ${isUser ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm shadow-md' : 'bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 rounded-2xl rounded-tl-sm shadow-sm'}`}>
-                      {/* 3. Rendering message 'parts' instead of the deprecated 'content' string */}
                       {m.parts?.map((part: any, i: number) => 
                         part.type === 'text' ? <span key={i}>{part.text}</span> : null
                       )}
@@ -131,6 +127,17 @@ export default function AIChat() {
                   </div>
                 </motion.div>
               )}
+
+              {/* 3. The Error Alert UI */}
+              {error && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center mt-4">
+                  <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-xs px-4 py-3 rounded-xl flex items-center gap-2 max-w-[90%]">
+                    <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                    <span>Server Error: Please verify your OpenAI billing balance.</span>
+                  </div>
+                </motion.div>
+              )}
+
               <div ref={messagesEndRef} />
             </div>
 
@@ -140,7 +147,8 @@ export default function AIChat() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Type a message..."
-                  className="flex-1 bg-transparent border-none px-4 py-3 text-sm focus:outline-none text-gray-900 dark:text-white placeholder-gray-500"
+                  disabled={isLoading}
+                  className="flex-1 bg-transparent border-none px-4 py-3 text-sm focus:outline-none text-gray-900 dark:text-white placeholder-gray-500 disabled:opacity-50"
                 />
                 <button 
                   type="submit" 
