@@ -1,111 +1,99 @@
 export const dynamic = 'force-dynamic';
 
-import Link from "next/link";
-import { ArrowRight, BookOpen } from "lucide-react";
-import { client } from "@/sanity/lib/client";
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { client } from '@/sanity/lib/client';
 
-export default async function BlogIndex() {
-  // Fetch all articles live from Sanity with cache fully disabled
-  const posts = await client.fetch(
-    `*[_type == "post"] | order(_createdAt desc) {
+interface PageProps {
+  params: any;
+}
+
+export default async function BlogPostPage({ params }: PageProps) {
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
+
+  const post = await client.fetch(
+    `*[_type == "post" && slug.current == $slug][0]{
       title,
-      "slug": slug.current,
-      excerpt
+      body
     }`,
-    {},
+    { slug },
     { cache: 'no-store' }
   );
 
-  return (
-    <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto relative z-10 font-sans">
-      
-      {/* Catalog Header Section */}
-      <div className="mb-16">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 flex items-center gap-4">
-          <BookOpen className="w-10 h-10 text-blue-500" />
-          Insights & <span className="text-blue-500">Articles</span>
-        </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
-          Thoughts, strategies, and deep dives into product management, software engineering, and creating exceptional user experiences.
+  if (!post) {
+    notFound();
+  }
+
+  // Custom styling block layout parser
+  const renderContent = (rawText: string) => {
+    if (!rawText) return null;
+    
+    const blocks = rawText.split('\n\n');
+
+    return blocks.map((block, index) => {
+      const trimmed = block.trim();
+
+      if (trimmed.startsWith('###')) {
+        return (
+          <h3 key={index} className="text-xl md:text-2xl font-bold text-white mt-12 mb-4 tracking-tight border-b border-slate-900 pb-2">
+            {trimmed.replace('###', '').trim()}
+          </h3>
+        );
+      }
+
+      if (trimmed.startsWith('>')) {
+        return (
+          <div key={index} className="my-8 p-6 rounded-xl bg-slate-900/30 border-l-2 border-cyan-500 shadow-inner">
+            <p className="text-slate-200 italic font-medium text-base md:text-lg leading-relaxed">
+              {trimmed.replace('>', '').replace(/"/g, '').trim()}
+            </p>
+          </div>
+        );
+      }
+
+      if (trimmed.startsWith('*') || trimmed.startsWith('-')) {
+        const items = trimmed.split('\n');
+        return (
+          <ul key={index} className="list-disc list-inside space-y-3 text-slate-400 font-light text-base mb-6 pl-2">
+            {items.map((item, i) => (
+              <li key={i} className="marker:text-slate-600 pl-1">
+                {item.replace(/^[* -]/, '').trim()}
+              </li>
+            ))}
+          </ul>
+        );
+      }
+
+      return (
+        <p key={index} className="text-slate-400 text-base leading-relaxed mb-6 font-light tracking-wide whitespace-pre-line">
+          {trimmed}
         </p>
-      </div>
+      );
+    });
+  };
 
-      {/* Dynamic Grid Mapping */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {posts && posts.map((post: any) => {
-          // Safeguard if a document is missing a slug configuration
-          if (!post.slug) return null;
+  return (
+    <main className="min-h-screen bg-[#030303] text-slate-200 font-sans pt-32 pb-24 selection:bg-blue-500/20">
+      <div className="max-w-3xl mx-auto px-4 md:px-6">
+        
+        <Link href="/blog" className="inline-flex items-center text-xs text-slate-500 hover:text-slate-300 transition-colors mb-10 tracking-wider uppercase gap-1 group">
+          <span className="transform group-hover:-translate-x-0.5 transition-transform">←</span> Back to Insights
+        </Link>
 
-          const titleLower = (post.title || "").toLowerCase();
-          
-          let tagLabel = "Product Strategy";
-          let tagStyle = "bg-blue-500/10 text-blue-600 dark:text-blue-400";
-          let borderHover = "hover:border-blue-500/30";
-          let linkStyle = "text-blue-600 dark:text-blue-400";
-          let estReadTime = "5 min read";
+        <h1 className="text-3xl md:text-5xl font-black tracking-tight text-white leading-[1.15] mb-12">
+          {post.title.split('—')[0]}
+          {post.title.includes('—') && (
+            <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500">
+              — {post.title.split('—')[1]}
+            </span>
+          )}
+        </h1>
 
-          // Intelligently assign color theme based on keywords
-          if (titleLower.includes("qa") || titleLower.includes("testing") || titleLower.includes("gatekeeper")) {
-            tagLabel = "Quality Assurance";
-            tagStyle = "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/10";
-            borderHover = "hover:border-indigo-500/30";
-            linkStyle = "text-indigo-600 dark:text-indigo-400";
-            estReadTime = "6 min read";
-          } else if (titleLower.includes("refused") || titleLower.includes("owner") || titleLower.includes("features") || titleLower.includes("airbnb")) {
-            tagLabel = "Product Management";
-            tagStyle = "bg-orange-500/10 text-orange-600 dark:text-orange-400";
-            borderHover = "hover:border-orange-500/30";
-            linkStyle = "text-orange-600 dark:text-orange-400";
-            estReadTime = "4 min read";
-          } else if (titleLower.includes("ai") || titleLower.includes("era") || titleLower.includes("waiting")) {
-            tagLabel = "Tech Strategy";
-            tagStyle = "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400";
-            borderHover = "hover:border-cyan-500/30";
-            linkStyle = "text-cyan-600 dark:text-cyan-400";
-            estReadTime = "6 min read";
-          }
+        <div className="article-content">
+          {renderContent(post.body)}
+        </div>
 
-          return (
-            <div 
-              key={post.slug}
-              className={`group flex flex-col bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 ${borderHover}`}
-            >
-              <div className="p-8 flex flex-col h-full">
-                
-                {/* Meta Header */}
-                <div className="flex items-center gap-3 mb-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${tagStyle}`}>
-                    {tagLabel}
-                  </span>
-                  <span className="text-gray-500 text-xs font-medium">{estReadTime}</span>
-                </div>
-
-                {/* Article Card Title */}
-                <h3 className={`text-2xl font-bold text-gray-900 dark:text-white mb-4 transition-colors ${
-                  tagLabel === "Product Management" ? "group-hover:text-orange-500" :
-                  tagLabel === "Tech Strategy" ? "group-hover:text-cyan-500" :
-                  tagLabel === "Quality Assurance" ? "group-hover:text-indigo-500" : "group-hover:text-blue-500"
-                }`}>
-                  {post.title}
-                </h3>
-
-                {/* Article Card Excerpt Summary */}
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-8 leading-relaxed flex-grow line-clamp-4">
-                  {post.excerpt || "Click read article to check out the full insights breakdown."}
-                </p>
-
-                {/* Navigation Link Router Button */}
-                <Link 
-                  href={`/blog/${post.slug}`} 
-                  className={`mt-auto inline-flex items-center gap-2 font-bold text-sm hover:gap-3 transition-all ${linkStyle}`}
-                >
-                  Read Article <ArrowRight className="w-4 h-4" />
-                </Link>
-
-              </div>
-            </div>
-          );
-        })}
       </div>
     </main>
   );

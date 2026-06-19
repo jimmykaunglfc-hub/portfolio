@@ -5,7 +5,6 @@ import { ArrowRight, BookOpen } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 
 export default async function BlogIndex() {
-  // Fetch entries live from Sanity
   const posts = await client.fetch(
     `*[_type == "post"] | order(_createdAt desc) {
       title,
@@ -19,7 +18,6 @@ export default async function BlogIndex() {
   return (
     <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto relative z-10 font-sans">
       
-      {/* Header Layout Module */}
       <div className="mb-16">
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 flex items-center gap-4">
           <BookOpen className="w-10 h-10 text-blue-500" />
@@ -30,7 +28,6 @@ export default async function BlogIndex() {
         </p>
       </div>
 
-      {/* Dynamic Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts && posts.map((post: any) => {
           if (!post.slug) return null;
@@ -64,9 +61,6 @@ export default async function BlogIndex() {
           }
 
           return (
-            /* UPGRADE: The entire card container is now the <Link> element!
-              This eliminates element blocking and guarantees a hand pointer cursor.
-            */
             <Link 
               href={`/blog/${post.slug}`}
               key={post.slug}
@@ -74,7 +68,6 @@ export default async function BlogIndex() {
             >
               <div className="p-8 flex flex-col h-full w-full pointer-events-none">
                 
-                {/* Meta details */}
                 <div className="flex items-center gap-3 mb-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${tagStyle}`}>
                     {tagLabel}
@@ -82,7 +75,6 @@ export default async function BlogIndex() {
                   <span className="text-gray-500 text-xs font-medium">{estReadTime}</span>
                 </div>
 
-                {/* Article Dynamic Title */}
                 <h3 className={`text-2xl font-bold text-gray-900 dark:text-white mb-4 transition-colors ${
                   tagLabel === "Product Management" ? "group-hover:text-orange-500" :
                   tagLabel === "Tech Strategy" ? "group-hover:text-cyan-500" :
@@ -91,12 +83,10 @@ export default async function BlogIndex() {
                   {post.title}
                 </h3>
 
-                {/* Description excerpt text */}
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-8 leading-relaxed flex-grow line-clamp-4">
                   {post.excerpt || "Click to read full article insights breakdown."}
                 </p>
 
-                {/* Action indicator row */}
                 <div className={`mt-auto inline-flex items-center gap-2 font-bold text-sm transition-all group-hover:gap-3 ${linkStyle}`}>
                   Read Article <ArrowRight className="w-4 h-4" />
                 </div>
