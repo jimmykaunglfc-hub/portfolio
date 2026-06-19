@@ -1,111 +1,166 @@
 export const dynamic = 'force-dynamic';
 
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { client } from '@/sanity/lib/client';
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft, Calendar } from "lucide-react";
+import { supabase } from "../../../lib/supabase"; // Adjusted relative path for deeper directory level
 
 interface PageProps {
-  params: any;
+  params: Promise<{ slug: string }>;
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
-  const resolvedParams = await params;
-  const slug = resolvedParams.slug;
+  const { slug } = await params;
 
-  const post = await client.fetch(
-    `*[_type == "post" && slug.current == $slug][0]{
-      title,
-      body
-    }`,
-    { slug },
-    { cache: 'no-store' }
-  );
+  const { data: post, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', slug)
+    .single();
 
-  if (!post) {
+  if (error || !post) {
     notFound();
   }
 
-  // Custom styling block layout parser that supports both Light and Dark modes seamlessly!
-  const renderContent = (rawText: string) => {
-    if (!rawText) return null;
-    
-    const blocks = rawText.split('\n\n');
+  const titleLower = (post.title || "").toLowerCase();
+  let tagLabel = "Product Strategy";
+  let tagStyle = "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/10";
+  
+  if (titleLower.includes("qa") || titleLower.includes("testing") || titleLower.includes("gatekeeper")) {
+    tagLabel = "Quality Assurance";
+    tagStyle = "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/10";
+  } else if (titleLower.includes("refused") || titleLower.includes("owner") || titleLower.includes("features") || titleLower.includes("airbnb") || titleLower.includes("sustaining")) {
+    tagLabel = "Product Management";
+    tagStyle = "bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/10";
+  } else if (titleLower.includes("ai") || titleLower.includes("era") || titleLower.includes("waiting")) {
+    tagLabel = "Tech Strategy";
+    tagStyle = "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/10";
+  }
 
-    return blocks.map((block, index) => {
-      const trimmed = block.trim();
-
-      // 1. Render Section Headings (###)
-      if (trimmed.startsWith('###')) {
-        return (
-          <h3 key={index} className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mt-12 mb-4 tracking-tight border-b border-gray-100 dark:border-slate-900 pb-2">
-            {trimmed.replace('###', '').trim()}
-          </h3>
-        );
+  const renderInlineStyles = (text: string) => {
+    const boldRegex = /\*\*(.*?)\*\*/g;
+    return text.split(boldRegex).map((part, i) => {
+      if (i % 2 === 1) {
+        return <strong key={i} className="font-extrabold text-gray-900 dark:text-white">{part}</strong>;
       }
-
-      // 2. Render Highlighted Quote / Case Study Callout Boxes (>)
-      if (trimmed.startsWith('>')) {
-        return (
-          <div key={index} className="my-8 p-6 rounded-xl bg-gray-50 dark:bg-slate-900/30 border-l-2 border-cyan-500 shadow-sm dark:shadow-inner">
-            <p className="text-gray-700 dark:text-slate-200 italic font-medium text-base md:text-lg leading-relaxed">
-              {trimmed.replace('>', '').replace(/"/g, '').trim()}
-            </p>
-          </div>
-        );
-      }
-
-      // 3. Render Bulleted Lists (*)
-      if (trimmed.startsWith('*') || trimmed.startsWith('-')) {
-        const items = trimmed.split('\n');
-        return (
-          <ul key={index} className="list-disc list-inside space-y-3 text-gray-600 dark:text-slate-400 font-light text-base mb-6 pl-2">
-            {items.map((item, i) => (
-              <li key={i} className="marker:text-gray-300 dark:marker:text-slate-600 pl-1">
-                {item.replace(/^[* -]/, '').trim()}
-              </li>
-            ))}
-          </ul>
-        );
-      }
-
-      // 4. Render Standard Text Paragraphs
-      return (
-        <p key={index} className="text-gray-600 dark:text-slate-400 text-base leading-relaxed mb-6 font-light tracking-wide whitespace-pre-line">
-          {trimmed}
-        </p>
-      );
+      return part;
     });
   };
 
   return (
-    /* UPGRADE: Replaced fixed black backdrops with transitional conditional style rules */
-    <main className="min-h-screen bg-white text-gray-800 dark:bg-[#030303] dark:text-slate-200 font-sans pt-32 pb-24 transition-colors duration-300">
-      <div className="max-w-3xl mx-auto px-4 md:px-6">
+    <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-4xl mx-auto relative z-10 font-sans text-gray-950 dark:text-white">
+      
+      <Link 
+        href="/blog" 
+        className="inline-flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-400 transition-colors mb-8 group"
+      >
+        <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Back to Articles
+      </Link>
+
+      <article className="bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-3xl p-8 md:p-14 shadow-xl">
         
-        {/* Responsive Navigation Breadcrumb Link */}
-        <Link 
-          href="/blog" 
-          className="inline-flex items-center text-xs text-gray-400 hover:text-gray-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors mb-10 tracking-wider uppercase gap-1 group"
-        >
-          <span className="transform group-hover:-translate-x-0.5 transition-transform">←</span> Back to Insights
-        </Link>
-
-        {/* Responsive Headline Module with Adaptive Gradients */}
-        <h1 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.15] mb-12">
-          {post.title.split('—')[0]}
-          {post.title.includes('—') && (
-            <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 dark:from-cyan-400 dark:via-blue-400 dark:to-indigo-500">
-              — {post.title.split('—')[1]}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${tagStyle}`}>
+            {tagLabel}
+          </span>
+          <div className="flex items-center gap-1.5 text-gray-500 text-xs font-medium">
+            <Calendar className="w-3.5 h-3.5" />
+            <span>
+              {new Date(post.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </span>
-          )}
-        </h1>
-
-        {/* Dynamic Theme Content Field Container */}
-        <div className="article-content">
-          {renderContent(post.body)}
+          </div>
         </div>
 
-      </div>
+        <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight mb-6 text-gray-900 dark:text-white">
+          {post.title}
+        </h1>
+
+        {post.summary && (
+          <div className="p-5 border-l-4 border-blue-500 bg-zinc-50 dark:bg-zinc-900/40 rounded-r-2xl text-sm md:text-base text-gray-600 dark:text-gray-400 italic mb-10 leading-relaxed">
+            {post.summary}
+          </div>
+        )}
+
+        <div className="space-y-6 text-gray-700 dark:text-gray-300 text-base md:text-lg leading-relaxed font-normal">
+          {post.content ? (
+            (() => {
+              const lines = post.content.split('\n');
+              let insideList = false;
+              const compiledElements: React.ReactNode[] = [];
+              let bufferedListItems: React.ReactNode[] = [];
+
+              lines.forEach((block: string, index: number) => {
+                const line = block.trim();
+
+                if (!line.startsWith('- ') && insideList) {
+                  compiledElements.push(
+                    <ul key={`list-group-${index}`} className="list-disc pl-6 my-5 space-y-2 text-sm md:text-base text-gray-600 dark:text-gray-400">
+                      {bufferedListItems}
+                    </ul>
+                  );
+                  bufferedListItems = [];
+                  insideList = false;
+                }
+
+                if (line.startsWith('## ')) {
+                  compiledElements.push(
+                    <h2 key={index} className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight pt-6 mt-8 border-t border-gray-100 dark:border-white/5 first:border-none first:pt-0 first:mt-0">
+                      {line.replace('## ', '')}
+                    </h2>
+                  );
+                }
+                else if (line.startsWith('### ')) {
+                  compiledElements.push(
+                    <h3 key={index} className="text-lg md:text-xl font-extrabold text-gray-900 dark:text-white tracking-tight pt-4 mt-6">
+                      {line.replace('### ', '')}
+                    </h3>
+                  );
+                }
+                else if (line.startsWith('> ')) {
+                  compiledElements.push(
+                    <blockquote key={index} className="pl-4 border-l-2 border-blue-500 italic text-gray-500 my-5 text-sm md:text-base bg-zinc-50/50 dark:bg-zinc-900/20 py-2 pr-4 rounded-r-xl">
+                      {renderInlineStyles(line.replace('> ', ''))}
+                    </blockquote>
+                  );
+                }
+                else if (line.startsWith('- ')) {
+                  insideList = true;
+                  bufferedListItems.push(
+                    <li key={`li-${index}`} className="leading-relaxed">
+                      {renderInlineStyles(line.replace('- ', ''))}
+                    </li>
+                  );
+                }
+                else if (line.startsWith('```')) {
+                  return;
+                }
+                else if (line) {
+                  compiledElements.push(
+                    <p key={index} className="text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
+                      {renderInlineStyles(line)}
+                    </p>
+                  );
+                }
+              });
+
+              if (insideList && bufferedListItems.length > 0) {
+                compiledElements.push(
+                  <ul key="list-group-final" className="list-disc pl-6 my-5 space-y-2 text-sm md:text-base text-gray-600 dark:text-gray-400">
+                    {bufferedListItems}
+                  </ul>
+                );
+              }
+
+              return compiledElements;
+            })()
+          ) : (
+            <p className="text-gray-400 italic text-sm">
+              No complete content block elements indexed for this record module.
+            </p>
+          )}
+        </div>
+
+      </article>
     </main>
   );
 }
