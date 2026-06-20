@@ -77,7 +77,10 @@ export default function RootLayout({
       </head>
       <body className="bg-[#09090b] text-[#e5e1e4] antialiased">
         <Navbar />
-        {children}
+        {/* NEW: Added a main wrapper with dynamic top padding to clear the taller notch Navbar */}
+        <main className="pt-[calc(6rem+env(safe-area-inset-top))]">
+          {children}
+        </main>
         <Analytics />
         <AIChat />
       </body>
