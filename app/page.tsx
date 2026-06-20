@@ -315,6 +315,47 @@ export default function Home() {
         </div>
       </section>
 
+      {/* NEW SECTION: Native Application Download Matrix */}
+      <section id="download" className="py-8 relative z-20 pointer-events-auto">
+        <div className="glass-card rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-zinc-200/50 dark:border-white/5 bg-gradient-to-r from-[#4d8eff]/5 to-transparent dark:from-[#adc6ff]/5 dark:to-transparent">
+          
+          <div className="max-w-xl space-y-4 text-center md:text-left">
+            <h2 className="text-sm font-mono uppercase tracking-widest text-[#4d8eff] dark:text-[#adc6ff] flex items-center justify-center md:justify-start gap-2">
+              <span className="material-symbols-outlined text-base">system_update</span> Native Ecosystem
+            </h2>
+            <h3 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Access the Mobile App.</h3>
+            <p className="text-zinc-600 dark:text-zinc-300 font-light text-sm leading-relaxed">
+              Experience this portfolio as a fully native application. Android users can install the APK directly, while iOS users can access the beta build instantly via Apple TestFlight.
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto shrink-0">
+            {/* Android Direct APK Button */}
+            <a 
+              href="/khnco.apk" 
+              download="KHNCO_App.apk"
+              className="group flex items-center justify-center gap-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-8 py-4 rounded-full font-bold text-sm transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
+            >
+              <span className="material-symbols-outlined text-xl text-[#3DDC84] group-hover:animate-bounce">android</span>
+              <span>Download APK</span>
+            </a>
+            
+            {/* iOS TestFlight Link */}
+            {/* INSTRUCTION: Replace the href below with your actual Apple TestFlight Public Link */}
+            <a 
+              href="https://testflight.apple.com/join/YOUR_ID_HERE" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center justify-center gap-3 bg-zinc-200/50 dark:bg-white/5 border border-zinc-300 dark:border-white/10 hover:bg-zinc-300/80 dark:hover:bg-white/10 text-zinc-900 dark:text-white px-8 py-4 rounded-full font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 shadow-sm"
+            >
+              <span className="material-symbols-outlined text-xl text-zinc-900 dark:text-white">phone_iphone</span>
+              <span>iOS TestFlight</span>
+            </a>
+          </div>
+
+        </div>
+      </section>
+
       {/* Contact Panel Call to Action */}
       <section id="contact" className="py-8 relative z-20 pointer-events-auto">
         <div className="glass-card rounded-3xl p-12 md:p-20 text-center overflow-hidden bg-gradient-to-br from-zinc-50 to-transparent dark:from-white/[0.02] dark:to-transparent">
