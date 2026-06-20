@@ -12,6 +12,9 @@
     "@ai-sdk/google": "^3.0.83",
     "@ai-sdk/openai": "^3.0.73",
     "@ai-sdk/react": "^3.0.210",
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
+    "@capacitor/ios": "^8.4.1",
     "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^5.30.0",
     "@supabase/supabase-js": "^2.108.2",
@@ -27,6 +30,7 @@
     "styled-components": "^6.4.2"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.4.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

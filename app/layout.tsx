@@ -1,8 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import './globals.css';
 import Navbar from '../components/Navbar';
 import AIChat from '../components/AIChat';
 import { Analytics } from '@vercel/analytics/react'
+
+// NEW: Viewport configuration to unlock iOS safe-area insets
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover', // This specific command fixes the notch overlap
+};
 
 export const metadata: Metadata = {
   title: "Jimmy Kaung | Head of Digital Operations & Product",

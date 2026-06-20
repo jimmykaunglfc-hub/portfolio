@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">KHNCO</string>
+    <string name="title_activity_main">KHNCO</string>
+    <string name="package_name">com.kghtetoo.app</string>
+    <string name="custom_url_scheme">com.kghtetoo.app</string>
+</resources>
