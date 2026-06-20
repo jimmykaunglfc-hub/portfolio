@@ -77,8 +77,12 @@ export default function RootLayout({
       </head>
       <body className="bg-[#09090b] text-[#e5e1e4] antialiased">
         <Navbar />
-        {/* REVERTED: Removed the <main> wrapper to stop the double-padding on sub-pages */}
-        {children}
+        
+        {/* FIXED: Wraps content to shift everything down by ONLY the precise height of the iOS safe area/notch */}
+        <div className="pt-[env(safe-area-inset-top)]">
+          {children}
+        </div>
+        
         <Analytics />
         <AIChat />
       </body>
