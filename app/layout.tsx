@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 import AIChat from '../components/AIChat';
 import { Analytics } from '@vercel/analytics/react'
 
-// NEW: Viewport configuration to unlock iOS safe-area insets
+// Viewport configuration to unlock iOS safe-area insets
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -77,10 +77,8 @@ export default function RootLayout({
       </head>
       <body className="bg-[#09090b] text-[#e5e1e4] antialiased">
         <Navbar />
-        {/* NEW: Added a main wrapper with dynamic top padding to clear the taller notch Navbar */}
-        <main className="pt-[calc(6rem+env(safe-area-inset-top))]">
-          {children}
-        </main>
+        {/* REVERTED: Removed the <main> wrapper to stop the double-padding on sub-pages */}
+        {children}
         <Analytics />
         <AIChat />
       </body>
