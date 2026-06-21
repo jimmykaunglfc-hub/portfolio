@@ -343,7 +343,7 @@ export default function Home() {
             {/* iOS TestFlight Link */}
             {/* INSTRUCTION: Replace the href below with your actual Apple TestFlight Public Link */}
             <a 
-              href="https://testflight.apple.com/join/YOUR_ID_HERE" 
+              href="https://testflight.apple.com/join/BzAg9XQ2" 
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center justify-center gap-3 bg-zinc-200/50 dark:bg-white/5 border border-zinc-300 dark:border-white/10 hover:bg-zinc-300/80 dark:hover:bg-white/10 text-zinc-900 dark:text-white px-8 py-4 rounded-full font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 shadow-sm"
