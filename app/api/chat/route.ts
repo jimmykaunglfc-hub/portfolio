@@ -1,7 +1,6 @@
 import { streamText } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google'; 
 import { createClient } from '@supabase/supabase-js';
-import { ABOUT_ME, GAMES_DATA } from '../../../sanity/lib/portfolioData'; // Assuming these are still static
 
 // Initialize Supabase client using your environment variables
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -13,25 +12,33 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     if (!supabaseUrl || !supabaseKey) {
-      console.warn("Supabase keys are missing. AI will not have access to live blog posts.");
+      console.warn("Supabase keys are missing. AI will not have access to live database.");
     }
 
-    // 1. DYNAMIC FETCH: Query live, up-to-date blog posts directly from Supabase
-    // Note: Change 'articles' to whatever your actual Supabase table name is (e.g., 'posts', 'insights')
-    const { data: liveBlogPosts, error: supabaseError } = await supabase
-      .from('articles') 
+    // 1. DYNAMIC FETCH: Query live, up-to-date data directly from Supabase tables
+    const { data: liveBlogPosts, error: blogError } = await supabase
+      .from('blog_posts') 
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (supabaseError) {
-      console.error("Supabase fetch error:", supabaseError);
+    const { data: liveAboutMe, error: aboutError } = await supabase
+      .from('about_me')
+      .select('*');
+
+    const { data: liveGamesData, error: gamesError } = await supabase
+      .from('games_data')
+      .select('*');
+
+    // Log any errors if RLS blocks the fetch or tables are missing
+    if (blogError || aboutError || gamesError) {
+      console.error("Supabase fetch error:", blogError || aboutError || gamesError);
     }
 
     // 2. Package the live dataset into the context layer
     const livePortfolioData = {
-      aboutMe: ABOUT_ME,
-      blogPosts: liveBlogPosts || [], // Injects the live array from Supabase
-      gamesData: GAMES_DATA
+      aboutMe: liveAboutMe || [], 
+      blogPosts: liveBlogPosts || [], 
+      gamesData: liveGamesData || []
     };
 
     // 3. CONSOLIDATION ENGINE: Merge consecutive same-role messages for Gemini compliance
