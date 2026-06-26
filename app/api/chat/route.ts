@@ -1,19 +1,40 @@
 import { streamText } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google'; 
-import { ABOUT_ME, BLOG_POSTS, GAMES_DATA } from '../../../sanity/lib/portfolioData';
+import { createClient } from '@supabase/supabase-js';
+import { ABOUT_ME, GAMES_DATA } from '../../../sanity/lib/portfolioData'; // Assuming these are still static
+
+// Initialize Supabase client using your environment variables
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    // 1. Package the portfolio dataset into a structured context layer
+    if (!supabaseUrl || !supabaseKey) {
+      console.warn("Supabase keys are missing. AI will not have access to live blog posts.");
+    }
+
+    // 1. DYNAMIC FETCH: Query live, up-to-date blog posts directly from Supabase
+    // Note: Change 'articles' to whatever your actual Supabase table name is (e.g., 'posts', 'insights')
+    const { data: liveBlogPosts, error: supabaseError } = await supabase
+      .from('articles') 
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (supabaseError) {
+      console.error("Supabase fetch error:", supabaseError);
+    }
+
+    // 2. Package the live dataset into the context layer
     const livePortfolioData = {
       aboutMe: ABOUT_ME,
-      blogPosts: BLOG_POSTS,
+      blogPosts: liveBlogPosts || [], // Injects the live array from Supabase
       gamesData: GAMES_DATA
     };
 
-    // 2. CONSOLIDATION ENGINE: Merge consecutive same-role messages for Gemini compliance
+    // 3. CONSOLIDATION ENGINE: Merge consecutive same-role messages for Gemini compliance
     const alternatingMessages: any[] = [];
     for (const msg of messages) {
       const normalizedRole = msg.role === 'user' ? 'user' : 'assistant';
@@ -37,7 +58,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // 3. Extract your clean API key from environment variables
+    // 4. Extract your clean API key from environment variables
     const rawKeyString = process.env.GEMINI_API_KEYS || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
     const activeKey = rawKeyString.replace(/['"]/g, "").split(',')[0]?.trim();
 
@@ -47,7 +68,7 @@ export async function POST(req: Request) {
 
     const googleProvider = createGoogleGenerativeAI({ apiKey: activeKey });
 
-    // 4. Fire the generation context pass targeting the stable 2.5 flash engine
+    // 5. Fire the generation context pass targeting the stable 2.5 flash engine
     const result = await streamText({
       model: googleProvider('gemini-2.5-flash'), 
       messages: alternatingMessages, 
