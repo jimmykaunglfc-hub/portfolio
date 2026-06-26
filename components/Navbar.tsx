@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -99,6 +100,9 @@ export default function Navbar() {
               Games
             </Link>
 
+            {/* Injected Language Switcher */}
+            <LanguageSwitcher />
+
             <button 
               onClick={toggleTheme} 
               className="flex items-center justify-center p-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95"
@@ -115,6 +119,9 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-4 md:hidden pointer-events-auto">
+            {/* Injected Language Switcher for Mobile */}
+            <LanguageSwitcher />
+            
             <button onClick={toggleTheme} className="p-2 text-zinc-900 dark:text-white material-symbols-outlined text-xl cursor-pointer hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
               {isDark ? 'light_mode' : 'dark_mode'}
             </button>
