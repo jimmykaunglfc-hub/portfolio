@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import './globals.css';
 import Navbar from '../components/Navbar';
 import AIChat from '../components/AIChat';
@@ -76,6 +77,26 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <body className="bg-[#09090b] text-[#e5e1e4] antialiased">
+        
+        {/* INVISIBLE GOOGLE TRANSLATE ENGINE */}
+        <div id="google_translate_element" style={{ display: 'none' }}></div>
+        <Script id="google-translate-init" strategy="afterInteractive">
+          {`
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,my', // Restricts translation strictly to English and Burmese
+                autoDisplay: false
+              }, 'google_translate_element');
+            }
+          `}
+        </Script>
+        <Script
+          type="text/javascript"
+          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+          strategy="afterInteractive"
+        />
+
         <Navbar />
         
         {/* FIXED: Wraps content to shift everything down by ONLY the precise height of the iOS safe area/notch */}
