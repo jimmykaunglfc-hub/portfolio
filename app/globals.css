@@ -58,3 +58,70 @@ body.dark {
   z-index: 1;
   border-radius: 50%;
 }
+
+/* ==========================================================================
+   GOOGLE TRANSLATE UI OVERRIDES (INVISIBLE MODE)
+   ========================================================================== */
+
+/* 1. Completely hide the Google Translate top banner */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+/* 2. Prevent Google from pushing the entire website body down */
+body {
+  top: 0px !important;
+}
+
+/* 3. Disable the annoying "Original Text" hover tooltip popup */
+#goog-gt-tt, 
+.goog-te-balloon-frame,
+#goog-gt-vt {
+  display: none !important;
+}
+
+/* 4. Remove the ugly solid background highlight on translated text */
+.goog-text-highlight {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* 5. Hide the Google Translate loading spinner and extra elements */
+.skiptranslate > iframe {
+  display: none !important;
+}
+
+
+/* ==========================================================================
+   BURMESE (MYANMAR) TYPOGRAPHY OPTIMIZATIONS
+   ========================================================================== */
+
+/* Burmese script naturally requires more vertical breathing room than English.
+   When Google changes the HTML lang tag, we adjust the line height and spacing 
+   so the text doesn't overlap or look cramped.
+*/
+html[lang="my"] body,
+html[lang="my"] h1,
+html[lang="my"] h2,
+html[lang="my"] h3,
+html[lang="my"] p,
+html[lang="my"] span {
+  font-family: 'Noto Sans Myanmar', sans-serif !important;
+}
+
+html[lang="my"] h1 {
+  line-height: 1.6 !important;
+  font-size: clamp(1.5rem, 4vw, 3.5rem) !important; /* Scales down slightly for mobile */
+}
+
+html[lang="my"] h2,
+html[lang="my"] h3 {
+  line-height: 1.6 !important;
+}
+
+html[lang="my"] p {
+  line-height: 1.8 !important;
+  word-break: keep-all !important; /* Prevents awkward mid-word line breaks */
+}
