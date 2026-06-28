@@ -712,7 +712,7 @@ export default function HybridAppRouter() {
               {/* Telegram */}
               <a href="https://t.me/jimmyooig1" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 hover:border-sky-500 dark:hover:border-sky-400/30 hover:bg-zinc-100 dark:hover:bg-white/[0.04] transition-all duration-300 group">
                 <Send className="w-6 h-6 text-sky-600 dark:text-sky-400" />
-                <div className="text-left"><p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">Telegram</p><p className="text-sm font-medium group-hover:text-sky-600 dark:group-hover:text-sky-400">@jimmykg</p></div>
+                <div className="text-left"><p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">Telegram</p><p className="text-sm font-medium group-hover:text-sky-600 dark:group-hover:text-sky-400">@jimmyooig1</p></div>
               </a>
 
               {/* Facebook */}
