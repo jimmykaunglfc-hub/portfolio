@@ -5,14 +5,12 @@ import { type UIMessage, DefaultChatTransport } from "ai";
 import { useState, useRef, useEffect } from "react";
 import { MessageSquare, X, Send, Sparkles, User, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import DraggableChat from "./DraggableChat";
 
 export default function AIChat() {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  // Extracting 'error' so the UI can dynamically report real exceptions
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: '/api/chat'
@@ -37,24 +35,25 @@ export default function AIChat() {
 
   return (
     <>
-      {/* The DraggableChat wrapper controls the position on the screen.
-        AnimatePresence is kept inside so the exit animations still run smoothly.
-      */}
-      <DraggableChat>
-        <AnimatePresence>
-          {!isOpen && (
-            <motion.button 
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              onClick={() => setIsOpen(true)}
-              className="p-3.5 md:p-4 rounded-full transition-all duration-300 bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.8)] group"
-            >
-              <MessageSquare className="w-6 h-6 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300" />
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </DraggableChat>
+      <AnimatePresence>
+        {!isOpen && (
+          <motion.button 
+            drag
+            dragMomentum={false}
+            // touchAction "none" is critical so mobile browsers don't try to scroll the page when you drag the icon
+            style={{ touchAction: "none" }} 
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            onClick={() => setIsOpen(true)}
+            // Changed transition-all to transition-colors/shadows so CSS doesn't fight the JS drag physics
+            className="fixed bottom-[6.5rem] right-4 md:bottom-6 md:right-6 p-3.5 md:p-4 rounded-full z-[9999] transition-colors transition-shadow duration-300 bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.8)] group cursor-grab active:cursor-grabbing"
+          >
+            {/* pointer-events-none ensures the SVG doesn't accidentally catch the drag event */}
+            <MessageSquare className="w-6 h-6 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300 pointer-events-none" />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isOpen && (
@@ -63,7 +62,6 @@ export default function AIChat() {
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: 20, scale: 0.95, filter: "blur(10px)" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            // UPGRADED: bottom-[6rem] on mobile ensures the chat window clears the new BottomNav dock!
             className="fixed bottom-[6rem] right-4 md:bottom-6 md:right-6 w-[calc(100vw-2rem)] md:w-[360px] h-[70vh] md:h-[550px] max-h-[85vh] bg-white dark:bg-[#09090b] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[9999] flex flex-col overflow-hidden font-sans"
           >
             <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#121214]/80 backdrop-blur-md flex justify-between items-center relative z-10">
