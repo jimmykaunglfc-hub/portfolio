@@ -5,7 +5,7 @@ import {
   Home as HomeIcon, LineChart, Settings, BookOpen, Gamepad2, 
   User, Mail, Link as LinkIcon, Send, MessageCircle, Phone, ArrowRight, 
   ArrowLeft, Clock, Layers, Shield, Zap, X, ChevronRight, 
-  Activity, MessageSquare, Network, Sun, Moon, Calendar
+  Activity, MessageSquare, Network, Sun, Moon, Calendar, Play
 } from 'lucide-react';
 import Hero from '../components/Hero';
 import Footer from '../components/Footer';
@@ -147,6 +147,16 @@ const operationalArchitecturePhases = [
   { phase: "Phase 04", title: "Ecosystem Scaling", desc: "Maximizing market impact and driving continuous user acquisition loops.", metrics: ["Growth Loops", "Data Analytics"] }
 ];
 
+// DYNAMIC GAMES SYNCED TO YOUR ACTUAL ROUTES
+const appGamesCache = [
+  { id: 1, title: "Techle", slug: "techle", description: "A daily word puzzle game for tech enthusiasts.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-blue-400" },
+  { id: 2, title: "Bug Blaster", slug: "bug-blaster", description: "Squash bugs and optimize your code in this fast-paced arcade shooter.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-red-400" },
+  { id: 3, title: "Lexicon Lock", slug: "lexicon-lock", description: "An English anagram puzzle. Unscramble the letters to crack the vault.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-purple-400" },
+  { id: 4, title: "Sprint Planner", slug: "sprint-planner", description: "Manage resources and deliver the project on time in this strategy simulation.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-emerald-400" },
+  { id: 5, title: "QA Test Simulator", slug: "qa-test", description: "Test your quality assurance skills by finding edge cases.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-orange-400" },
+  { id: 6, title: "Logic Puzzle", slug: "puzzle", description: "A high-fidelity touch puzzle sandbox testing automated deductive logic capabilities.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-cyan-400" }
+];
+
 // Helper to calculate dynamic years of experience (from 2013)
 const calculateExperience = () => {
   const currentYear = new Date().getFullYear();
@@ -240,7 +250,7 @@ export default function HybridAppRouter() {
         {/* TOP APP BAR */}
         <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-5 h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] bg-white/70 dark:bg-[#131315]/80 backdrop-blur-2xl border-b border-zinc-200/50 dark:border-[#27272A]/50">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.6)] animate-pulse" />
+            <div className="w-2.5 h-2.5 rounded-full bg-blue-600 dark:bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.6)] animate-pulse" />
             <h1 className="text-sm font-black text-zinc-900 dark:text-white tracking-widest uppercase">KHNCO<span className="text-blue-600 dark:text-blue-500">.</span></h1>
           </div>
           <div className="flex items-center gap-3">
@@ -260,7 +270,7 @@ export default function HybridAppRouter() {
           {currentTab === 'home' && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
               
-              {/* Executive Hero Profile */}
+              {/* Executive Hero Profile (No Image, High Contrast Glow) */}
               <div className="bg-white dark:bg-[#18181B] rounded-3xl border border-zinc-200/60 dark:border-[#27272A] p-7 relative overflow-hidden shadow-xl dark:shadow-2xl">
                 <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-blue-500/20 dark:bg-blue-600/20 blur-[60px] rounded-full pointer-events-none" />
                 <div className="absolute bottom-[-10%] left-[-10%] w-40 h-40 bg-purple-500/10 dark:bg-purple-600/10 blur-[50px] rounded-full pointer-events-none" />
@@ -268,7 +278,7 @@ export default function HybridAppRouter() {
                 <span className="text-[9px] font-bold tracking-widest uppercase bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 px-2.5 py-1.5 rounded-full border border-blue-200 dark:border-blue-500/20 relative z-10 inline-block">Executive Profile</span>
                 
                 <h2 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight mt-5 leading-[1.1] relative z-10">Kaung Htet <br/>Nyein Chan Oo</h2>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium mt-2 relative z-10">Head of Digital Operations</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium mt-2 relative z-10">Project & Channel Management Leader</p>
                 
                 <div className="mt-6 flex items-center gap-2 bg-zinc-50 dark:bg-[#09090b] px-3.5 py-2 rounded-full border border-zinc-200 dark:border-[#27272A] w-max relative z-10">
                   <span className="relative flex h-2.5 w-2.5">
@@ -279,33 +289,62 @@ export default function HybridAppRouter() {
                 </div>
               </div>
 
-              {/* Quick Metrics */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white dark:bg-[#18181B] rounded-2xl border border-zinc-200/60 dark:border-[#27272A] p-5 flex flex-col justify-between h-28 shadow-sm">
-                  <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Track Record</span>
-                  <div>
-                    <span className="text-2xl font-black text-zinc-900 dark:text-white block">{calculateExperience()}+ Years</span>
-                    <span className="text-[10px] text-zinc-500 mt-1 block">Cross-Functional</span>
-                  </div>
+              {/* Quick Actions / Consultation Session */}
+              <div className="grid grid-cols-2 gap-3">
+                <button 
+                  onClick={() => setIsContactModalOpen(true)}
+                  className="bg-blue-600 dark:bg-blue-500 text-white font-bold text-xs py-3.5 px-4 rounded-2xl active:scale-95 transition-transform duration-200 flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
+                >
+                  <Calendar className="w-4 h-4" />
+                  Book Session
+                </button>
+                <button 
+                  onClick={() => setCurrentTab('journey')}
+                  className="bg-white dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] text-zinc-900 dark:text-white font-bold text-xs py-3.5 px-4 rounded-2xl active:scale-95 transition-transform duration-200 flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <LineChart className="w-4 h-4 text-zinc-400" />
+                  View Journey
+                </button>
+              </div>
+
+              {/* HIGHLIGHTS CAROUSEL */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between px-1">
+                  <h3 className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold">Recent Highlights</h3>
                 </div>
-                <div className="bg-white dark:bg-[#18181B] rounded-2xl border border-zinc-200/60 dark:border-[#27272A] p-5 flex flex-col justify-between h-28 shadow-sm">
-                  <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Global Scale</span>
-                  <div>
-                    <span className="text-lg font-black text-blue-600 dark:text-blue-400 block">Enterprise</span>
-                    <span className="text-[10px] text-zinc-500 mt-1 block">High-Fidelity Ready</span>
+                
+                <div className="flex overflow-x-auto space-x-4 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                  {/* Latest Blog Post Highlight */}
+                  {!isLoadingPosts && livePosts.length > 0 && (
+                    <div onClick={() => setActiveBlogDetail(livePosts[0])} className="w-64 flex-shrink-0 bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-5 rounded-3xl active:scale-95 transition-transform shadow-sm flex flex-col justify-between">
+                      <div>
+                        <span className="text-[9px] font-bold tracking-widest uppercase text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 px-2 py-0.5 rounded">Latest Insight</span>
+                        <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-3 line-clamp-2 leading-tight">{livePosts[0].title}</h4>
+                      </div>
+                      <span className="text-[10px] text-zinc-400 mt-4 flex items-center gap-1"><BookOpen className="w-3 h-3"/> Read Article</span>
+                    </div>
+                  )}
+
+                  {/* Featured Game Highlight */}
+                  <div onClick={() => setActiveGameDetail(appGamesCache[0])} className="w-64 flex-shrink-0 bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-5 rounded-3xl active:scale-95 transition-transform shadow-sm flex flex-col justify-between">
+                    <div>
+                      <span className="text-[9px] font-bold tracking-widest uppercase text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 px-2 py-0.5 rounded">Featured Simulation</span>
+                      <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-3 line-clamp-2 leading-tight">{appGamesCache[0].title}</h4>
+                    </div>
+                    <span className="text-[10px] text-zinc-400 mt-4 flex items-center gap-1"><Gamepad2 className="w-3 h-3"/> Launch WebGL</span>
                   </div>
                 </div>
               </div>
 
               {/* Domain Movement Highlight Map */}
-              <div className="bg-white dark:bg-[#18181B] rounded-2xl border border-zinc-200/60 dark:border-[#27272A] p-6 shadow-sm">
+              <div className="bg-white dark:bg-[#18181B] rounded-3xl border border-zinc-200/60 dark:border-[#27272A] p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-8">
                   <h3 className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold">Domain Evolution</h3>
                   <Network className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
                 </div>
                 
                 {/* Visual Node Map (Aligned perfectly) */}
-                <div className="relative flex justify-between items-center px-4 before:absolute before:inset-0 before:top-1/2 before:-translate-y-1/2 before:h-0.5 before:bg-zinc-200 dark:before:bg-zinc-800 before:mx-8">
+                <div className="relative flex justify-between items-center px-4 before:absolute before:inset-0 before:top-1/2 before:-translate-y-1/2 before:h-[2px] before:bg-zinc-200 dark:before:bg-zinc-800 before:mx-8">
                   <div className="z-10 bg-white dark:bg-[#09090b] p-2.5 rounded-full border-2 border-zinc-300 dark:border-zinc-600 flex items-center justify-center shadow-sm"><MessageSquare className="w-4 h-4 text-zinc-500" /></div>
                   <div className="z-10 bg-white dark:bg-[#09090b] p-2.5 rounded-full border-2 border-purple-500 flex items-center justify-center shadow-sm dark:shadow-[0_0_10px_rgba(168,85,247,0.3)]"><Shield className="w-4 h-4 text-purple-500 dark:text-purple-400" /></div>
                   <div className="z-10 bg-white dark:bg-[#09090b] p-2.5 rounded-full border-2 border-blue-500 flex items-center justify-center shadow-sm dark:shadow-[0_0_10px_rgba(59,130,246,0.4)]"><Layers className="w-4 h-4 text-blue-500 dark:text-blue-400" /></div>
@@ -323,24 +362,27 @@ export default function HybridAppRouter() {
           {/* TAB 2: JOURNEY (CAREER & EDUCATION) */}
           {currentTab === 'journey' && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="flex bg-zinc-100 dark:bg-[#18181B] p-1.5 rounded-xl border border-zinc-200/60 dark:border-[#27272A]">
+              
+              {/* iOS Style Segmented Control */}
+              <div className="flex bg-zinc-100 dark:bg-[#18181B] p-1.5 rounded-2xl border border-zinc-200/60 dark:border-[#27272A]">
                 <button 
                   onClick={() => setJourneySegment('professional')}
-                  className={`flex-1 text-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'professional' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
+                  className={`flex-1 text-center py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'professional' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
                 >
                   Professional
                 </button>
                 <button 
                   onClick={() => setJourneySegment('educational')}
-                  className={`flex-1 text-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'educational' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
+                  className={`flex-1 text-center py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'educational' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
                 >
                   Educational
                 </button>
               </div>
 
+              {/* Timeline Feed */}
               <div className="relative border-l-2 border-zinc-200 dark:border-[#27272A] pl-5 space-y-8 ml-2">
                 {paginatedExperience[journeySegment === 'professional' ? 1 : 2].map((block, idx) => (
-                  <div key={idx} className="relative bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-2xl p-6 shadow-sm">
+                  <div key={idx} className="relative bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-3xl p-6 shadow-sm">
                     <div className="absolute -left-[28px] top-6 w-3.5 h-3.5 rounded-full bg-zinc-50 dark:bg-[#09090b] border-[3px] border-blue-600 dark:border-[#3B82F6]" />
                     <div className="flex justify-between items-start mb-4">
                       <div>
@@ -378,15 +420,20 @@ export default function HybridAppRouter() {
                     <button
                       key={idx}
                       onClick={() => setActiveArchitecturePhase(idx + 1)}
-                      className={`flex-shrink-0 px-4 py-2.5 rounded-xl text-[10px] font-bold tracking-wider uppercase border transition-all ${activeArchitecturePhase === idx + 1 ? 'bg-blue-600 border-blue-600 dark:bg-[#3B82F6] dark:border-[#3B82F6] text-white shadow-md' : 'bg-white dark:bg-[#18181B] border-zinc-200 dark:border-[#27272A] text-zinc-500'}`}
+                      className={`flex-shrink-0 px-4 py-2.5 rounded-2xl text-[10px] font-bold tracking-wider uppercase border transition-all ${activeArchitecturePhase === idx + 1 ? 'bg-blue-600 border-blue-600 dark:bg-[#3B82F6] dark:border-[#3B82F6] text-white shadow-md' : 'bg-white dark:bg-[#18181B] border-zinc-200 dark:border-[#27272A] text-zinc-500'}`}
                     >
                       {p.phase}
                     </button>
                   ))}
                 </div>
-                <div className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-2xl space-y-3 shadow-sm min-h-[140px]">
+                <div className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-3xl space-y-3 shadow-sm min-h-[140px]">
                   <h4 className="text-sm font-bold text-zinc-900 dark:text-white">{operationalArchitecturePhases[activeArchitecturePhase - 1].title}</h4>
                   <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">{operationalArchitecturePhases[activeArchitecturePhase - 1].desc}</p>
+                  <div className="flex flex-wrap gap-2 pt-3">
+                    {operationalArchitecturePhases[activeArchitecturePhase - 1].metrics.map((m, mIdx) => (
+                      <span key={mIdx} className="bg-zinc-50 dark:bg-[#09090b] text-zinc-600 dark:text-zinc-400 px-2.5 py-1 rounded text-[10px] font-mono border border-zinc-200 dark:border-[#27272A]">{m}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -394,9 +441,9 @@ export default function HybridAppRouter() {
                 {coreCompetencies.map((comp, idx) => {
                   const Icon = comp.icon;
                   return (
-                    <div key={idx} className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-2xl space-y-4 shadow-sm">
+                    <div key={idx} className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-3xl space-y-4 shadow-sm">
                       <div className="flex items-center gap-3">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border ${comp.color}`}>
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${comp.color}`}>
                           <Icon className="w-6 h-6" />
                         </div>
                         <h4 className="text-sm font-bold text-zinc-900 dark:text-white leading-tight">{comp.title}</h4>
@@ -427,20 +474,20 @@ export default function HybridAppRouter() {
                     <div 
                       key={post.id} 
                       onClick={() => setActiveBlogDetail(post)}
-                      className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-2xl flex flex-col gap-3 active:scale-[0.98] transition-transform cursor-pointer shadow-sm overflow-hidden"
+                      className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-3xl flex flex-col gap-3 active:scale-[0.98] transition-transform cursor-pointer shadow-sm overflow-hidden"
                     >
                       {post.cover_image && (
-                        <div className="w-full h-32 -mt-6 -mx-6 mb-2 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                        <div className="w-full h-40 -mt-6 -mx-6 mb-2 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                           <img src={post.cover_image} alt={post.title} className="w-full h-full object-cover" />
                         </div>
                       )}
                       <div className="flex justify-between items-center">
-                        <span className="text-[9px] text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">Article</span>
+                        <span className="text-[9px] text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">Article</span>
                         <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-bold flex items-center gap-1">
                           <Clock className="w-3 h-3" /> {new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </span>
                       </div>
-                      <h4 className="text-base font-bold text-zinc-900 dark:text-white leading-snug">{post.title}</h4>
+                      <h4 className="text-base font-black text-zinc-900 dark:text-white leading-snug">{post.title}</h4>
                       <p className="text-[12px] text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed font-light">{post.summary || "Tap to read full article insights."}</p>
                     </div>
                   ))
@@ -451,7 +498,7 @@ export default function HybridAppRouter() {
             </div>
           )}
 
-          {/* TAB 5: ARCADE (GAMES PLACEHOLDER) */}
+          {/* TAB 5: ARCADE (GAMES LIST & IFRAME ROUTING) */}
           {currentTab === 'arcade' && (
             <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="pb-2 border-b border-zinc-200 dark:border-[#27272A]">
@@ -459,22 +506,19 @@ export default function HybridAppRouter() {
                 <h2 className="text-xl font-black text-zinc-900 dark:text-white mt-0.5">Simulation Arcade</h2>
               </div>
 
-              <div className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-3xl overflow-hidden shadow-lg">
-                <div className="h-40 bg-gradient-to-br from-purple-100 to-white dark:from-purple-900/40 dark:to-[#09090b] flex items-center justify-center relative overflow-hidden border-b border-zinc-200 dark:border-[#27272A]">
-                  <Gamepad2 className="w-16 h-16 text-purple-400 dark:text-purple-500 opacity-30" />
-                </div>
-                <div className="p-6 space-y-5">
-                  <div>
-                    <h4 className="text-base font-bold text-zinc-900 dark:text-white mb-2">Neural Link Sandbox</h4>
-                    <p className="text-[12px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-light">Interactive physics and logic engine testing environment. Games will be populated here shortly.</p>
+              <div className="grid grid-cols-1 gap-5">
+                {appGamesCache.map((game) => (
+                  <div key={game.id} onClick={() => setActiveGameDetail(game)} className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-3xl p-5 flex items-center gap-5 active:scale-[0.98] transition-transform cursor-pointer shadow-sm">
+                    <div className="w-16 h-16 rounded-2xl bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] flex items-center justify-center shrink-0">
+                      <Gamepad2 className={`w-8 h-8 ${game.iconColor}`} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">{game.title}</h4>
+                      <p className="text-[10px] text-zinc-500 line-clamp-2 leading-relaxed">{game.description}</p>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-zinc-300 dark:text-zinc-600" />
                   </div>
-                  <button 
-                    onClick={() => setActiveGameDetail({ title: "Neural Link Sandbox" })}
-                    className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 py-4 rounded-xl text-xs font-black uppercase tracking-wider active:scale-95 transition-transform shadow-md"
-                  >
-                    Initialize Environment
-                  </button>
-                </div>
+                ))}
               </div>
             </div>
           )}
@@ -510,26 +554,39 @@ export default function HybridAppRouter() {
         {/* MODAL: PROFILE & CONTACT (BOTTOM SHEET) */}
         {isContactModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-end justify-center bg-zinc-950/60 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white dark:bg-[#18181B] border-t border-zinc-200 dark:border-[#27272A] w-full rounded-t-3xl p-6 space-y-6 animate-in slide-in-from-bottom duration-300 pb-10 shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar">
+            <div className="bg-white dark:bg-[#18181B] border-t border-zinc-200 dark:border-[#27272A] w-full rounded-t-[2rem] p-6 space-y-6 animate-in slide-in-from-bottom duration-300 pb-10 shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar">
               <div className="w-12 h-1.5 bg-zinc-200 dark:bg-[#27272A] rounded-full mx-auto" onClick={() => setIsContactModalOpen(false)} />
               <div className="flex justify-between items-center">
-                <h5 className="text-lg font-black text-zinc-900 dark:text-white tracking-tight">Executive Network</h5>
+                <h5 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight">Executive Network</h5>
                 <button onClick={() => setIsContactModalOpen(false)} className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest bg-zinc-100 dark:bg-[#27272A]/50 px-3 py-1.5 rounded-full">Close</button>
               </div>
               
               <div className="space-y-3">
+                {/* Book Consultation */}
+                <a href="mailto:cohortexplorers@gmail.com?subject=Consultation%20Booking" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
+                  <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-500/10 flex items-center justify-center text-orange-600 dark:text-orange-400"><Calendar className="w-4 h-4" /></div>
+                  <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Consultation Session</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">Book a Meeting</p></div>
+                </a>
+
+                {/* Email */}
                 <a href="mailto:cohortexplorers@gmail.com" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
                   <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400"><Mail className="w-4 h-4" /></div>
                   <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Secure Email</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">cohortexplorers@gmail.com</p></div>
                 </a>
+                
+                {/* LinkedIn */}
                 <a href="https://www.linkedin.com/in/kaung-htet-nyein-chan-oo-593952167/" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
                   <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-600/10 flex items-center justify-center text-blue-600 dark:text-blue-500"><LinkIcon className="w-4 h-4" /></div>
                   <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">LinkedIn Profile</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">Connect Network</p></div>
                 </a>
+
+                {/* Phone */}
                 <a href="tel:+66620983201" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
                   <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-500"><Phone className="w-4 h-4" /></div>
                   <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Voice Terminal</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">+66 62 098 3201</p></div>
                 </a>
+
+                {/* Telegram & Facebook */}
                 <div className="flex gap-3">
                   <a href="https://t.me/jimmyooig1" target="_blank" rel="noreferrer" className="flex-1 flex flex-col items-center gap-2 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
                     <Send className="w-5 h-5 text-sky-500 dark:text-sky-400" />
@@ -547,7 +604,7 @@ export default function HybridAppRouter() {
 
         {/* APP MODAL: FULL BLOG READER (WITH PARSER ENGINE) */}
         {activeBlogDetail && (
-          <div className="fixed inset-0 z-[110] bg-white dark:bg-[#09090b] flex flex-col font-sans animate-in slide-in-from-right duration-200">
+          <div className="fixed inset-0 z-[110] bg-white dark:bg-[#09090b] flex flex-col font-sans animate-in slide-in-from-bottom duration-300">
             <header className="h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] border-b border-zinc-200 dark:border-[#27272A] bg-white/90 dark:bg-[#131315]/90 backdrop-blur-xl px-5 flex items-center justify-between shrink-0">
               <button onClick={() => setActiveBlogDetail(null)} className="flex items-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 active:opacity-70">
                 <ArrowLeft className="w-4 h-4" /> Back
@@ -562,14 +619,14 @@ export default function HybridAppRouter() {
                 </div>
               )}
               
-              <div className="px-6 py-6 space-y-6 text-left">
+              <div className="px-6 py-8 space-y-6 text-left">
                 <h1 className="text-2xl font-black text-zinc-900 dark:text-white leading-tight">{activeBlogDetail.title}</h1>
                 <div className="flex items-center gap-3 text-[10px] font-bold text-zinc-500 pb-4 border-b border-zinc-200 dark:border-[#27272A]">
                   <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {new Date(activeBlogDetail.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                 </div>
                 
                 {/* Markdown Parser Rendering Output */}
-                <div className="space-y-4 text-zinc-700 dark:text-zinc-300 text-[13px] leading-relaxed font-light pb-20">
+                <div className="space-y-4 text-zinc-700 dark:text-zinc-300 text-[14px] leading-relaxed font-normal pb-20">
                   {activeBlogDetail.content ? (
                     (() => {
                       const lines = activeBlogDetail.content.split('\n');
@@ -580,18 +637,20 @@ export default function HybridAppRouter() {
                         if (tLine.startsWith('![') && tLine.includes('](')) {
                           const url = tLine.substring(tLine.indexOf('(') + 1, tLine.indexOf(')'));
                           compiledElements.push(
-                            <div key={index} className="w-full my-6 rounded-xl overflow-hidden shadow-sm border border-zinc-200 dark:border-[#27272A]">
+                            <div key={index} className="w-full my-6 rounded-2xl overflow-hidden shadow-sm border border-zinc-200 dark:border-[#27272A]">
                               <img src={url} className="w-full h-auto object-cover" alt="inline" />
                             </div>
                           );
                         } else if (tLine.startsWith('## ')) {
-                          compiledElements.push(<h2 key={index} className="text-lg font-black text-zinc-900 dark:text-white mt-6 mb-2">{tLine.replace('## ', '')}</h2>);
+                          compiledElements.push(<h2 key={index} className="text-lg font-black text-zinc-900 dark:text-white mt-8 mb-2">{tLine.replace('## ', '')}</h2>);
                         } else if (tLine.startsWith('### ')) {
-                          compiledElements.push(<h3 key={index} className="text-base font-bold text-zinc-900 dark:text-white mt-4 mb-2">{tLine.replace('### ', '')}</h3>);
+                          compiledElements.push(<h3 key={index} className="text-base font-bold text-zinc-900 dark:text-white mt-6 mb-2">{tLine.replace('### ', '')}</h3>);
                         } else if (tLine.startsWith('- ')) {
-                          compiledElements.push(<li key={index} className="ml-4 mb-1">{renderInlineStyles(tLine.replace('- ', ''))}</li>);
+                          compiledElements.push(<li key={index} className="ml-5 mb-1 list-disc">{renderInlineStyles(tLine.replace('- ', ''))}</li>);
+                        } else if (tLine.startsWith('> ')) {
+                          compiledElements.push(<blockquote key={index} className="pl-4 border-l-2 border-blue-500 italic text-zinc-500 my-4 bg-zinc-50 dark:bg-zinc-900/40 py-2 pr-4 rounded-r-xl">{renderInlineStyles(tLine.replace('> ', ''))}</blockquote>);
                         } else if (tLine) {
-                          compiledElements.push(<p key={index} className="mb-3">{renderInlineStyles(tLine)}</p>);
+                          compiledElements.push(<p key={index} className="mb-4">{renderInlineStyles(tLine)}</p>);
                         }
                       });
                       return compiledElements;
@@ -605,21 +664,23 @@ export default function HybridAppRouter() {
           </div>
         )}
 
-        {/* APP MODAL: ARCADE RUNTIME */}
+        {/* APP MODAL: PLAYABLE GAME IFRAME RUNTIME */}
         {activeGameDetail && (
-          <div className="fixed inset-0 z-[110] bg-zinc-950 dark:bg-black flex flex-col font-sans animate-in slide-in-from-right duration-200">
-            <header className="h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] border-b border-[#27272A] bg-zinc-900/90 dark:bg-[#09090b]/90 backdrop-blur-md px-5 flex items-center justify-between shrink-0">
-              <button onClick={() => setActiveGameDetail(null)} className="flex items-center gap-1.5 text-xs font-bold text-purple-400 active:opacity-70">
-                <ArrowLeft className="w-4 h-4" /> Terminate
+          <div className="fixed inset-0 z-[110] bg-white dark:bg-black flex flex-col font-sans animate-in slide-in-from-bottom duration-300">
+            <header className="h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] border-b border-zinc-200 dark:border-[#27272A] bg-white/90 dark:bg-[#09090b]/90 backdrop-blur-md px-5 flex items-center justify-between shrink-0">
+              <button onClick={() => setActiveGameDetail(null)} className="flex items-center gap-1.5 text-xs font-bold text-purple-600 dark:text-purple-400 active:opacity-70">
+                <ArrowLeft className="w-4 h-4" /> Exit Node
               </button>
-              <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">WebGL Layer</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">{activeGameDetail.title}</span>
             </header>
-            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center space-y-4">
-              <div className="w-16 h-16 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-2">
-                <Activity className="w-8 h-8 animate-pulse" />
-              </div>
-              <h2 className="text-lg font-black text-white">{activeGameDetail.title}</h2>
-              <p className="text-xs text-zinc-400 max-w-xs leading-relaxed font-light">Compiling simulation modules. Wait for integration of external game repositories.</p>
+            
+            {/* THIS LOADS YOUR ACTUAL NEXT.JS GAME PAGE SECURELY INSIDE THE APP SHELL */}
+            <div className="flex-1 w-full bg-zinc-50 dark:bg-[#09090b] overflow-hidden relative">
+              <iframe 
+                src={`/games/${activeGameDetail.slug}`} 
+                className="absolute inset-0 w-full h-full border-0"
+                title={activeGameDetail.title}
+              />
             </div>
           </div>
         )}
