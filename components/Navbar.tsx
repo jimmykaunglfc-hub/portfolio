@@ -5,9 +5,13 @@ import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const [isDark, setIsDark] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isApp, setIsApp] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
+    // Theme logic
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') {
       setIsDark(false);
@@ -18,6 +22,17 @@ export default function Navbar() {
       document.body.classList.add('dark');
       localStorage.setItem('theme', 'dark');
       setIsDark(true);
+    }
+
+    // NATIVE APP DETECTION ENGINE
+    const isCapacitor = (window as any).Capacitor?.isNativePlatform?.();
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    const ua = window.navigator.userAgent.toLowerCase();
+    const isIosWebview = /(iphone|ipod|ipad).*applewebkit(?!.*safari)/.test(ua);
+    const isAndroidWebview = /android.*wv/.test(ua);
+
+    if (isCapacitor || isStandalone || isIosWebview || isAndroidWebview) {
+      setIsApp(true); // Triggers App Mode (hides hamburger)
     }
   }, []);
 
@@ -45,7 +60,6 @@ export default function Navbar() {
       <nav className="font-sans fixed top-0 w-full z-50 transition-all duration-300 bg-white/70 dark:bg-zinc-950/50 backdrop-blur-xl border-b border-zinc-200/50 dark:border-white/5 h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] no-select">
         <div className="flex justify-between items-center px-4 md:px-12 max-w-7xl mx-auto h-full w-full">
           
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-2 md:gap-3 text-xl font-bold tracking-tighter text-zinc-900 dark:text-white pointer-events-auto group">
             <svg className="w-6 h-6 md:w-7 md:h-7 flex-shrink-0 transition-transform group-hover:scale-105" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
               <defs>
@@ -65,7 +79,6 @@ export default function Navbar() {
             <span className="font-extrabold tracking-tight text-lg md:text-xl">KHNCO<span className="text-[#4d8eff] dark:text-[#adc6ff]">.</span></span>
           </Link>
           
-          {/* Desktop Links (Hidden on Mobile) */}
           <div className="hidden md:flex items-center gap-8 pointer-events-auto">
             <div className="relative group py-6">
               <button className="flex items-center gap-1 text-zinc-900 dark:text-white font-semibold text-sm group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff] transition-colors duration-300">
@@ -87,15 +100,53 @@ export default function Navbar() {
             <Link href="/#contact" className="bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] px-5 py-2.5 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 hover:scale-105 shadow-sm flex items-center gap-1.5"><span className="material-symbols-outlined text-sm font-bold text-white dark:text-[#002e6a]">mail</span> Get in Touch</Link>
           </div>
 
-          {/* Mobile Right Controls */}
           <div className="flex items-center gap-3 md:hidden pointer-events-auto">
             <button onClick={toggleTheme} className="p-2 text-zinc-900 dark:text-white material-symbols-outlined text-xl cursor-pointer hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
               {isDark ? 'light_mode' : 'dark_mode'}
             </button>
+            
+            {/* Show Hamburger ONLY if it's a Website (!isApp) */}
+            {!isApp && (
+              <button onClick={() => setIsMenuOpen(true)} className="text-zinc-900 dark:text-white material-symbols-outlined text-2xl p-2 cursor-pointer hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
+                menu
+              </button>
+            )}
           </div>
 
         </div>
       </nav>
+
+      {/* Website Mobile Menu Overlay */}
+      {!isApp && isMenuOpen && (
+        <div className="font-sans fixed inset-0 z-50 bg-white/95 dark:bg-[#131315]/95 backdrop-blur-2xl flex flex-col px-8 overflow-y-auto transition-all duration-300 pt-[calc(6rem+env(safe-area-inset-top))]">
+          <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
+            
+            <div className="border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-2">
+              <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="flex justify-between items-center w-full text-2xl font-medium text-zinc-900 dark:text-white py-2 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined">account_circle</span> Profile
+                </div>
+                <span className={`material-symbols-outlined transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`}>expand_more</span>
+              </button>
+              
+              {isProfileOpen && (
+                <div className="flex flex-col gap-5 mt-4 ml-8 border-l-2 border-zinc-200 dark:border-zinc-800 pl-4 mb-4">
+                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#expertise"><span className="material-symbols-outlined text-base">layers</span> Capabilities</Link>
+                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#experience"><span className="material-symbols-outlined text-base">timeline</span> Trajectory</Link>
+                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#contact"><span className="material-symbols-outlined text-base">alternate_email</span> Contact</Link>
+                </div>
+              )}
+            </div>
+
+            <Link onClick={() => setIsMenuOpen(false)} href="/blog" className="text-2xl font-medium text-zinc-900 dark:text-white hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3 py-2 border-b border-zinc-200 dark:border-zinc-800"><span className="material-symbols-outlined">article</span> Blog</Link>
+            <Link onClick={() => setIsMenuOpen(false)} href="/games" className="text-2xl font-medium text-zinc-900 dark:text-white hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3 py-2 border-b border-zinc-200 dark:border-zinc-800"><span className="material-symbols-outlined">sports_esports</span> Games</Link>
+
+            <button onClick={() => setIsMenuOpen(false)} className="bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] px-8 py-4 rounded-full font-bold text-sm w-full mt-10 tracking-wide uppercase shadow-lg cursor-pointer hover:scale-105 transition-all duration-300">
+              Close Menu
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

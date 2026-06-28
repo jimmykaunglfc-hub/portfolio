@@ -79,14 +79,12 @@ export default function RootLayout({
       <body className="bg-[#09090b] text-[#e5e1e4] antialiased">
         <Navbar />
         
-        {/* ADDED: pb-24 md:pb-0 so content isn't hidden behind the new mobile BottomNav */}
-        <div className="pt-[env(safe-area-inset-top)] pb-24 md:pb-0">
+        {/* REVERTED: Removed pb-24 because BottomNav now handles spacing dynamically based on App vs Web mode */}
+        <div className="pt-[env(safe-area-inset-top)]">
           {children}
         </div>
         
-        {/* ADDED: The mobile bottom navigation bar */}
         <BottomNav />
-        
         <Analytics />
         <AIChat />
       </body>
