@@ -14,7 +14,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized access credential validation failure.' }, { status: 401 });
     }
 
-    // Secure binary storage upload processing pipeline
     if (action === 'upload-image') {
       if (!fileName || !fileBase64) {
         return NextResponse.json({ error: 'Missing image payload files.' }, { status: 400 });
