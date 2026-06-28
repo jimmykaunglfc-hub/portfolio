@@ -64,9 +64,12 @@ export async function POST(req: Request) {
     if (requiresHuman) {
       const rthMessage = "I have paused my AI responses and flagged this conversation for Jimmy. He has been notified and will reply to you here or via email shortly to coordinate your consultation!";
       
-      sendSMTPAlert(originalUserMessageText, activeSessionId).catch(err => 
-        console.error("Background SMTP alert failed:", err)
-      );
+      // AWAIT the email so the server doesn't kill it!
+      try {
+        await sendSMTPAlert(originalUserMessageText, activeSessionId);
+      } catch (err) {
+        console.error("SMTP alert failed:", err);
+      }
       
       if (supabaseUrl && supabaseKey && originalUserMessageText) {
         try {
