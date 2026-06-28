@@ -50,7 +50,7 @@ export default function Navbar() {
     }
   };
 
-  if (pathname?.startsWith('/studio')) return null;
+  if (pathname?.startsWith('/studio') || pathname?.startsWith('/admin')) return null;
 
   return (
     <>
@@ -87,11 +87,10 @@ export default function Navbar() {
                 <span className="material-symbols-outlined text-base transition-transform duration-300 group-hover:rotate-180">expand_more</span>
               </button>
               <div className="absolute top-[85%] left-[-10px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 rounded-xl shadow-xl min-w-[200px] overflow-hidden py-2">
-                {/* UPDATED: Route to /matrix */}
-                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/matrix"><span className="material-symbols-outlined text-lg">layers</span> Capabilities</Link>
-                {/* UPDATED: Route to /matrix#experience */}
-                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/matrix#experience"><span className="material-symbols-outlined text-lg">timeline</span> Trajectory</Link>
-                {/* Contact remains on Home page */}
+                {/* REVERTED: Route back to /#expertise */}
+                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#expertise"><span className="material-symbols-outlined text-lg">layers</span> Capabilities</Link>
+                {/* REVERTED: Route back to /#experience */}
+                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#experience"><span className="material-symbols-outlined text-lg">timeline</span> Trajectory</Link>
                 <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#contact"><span className="material-symbols-outlined text-lg">alternate_email</span> Contact</Link>
               </div>
             </div>
@@ -134,11 +133,10 @@ export default function Navbar() {
               
               {isProfileOpen && (
                 <div className="flex flex-col gap-5 mt-4 ml-8 border-l-2 border-zinc-200 dark:border-zinc-800 pl-4 mb-4">
-                  {/* UPDATED: Route to /matrix */}
-                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/matrix"><span className="material-symbols-outlined text-base">layers</span> Capabilities</Link>
-                  {/* UPDATED: Route to /matrix#experience */}
-                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/matrix#experience"><span className="material-symbols-outlined text-base">timeline</span> Trajectory</Link>
-                  {/* Contact remains on Home page */}
+                  {/* REVERTED: Route back to /#expertise */}
+                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#expertise"><span className="material-symbols-outlined text-base">layers</span> Capabilities</Link>
+                  {/* REVERTED: Route back to /#experience */}
+                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#experience"><span className="material-symbols-outlined text-base">timeline</span> Trajectory</Link>
                   <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#contact"><span className="material-symbols-outlined text-base">alternate_email</span> Contact</Link>
                 </div>
               )}
