@@ -667,7 +667,7 @@ export default function HybridAppRouter() {
               
               <div className="space-y-3">
                 {/* Book Consultation Session Slot */}
-                <a href="mailto:cohortexplorers@gmail.com?subject=Consultation%20Booking" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
+                <a href="mailto:jimmykg.spacex@gmail.com?subject=Consultation%20Booking" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
                   <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-500/10 flex items-center justify-center text-orange-600 dark:text-orange-400"><Calendar className="w-4 h-4" /></div>
                   <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Consultation Session</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">Book a Meeting Slot</p></div>
                 </a>
