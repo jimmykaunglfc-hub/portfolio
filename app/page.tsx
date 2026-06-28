@@ -13,7 +13,6 @@ import CapabilitiesMatrix from '../components/Capabilities';
 import TrajectoryHubs from '../components/TrajectoryHubs';
 import StrategicNetwork from '../components/StrategicNetwork';
 import DataNexus from '../components/DataNexus';
-// IMPORTANT: Make sure this path is correct for your project!
 import { supabase } from '../lib/supabase';
 
 // =========================================================================
@@ -135,7 +134,7 @@ const visualTrajectoryMap = [
 ];
 
 const coreCompetencies = [
-  { title: "Digital Operations Management", desc: "Directing end-to-end digital engineering and operational delivery frameworks.", icon: Layers, color: "text-blue-500 bg-blue-500/10 border-blue-500/20 dark:text-blue-400 dark:border-blue-400/20 dark:bg-blue-500/5", tags: ["Agile Delivery", "KPIs"] },
+  { title: "Digital Operations Management", desc: "Directing end-to-end digital engineering and operational delivery frameworks across product divisions.", icon: Layers, color: "text-blue-500 bg-blue-500/10 border-blue-500/20 dark:text-blue-400 dark:border-blue-400/20 dark:bg-blue-500/5", tags: ["Agile Delivery", "KPIs"] },
   { title: "FinTech Channel Ecosystems", desc: "Overseeing massive digital consumer channels including flagship mobile banking layers.", icon: Shield, color: "text-purple-500 bg-purple-500/10 border-purple-500/20 dark:text-purple-400 dark:border-purple-400/20 dark:bg-purple-500/5", tags: ["Ecosystem Scale", "Compliance"] },
   { title: "Strategic Product Engineering", desc: "Spearheading multi-phased product roadmaps from deep initial market ideation to high-frequency deployment.", icon: Zap, color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20 dark:text-emerald-400 dark:border-emerald-400/20 dark:bg-emerald-500/5", tags: ["Roadmaps", "UX/UI Focus"] }
 ];
@@ -147,17 +146,15 @@ const operationalArchitecturePhases = [
   { phase: "Phase 04", title: "Ecosystem Scaling", desc: "Maximizing market impact and driving continuous user acquisition loops.", metrics: ["Growth Loops", "Data Analytics"] }
 ];
 
-// DYNAMIC GAMES SYNCED TO YOUR ACTUAL ROUTES
 const appGamesCache = [
-  { id: 1, title: "Techle", slug: "techle", description: "A daily word puzzle game for tech enthusiasts.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-blue-400" },
-  { id: 2, title: "Bug Blaster", slug: "bug-blaster", description: "Squash bugs and optimize your code in this fast-paced arcade shooter.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-red-400" },
-  { id: 3, title: "Lexicon Lock", slug: "lexicon-lock", description: "An English anagram puzzle. Unscramble the letters to crack the vault.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-purple-400" },
-  { id: 4, title: "Sprint Planner", slug: "sprint-planner", description: "Manage resources and deliver the project on time in this strategy simulation.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-emerald-400" },
-  { id: 5, title: "QA Test Simulator", slug: "qa-test", description: "Test your quality assurance skills by finding edge cases.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-orange-400" },
-  { id: 6, title: "Logic Puzzle", slug: "puzzle", description: "A high-fidelity touch puzzle sandbox testing automated deductive logic capabilities.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-cyan-400" }
+  { id: 1, title: "Techle", slug: "techle", description: "A daily word puzzle game for tech enthusiasts.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-blue-500 dark:text-blue-400 bg-blue-500/10 border-blue-500/20" },
+  { id: 2, title: "Bug Blaster", slug: "bug-blaster", description: "Squash bugs and optimize your code in this fast-paced arcade shooter.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-red-500 dark:text-red-400 bg-red-500/10 border-red-500/20" },
+  { id: 3, title: "Lexicon Lock", slug: "lexicon-lock", description: "An English anagram puzzle. Unscramble the letters to crack the vault.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-purple-500 dark:text-purple-400 bg-purple-500/10 border-purple-500/20" },
+  { id: 4, title: "Sprint Planner", slug: "sprint-planner", description: "Manage resources and deliver the project on time in this strategy simulation.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20" },
+  { id: 5, title: "QA Test Simulator", slug: "qa-test", description: "Test your quality assurance skills by finding edge cases.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-orange-500 dark:text-orange-400 bg-orange-500/10 border-orange-500/20" },
+  { id: 6, title: "Logic Puzzle", slug: "puzzle", description: "A high-fidelity touch puzzle sandbox testing automated deductive logic capabilities.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-cyan-500 dark:text-cyan-400 bg-cyan-500/10 border-cyan-500/20" }
 ];
 
-// Helper to calculate dynamic years of experience (from 2013)
 const calculateExperience = () => {
   const currentYear = new Date().getFullYear();
   return currentYear - 2013;
@@ -167,11 +164,9 @@ const calculateExperience = () => {
 // MAIN COMPONENT ROUTER
 // =========================================================================
 export default function HybridAppRouter() {
-  // Global Environment
   const [isApp, setIsApp] = useState(false);
   const [isDark, setIsDark] = useState(true);
   
-  // App Specific States
   const [currentTab, setCurrentTab] = useState('home');
   const [journeySegment, setJourneySegment] = useState<'professional' | 'educational'>('professional');
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -179,20 +174,16 @@ export default function HybridAppRouter() {
   const [activeGameDetail, setActiveGameDetail] = useState<any | null>(null);
   const [activeArchitecturePhase, setActiveArchitecturePhase] = useState(1);
   
-  // LIVE SUPABASE DATA
   const [livePosts, setLivePosts] = useState<any[]>([]);
   const [isLoadingPosts, setIsLoadingPosts] = useState(true);
 
-  // Web Specific States
   const [activeExperiencePage, setActiveExperiencePage] = useState(1);
   const [isWebContactOpen, setIsWebContactOpen] = useState(false);
   const [isWebMapOpen, setIsWebMapOpen] = useState(false);
 
   useEffect(() => {
-    // Theme logic
     setIsDark(document.documentElement.classList.contains('dark'));
 
-    // Advanced Native Framework Detection
     const isCapacitor = (window as any).Capacitor?.isNativePlatform?.();
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
     const ua = window.navigator.userAgent.toLowerCase();
@@ -200,7 +191,6 @@ export default function HybridAppRouter() {
       setIsApp(true);
     }
 
-    // Fetch Live Posts from Supabase
     const fetchPosts = async () => {
       try {
         const { data, error } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false });
@@ -214,7 +204,6 @@ export default function HybridAppRouter() {
       }
     };
     fetchPosts();
-
   }, []);
 
   const toggleTheme = () => {
@@ -231,7 +220,6 @@ export default function HybridAppRouter() {
     }
   };
 
-  // MARKDOWN PARSER ENGINE (Mirrors your blog/page.tsx logic)
   const renderInlineStyles = (text: string) => {
     const boldRegex = /\*\*(.*?)\*\*/g;
     return text.split(boldRegex).map((part, i) => {
@@ -248,7 +236,7 @@ export default function HybridAppRouter() {
       <div className="fixed inset-0 w-screen h-screen bg-zinc-50 dark:bg-[#09090b] text-zinc-900 dark:text-[#e5e1e4] flex flex-col font-sans antialiased overflow-hidden select-none pb-[env(safe-area-inset-bottom)]">
         
         {/* TOP APP BAR */}
-        <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-5 h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] bg-white/70 dark:bg-[#131315]/80 backdrop-blur-2xl border-b border-zinc-200/50 dark:border-[#27272A]/50">
+        <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-5 h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] bg-white/70 dark:bg-[#131315]/80 backdrop-blur-xl border-b border-zinc-200/50 dark:border-[#27272A]/50">
           <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-blue-600 dark:bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.6)] animate-pulse" />
             <h1 className="text-sm font-black text-zinc-900 dark:text-white tracking-widest uppercase">KHNCO<span className="text-blue-600 dark:text-blue-500">.</span></h1>
@@ -257,7 +245,10 @@ export default function HybridAppRouter() {
             <button onClick={toggleTheme} className="w-9 h-9 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all">
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
-            <button onClick={() => setIsContactModalOpen(true)} className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all shadow-sm">
+            <button 
+              onClick={() => setIsContactModalOpen(true)} 
+              className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all shadow-sm"
+            >
               <User className="w-4 h-4" />
             </button>
           </div>
@@ -270,7 +261,7 @@ export default function HybridAppRouter() {
           {currentTab === 'home' && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
               
-              {/* Executive Hero Profile (No Image, High Contrast Glow) */}
+              {/* Executive Hero Profile */}
               <div className="bg-white dark:bg-[#18181B] rounded-3xl border border-zinc-200/60 dark:border-[#27272A] p-7 relative overflow-hidden shadow-xl dark:shadow-2xl">
                 <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-blue-500/20 dark:bg-blue-600/20 blur-[60px] rounded-full pointer-events-none" />
                 <div className="absolute bottom-[-10%] left-[-10%] w-40 h-40 bg-purple-500/10 dark:bg-purple-600/10 blur-[50px] rounded-full pointer-events-none" />
@@ -307,31 +298,20 @@ export default function HybridAppRouter() {
                 </button>
               </div>
 
-              {/* HIGHLIGHTS CAROUSEL */}
-              <div className="space-y-3 pt-2">
-                <div className="flex items-center justify-between px-1">
-                  <h3 className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold">Recent Highlights</h3>
+              {/* Quick Metrics */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white dark:bg-[#18181B] rounded-2xl border border-zinc-200/60 dark:border-[#27272A] p-5 flex flex-col justify-between h-28 shadow-sm">
+                  <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Track Record</span>
+                  <div>
+                    <span className="text-2xl font-black text-zinc-900 dark:text-white block">{calculateExperience()}+ Years</span>
+                    <span className="text-[10px] text-zinc-500 mt-1 block">Cross-Functional</span>
+                  </div>
                 </div>
-                
-                <div className="flex overflow-x-auto space-x-4 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                  {/* Latest Blog Post Highlight */}
-                  {!isLoadingPosts && livePosts.length > 0 && (
-                    <div onClick={() => setActiveBlogDetail(livePosts[0])} className="w-64 flex-shrink-0 bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-5 rounded-3xl active:scale-95 transition-transform shadow-sm flex flex-col justify-between">
-                      <div>
-                        <span className="text-[9px] font-bold tracking-widest uppercase text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 px-2 py-0.5 rounded">Latest Insight</span>
-                        <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-3 line-clamp-2 leading-tight">{livePosts[0].title}</h4>
-                      </div>
-                      <span className="text-[10px] text-zinc-400 mt-4 flex items-center gap-1"><BookOpen className="w-3 h-3"/> Read Article</span>
-                    </div>
-                  )}
-
-                  {/* Featured Game Highlight */}
-                  <div onClick={() => setActiveGameDetail(appGamesCache[0])} className="w-64 flex-shrink-0 bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-5 rounded-3xl active:scale-95 transition-transform shadow-sm flex flex-col justify-between">
-                    <div>
-                      <span className="text-[9px] font-bold tracking-widest uppercase text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 px-2 py-0.5 rounded">Featured Simulation</span>
-                      <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-3 line-clamp-2 leading-tight">{appGamesCache[0].title}</h4>
-                    </div>
-                    <span className="text-[10px] text-zinc-400 mt-4 flex items-center gap-1"><Gamepad2 className="w-3 h-3"/> Launch WebGL</span>
+                <div className="bg-white dark:bg-[#18181B] rounded-2xl border border-zinc-200/60 dark:border-[#27272A] p-5 flex flex-col justify-between h-28 shadow-sm">
+                  <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Global Scale</span>
+                  <div>
+                    <span className="text-lg font-black text-blue-600 dark:text-blue-400 block">Enterprise</span>
+                    <span className="text-[10px] text-zinc-500 mt-1 block">High-Fidelity Ready</span>
                   </div>
                 </div>
               </div>
@@ -343,16 +323,65 @@ export default function HybridAppRouter() {
                   <Network className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
                 </div>
                 
-                {/* Visual Node Map (Aligned perfectly) */}
+                {/* Visual Node Map */}
                 <div className="relative flex justify-between items-center px-4 before:absolute before:inset-0 before:top-1/2 before:-translate-y-1/2 before:h-[2px] before:bg-zinc-200 dark:before:bg-zinc-800 before:mx-8">
-                  <div className="z-10 bg-white dark:bg-[#09090b] p-2.5 rounded-full border-2 border-zinc-300 dark:border-zinc-600 flex items-center justify-center shadow-sm"><MessageSquare className="w-4 h-4 text-zinc-500" /></div>
-                  <div className="z-10 bg-white dark:bg-[#09090b] p-2.5 rounded-full border-2 border-purple-500 flex items-center justify-center shadow-sm dark:shadow-[0_0_10px_rgba(168,85,247,0.3)]"><Shield className="w-4 h-4 text-purple-500 dark:text-purple-400" /></div>
-                  <div className="z-10 bg-white dark:bg-[#09090b] p-2.5 rounded-full border-2 border-blue-500 flex items-center justify-center shadow-sm dark:shadow-[0_0_10px_rgba(59,130,246,0.4)]"><Layers className="w-4 h-4 text-blue-500 dark:text-blue-400" /></div>
+                  <div className="z-10 bg-zinc-100 dark:bg-[#09090b] p-2.5 rounded-full border border-zinc-200 dark:border-zinc-700 flex items-center justify-center shadow-sm"><MessageSquare className="w-4 h-4 text-zinc-500 dark:text-zinc-400" /></div>
+                  <div className="z-10 bg-zinc-100 dark:bg-[#09090b] p-2.5 rounded-full border border-purple-500/40 dark:border-purple-500 flex items-center justify-center shadow-sm"><Shield className="w-4 h-4 text-purple-600 dark:text-purple-400" /></div>
+                  <div className="z-10 bg-zinc-100 dark:bg-[#09090b] p-2.5 rounded-full border-2 border-blue-500 flex items-center justify-center shadow-sm"><Layers className="w-4 h-4 text-blue-600 dark:text-blue-400" /></div>
                 </div>
                 <div className="flex justify-between text-[9px] font-bold tracking-wider uppercase mt-4">
                   <span className="w-20 text-center text-zinc-500 leading-tight">Comms &<br/>Liaison</span>
                   <span className="w-20 text-center text-purple-600 dark:text-purple-400 leading-tight">FinTech<br/>Channels</span>
                   <span className="w-20 text-center text-blue-600 dark:text-blue-400 leading-tight">Digital<br/>Operations</span>
+                </div>
+              </div>
+
+              {/* RECENT HIGHLIGHTS (Positioned cleanly below Domain Evolution) */}
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between px-1">
+                  <h3 className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold">Recent Highlights</h3>
+                </div>
+                
+                <div className="flex overflow-x-auto space-x-4 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                  {/* Latest Blog Post Highlight 1 */}
+                  {!isLoadingPosts && livePosts.length > 0 && (
+                    <div onClick={() => setActiveBlogDetail(livePosts[0])} className="w-64 flex-shrink-0 bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-5 rounded-3xl active:scale-95 transition-transform shadow-sm flex flex-col justify-between">
+                      <div>
+                        <span className="text-[9px] font-bold tracking-widest uppercase text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 px-2 py-0.5 rounded">Latest Insight</span>
+                        <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-3 line-clamp-2 leading-tight">{livePosts[0].title}</h4>
+                      </div>
+                      <span className="text-[10px] text-zinc-400 mt-4 flex items-center gap-1"><BookOpen className="w-3 h-3"/> Read Article</span>
+                    </div>
+                  )}
+
+                  {/* Latest Blog Post Highlight 2 */}
+                  {!isLoadingPosts && livePosts.length > 1 && (
+                    <div onClick={() => setActiveBlogDetail(livePosts[1])} className="w-64 flex-shrink-0 bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-5 rounded-3xl active:scale-95 transition-transform shadow-sm flex flex-col justify-between">
+                      <div>
+                        <span className="text-[9px] font-bold tracking-widest uppercase text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 px-2 py-0.5 rounded">Strategy Intel</span>
+                        <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-3 line-clamp-2 leading-tight">{livePosts[1].title}</h4>
+                      </div>
+                      <span className="text-[10px] text-zinc-400 mt-4 flex items-center gap-1"><BookOpen className="w-3 h-3"/> Read Article</span>
+                    </div>
+                  )}
+
+                  {/* Top Game Highlight 1 */}
+                  <div onClick={() => setActiveGameDetail(appGamesCache[0])} className="w-64 flex-shrink-0 bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-5 rounded-3xl active:scale-95 transition-transform shadow-sm flex flex-col justify-between">
+                    <div>
+                      <span className="text-[9px] font-bold tracking-widest uppercase text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 px-2 py-0.5 rounded">Arcade Stack</span>
+                      <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-3 line-clamp-2 leading-tight">{appGamesCache[0].title}</h4>
+                    </div>
+                    <span className="text-[10px] text-zinc-400 mt-4 flex items-center gap-1"><Gamepad2 className="w-3 h-3"/> Launch Sandbox</span>
+                  </div>
+
+                  {/* Top Game Highlight 2 */}
+                  <div onClick={() => setActiveGameDetail(appGamesCache[1])} className="w-64 flex-shrink-0 bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-5 rounded-3xl active:scale-95 transition-transform shadow-sm flex flex-col justify-between">
+                    <div>
+                      <span className="text-[9px] font-bold tracking-widest uppercase text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 px-2 py-0.5 rounded">Arcade Stack</span>
+                      <h4 className="text-sm font-bold text-zinc-900 dark:text-white mt-3 line-clamp-2 leading-tight">{appGamesCache[1].title}</h4>
+                    </div>
+                    <span className="text-[10px] text-zinc-400 mt-4 flex items-center gap-1"><Gamepad2 className="w-3 h-3"/> Launch Sandbox</span>
+                  </div>
                 </div>
               </div>
 
@@ -364,16 +393,16 @@ export default function HybridAppRouter() {
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
               
               {/* iOS Style Segmented Control */}
-              <div className="flex bg-zinc-100 dark:bg-[#18181B] p-1.5 rounded-2xl border border-zinc-200/60 dark:border-[#27272A]">
+              <div className="flex bg-zinc-100 dark:bg-[#18181B] p-1.5 rounded-xl border border-zinc-200/60 dark:border-[#27272A]">
                 <button 
                   onClick={() => setJourneySegment('professional')}
-                  className={`flex-1 text-center py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'professional' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
+                  className={`flex-1 text-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'professional' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
                 >
                   Professional
                 </button>
                 <button 
                   onClick={() => setJourneySegment('educational')}
-                  className={`flex-1 text-center py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'educational' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
+                  className={`flex-1 text-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'educational' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
                 >
                   Educational
                 </button>
@@ -382,7 +411,7 @@ export default function HybridAppRouter() {
               {/* Timeline Feed */}
               <div className="relative border-l-2 border-zinc-200 dark:border-[#27272A] pl-5 space-y-8 ml-2">
                 {paginatedExperience[journeySegment === 'professional' ? 1 : 2].map((block, idx) => (
-                  <div key={idx} className="relative bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-3xl p-6 shadow-sm">
+                  <div key={idx} className="relative bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-2xl p-6 shadow-sm">
                     <div className="absolute -left-[28px] top-6 w-3.5 h-3.5 rounded-full bg-zinc-50 dark:bg-[#09090b] border-[3px] border-blue-600 dark:border-[#3B82F6]" />
                     <div className="flex justify-between items-start mb-4">
                       <div>
@@ -506,11 +535,11 @@ export default function HybridAppRouter() {
                 <h2 className="text-xl font-black text-zinc-900 dark:text-white mt-0.5">Simulation Arcade</h2>
               </div>
 
-              <div className="grid grid-cols-1 gap-5">
+              <div className="grid grid-cols-1 gap-4">
                 {appGamesCache.map((game) => (
-                  <div key={game.id} onClick={() => setActiveGameDetail(game)} className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-3xl p-5 flex items-center gap-5 active:scale-[0.98] transition-transform cursor-pointer shadow-sm">
-                    <div className="w-16 h-16 rounded-2xl bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] flex items-center justify-center shrink-0">
-                      <Gamepad2 className={`w-8 h-8 ${game.iconColor}`} />
+                  <div key={game.id} onClick={() => setActiveGameDetail(game)} className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-2xl p-5 flex items-center gap-5 active:scale-[0.98] transition-transform cursor-pointer shadow-sm">
+                    <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center shrink-0 ${game.iconColor}`}>
+                      <Gamepad2 className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
                       <h4 className="text-sm font-bold text-zinc-900 dark:text-white mb-1">{game.title}</h4>
@@ -557,15 +586,15 @@ export default function HybridAppRouter() {
             <div className="bg-white dark:bg-[#18181B] border-t border-zinc-200 dark:border-[#27272A] w-full rounded-t-[2rem] p-6 space-y-6 animate-in slide-in-from-bottom duration-300 pb-10 shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar">
               <div className="w-12 h-1.5 bg-zinc-200 dark:bg-[#27272A] rounded-full mx-auto" onClick={() => setIsContactModalOpen(false)} />
               <div className="flex justify-between items-center">
-                <h5 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight">Executive Network</h5>
+                <h5 className="text-lg font-black text-zinc-900 dark:text-white tracking-tight">Executive Network</h5>
                 <button onClick={() => setIsContactModalOpen(false)} className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest bg-zinc-100 dark:bg-[#27272A]/50 px-3 py-1.5 rounded-full">Close</button>
               </div>
               
               <div className="space-y-3">
-                {/* Book Consultation */}
+                {/* Book Consultation Session Slot */}
                 <a href="mailto:cohortexplorers@gmail.com?subject=Consultation%20Booking" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
                   <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-500/10 flex items-center justify-center text-orange-600 dark:text-orange-400"><Calendar className="w-4 h-4" /></div>
-                  <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Consultation Session</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">Book a Meeting</p></div>
+                  <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Consultation Session</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">Book a Meeting Slot</p></div>
                 </a>
 
                 {/* Email */}
@@ -625,7 +654,7 @@ export default function HybridAppRouter() {
                   <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {new Date(activeBlogDetail.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                 </div>
                 
-                {/* Markdown Parser Rendering Output */}
+                {/* Markdown Parser Rendering Output - Renders full blog contents completely */}
                 <div className="space-y-4 text-zinc-700 dark:text-zinc-300 text-[14px] leading-relaxed font-normal pb-20">
                   {activeBlogDetail.content ? (
                     (() => {
@@ -656,7 +685,7 @@ export default function HybridAppRouter() {
                       return compiledElements;
                     })()
                   ) : (
-                    <p>{activeBlogDetail.summary}</p>
+                    <p className="text-zinc-400 italic">{activeBlogDetail.summary || activeBlogDetail.desc}</p>
                   )}
                 </div>
               </div>
@@ -664,7 +693,7 @@ export default function HybridAppRouter() {
           </div>
         )}
 
-        {/* APP MODAL: PLAYABLE GAME IFRAME RUNTIME */}
+        {/* APP MODAL: PLAYABLE GAME IFRAME RUNTIME WITHOUT DOUBLE HEADERS */}
         {activeGameDetail && (
           <div className="fixed inset-0 z-[110] bg-white dark:bg-black flex flex-col font-sans animate-in slide-in-from-bottom duration-300">
             <header className="h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] border-b border-zinc-200 dark:border-[#27272A] bg-white/90 dark:bg-[#09090b]/90 backdrop-blur-md px-5 flex items-center justify-between shrink-0">
@@ -674,10 +703,10 @@ export default function HybridAppRouter() {
               <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">{activeGameDetail.title}</span>
             </header>
             
-            {/* THIS LOADS YOUR ACTUAL NEXT.JS GAME PAGE SECURELY INSIDE THE APP SHELL */}
+            {/* App URL query logic parameter strips duplicate standard header arrays */}
             <div className="flex-1 w-full bg-zinc-50 dark:bg-[#09090b] overflow-hidden relative">
               <iframe 
-                src={`/games/${activeGameDetail.slug}`} 
+                src={`/games/${activeGameDetail.slug}?app=true`} 
                 className="absolute inset-0 w-full h-full border-0"
                 title={activeGameDetail.title}
               />
