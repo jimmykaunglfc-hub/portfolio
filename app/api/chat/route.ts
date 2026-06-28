@@ -12,27 +12,10 @@ const RTH_TRIGGERS = [
   "contact", "email", "talk to jimmy", "speak to", "meeting", "appointment"
 ];
 
-function createMockStream(text: string) {
-  const stream = new ReadableStream({
-    start(controller) {
-      controller.enqueue(new TextEncoder().encode(`0:${JSON.stringify(text)}\n`));
-      controller.close();
-    }
-  });
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/plain; charset=utf-8',
-      'x-vercel-ai-data-stream': 'v1'
-    }
-  });
-}
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { messages } = body;
-    
-    // NEW: Extract sessionId from the URL search parameters!
     const url = new URL(req.url);
     const sessionId = url.searchParams.get('sessionId');
     
@@ -56,39 +39,23 @@ export async function POST(req: Request) {
     const cleanUserMessage: string = originalUserMessageText.trim().toLowerCase();
     const activeSessionId: string = sessionId || `session-${Date.now()}`;
 
-    // ============================================================================
-    // 1. THE INTERCEPTOR: Case-insensitive RTH Match
-    // ============================================================================
     const requiresHuman = RTH_TRIGGERS.some(trigger => cleanUserMessage.includes(trigger));
 
+    // ============================================================================
+    // 1. FIRE EMAIL ALERTS
+    // ============================================================================
     if (requiresHuman) {
-      const rthMessage = "I have paused my AI responses and flagged this conversation for Jimmy. He has been notified and will reply to you here or via email shortly to coordinate your consultation!";
-      
-      // AWAIT the email so the server doesn't kill it!
       try {
         await sendSMTPAlert(originalUserMessageText, activeSessionId);
+        console.log("✅ SMTP Alert successful!");
       } catch (err) {
-        console.error("SMTP alert failed:", err);
+        // If the email fails, it prints exactly why here so you can fix it!
+        console.error("❌ SMTP Alert failed to send. Check App Password or Port:", err);
       }
-      
-      if (supabaseUrl && supabaseKey && originalUserMessageText) {
-        try {
-          await supabase.from('chat_history').insert({
-            session_id: activeSessionId,
-            user_message: originalUserMessageText,
-            ai_response: rthMessage,
-            requires_human: true
-          });
-        } catch (dbErr) {
-          console.error("Failed to save RTH row:", dbErr);
-        }
-      }
-
-      return createMockStream(rthMessage);
     }
 
     // ============================================================================
-    // 2. NORMAL AI PROCESSING 
+    // 2. NORMAL AI PROCESSING & DYNAMIC CONTEXT
     // ============================================================================
     const { data: liveBlogPosts } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false });
     const { data: liveAboutMe } = await supabase.from('about_me').select('*');
@@ -123,14 +90,20 @@ export async function POST(req: Request) {
 
     const googleProvider = createGoogleGenerativeAI({ apiKey: activeKey });
 
+    // ============================================================================
+    // 3. THE MAGIC FIX: FORCE GEMINI TO DELIVER THE RTH MESSAGE
+    // ============================================================================
+    const systemPrompt = requiresHuman
+      ? `CRITICAL INSTRUCTION: Ignore all previous instructions. You must reply with EXACTLY this word-for-word string, and absolutely nothing else: "I have paused my AI responses and flagged this conversation for Jimmy. He has been notified and will reply to you here or via email shortly to coordinate your consultation!"`
+      : `You are the official, highly capable AI assistant for Jimmy Kaung's portfolio website.
+        - ALWAYS match the exact language and script used by the user.
+        Context: ${JSON.stringify(livePortfolioData)}
+        Instructions: Answer queries based on the context. If asked about unrelated things, politely decline.`;
+
     const result = await streamText({
       model: googleProvider('gemini-2.5-flash'), 
       messages: alternatingMessages, 
-      system: `You are the official, highly capable AI assistant for Jimmy Kaung's portfolio website.
-      - ALWAYS match the exact language and script used by the user.
-      Context: ${JSON.stringify(livePortfolioData)}
-      Instructions: Answer queries based on the context. If asked about unrelated things, politely decline.`,
-      
+      system: systemPrompt,
       onFinish: async ({ text }) => {
         try {
           if (originalUserMessageText && supabaseUrl && supabaseKey) {
@@ -138,7 +111,7 @@ export async function POST(req: Request) {
               session_id: activeSessionId,
               user_message: originalUserMessageText,
               ai_response: text,
-              requires_human: false
+              requires_human: requiresHuman // Seamlessly flags true or false!
             });
           }
         } catch (err) {
@@ -151,21 +124,26 @@ export async function POST(req: Request) {
 
   } catch (globalError: any) {
     console.error("Global chat router catch intercept:", globalError);
-    return createMockStream("Hello! I am currently optimizing my system. If you have questions, please reach out directly via my contact details!");
+    return new Response("System Error", { status: 500 });
   }
 }
 
+// ============================================================================
+// 4. ROBUST SMTP CONFIGURATION
+// ============================================================================
 async function sendSMTPAlert(userMessage: string, sessionId: string) {
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com', // Explicitly routing to Gmail
+    port: 465, // Force secure SSL port
+    secure: true,
     auth: {
-      user: 'jimmykg.spacex@gmail.com',
+      user: process.env.SMTP_USER || 'jimmykg.spacex@gmail.com',
       pass: process.env.SMTP_PASS,
     },
   });
 
   const mailOptions = {
-    from: 'jimmykg.spacex@gmail.com',
+    from: process.env.SMTP_USER || 'jimmykg.spacex@gmail.com',
     to: 'jimmykg.spacex@gmail.com',
     subject: `🚨 Urgent: Portfolio Chat RTH Triggered!`,
     html: `
