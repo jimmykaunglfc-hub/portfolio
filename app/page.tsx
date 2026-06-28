@@ -62,7 +62,7 @@ const paginatedExperience: ExperienceData = {
       company: "KBZ Bank", timeline: "6 yrs 2 mos Fast-Track", type: "On-site / Full-time",
       roles: [
         {
-          title: "Digital Channel Management Lead", period: "Nov 2022 - Jan 2025", location: "Yangon, Myanmar",
+          title: "Digital Channel Management Lead", period: "Nov 2022 - Jan 2025", location: "Transaction Banking Department",
           desc: "Leading the bank's premier digital financial platforms (KBZPay & KBZ m/i Banking).",
           bullets: ["Directed end-to-end KBZPay UI/UX relaunch, significantly increasing customer engagement.", "Spearheaded new mobile and internet banking platform migrations."]
         },
@@ -164,9 +164,15 @@ const calculateExperience = () => {
 // MAIN COMPONENT ROUTER
 // =========================================================================
 export default function HybridAppRouter() {
+  // Global Environment State
   const [isApp, setIsApp] = useState(false);
   const [isDark, setIsDark] = useState(true);
   
+  // Splash Screen State
+  const [showSplash, setShowSplash] = useState(false);
+  const [countdown, setCountdown] = useState(5);
+  
+  // App Specific States
   const [currentTab, setCurrentTab] = useState('home');
   const [journeySegment, setJourneySegment] = useState<'professional' | 'educational'>('professional');
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -174,9 +180,11 @@ export default function HybridAppRouter() {
   const [activeGameDetail, setActiveGameDetail] = useState<any | null>(null);
   const [activeArchitecturePhase, setActiveArchitecturePhase] = useState(1);
   
+  // Live Data Hooks
   const [livePosts, setLivePosts] = useState<any[]>([]);
   const [isLoadingPosts, setIsLoadingPosts] = useState(true);
 
+  // Web Specific States
   const [activeExperiencePage, setActiveExperiencePage] = useState(1);
   const [isWebContactOpen, setIsWebContactOpen] = useState(false);
   const [isWebMapOpen, setIsWebMapOpen] = useState(false);
@@ -184,11 +192,14 @@ export default function HybridAppRouter() {
   useEffect(() => {
     setIsDark(document.documentElement.classList.contains('dark'));
 
+    // Advanced Native Framework Detection
     const isCapacitor = (window as any).Capacitor?.isNativePlatform?.();
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
     const ua = window.navigator.userAgent.toLowerCase();
+    
     if (isCapacitor || isStandalone || /(iphone|ipod|ipad).*applewebkit(?!.*safari)/.test(ua) || /android.*wv/.test(ua)) {
       setIsApp(true);
+      setShowSplash(true); // Enable Splash Screen ONLY if running as a Native App
     }
 
     const fetchPosts = async () => {
@@ -205,6 +216,21 @@ export default function HybridAppRouter() {
     };
     fetchPosts();
   }, []);
+
+  // Countdown Ticker Loop for Splash Screen
+  useEffect(() => {
+    if (!showSplash) return;
+    if (countdown <= 0) {
+      setShowSplash(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setCountdown(prev => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [showSplash, countdown]);
 
   const toggleTheme = () => {
     if (isDark) {
@@ -227,6 +253,55 @@ export default function HybridAppRouter() {
       return part;
     });
   };
+
+  // =========================================================================
+  // PARADIGM 0: HIGH-TECH APPS SPLASH SCREEN OVERLAY
+  // =========================================================================
+  if (isApp && showSplash) {
+    return (
+      <div className="fixed inset-0 w-screen h-screen bg-[#09090B] flex flex-col items-center justify-center z-[200] select-none font-sans overflow-hidden animate-in fade-in duration-300">
+        
+        {/* Top Floating Action Ticker Bar */}
+        <div className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] right-5 z-[210]">
+          <button 
+            onClick={() => setShowSplash(false)}
+            className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[11px] font-bold text-zinc-400 hover:text-white active:scale-95 transition-all"
+          >
+            <span>Skip</span>
+            <span className="w-4 h-4 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-[9px] text-blue-400 font-mono font-black tracking-tighter">
+              {countdown}
+            </span>
+          </button>
+        </div>
+
+        {/* Ambient Network Core Background Glow */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-25">
+          <div className="w-96 h-96 bg-blue-500 rounded-full blur-[110px]" />
+        </div>
+
+        {/* Animated Main Branding Container */}
+        <div className="flex flex-col items-center text-center px-6 animate-in slide-in-from-bottom-6 duration-700 ease-out">
+          
+          {/* Pulsing Core Ring Geometry */}
+          <div className="w-28 h-24 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex items-center justify-center mb-8 relative group shadow-[0_0_40px_rgba(59,130,246,0.05)]">
+            <div className="absolute inset-0 border-2 border-blue-500/20 rounded-2xl animate-ping opacity-25 duration-1000" />
+            <Network className="w-10 h-10 text-blue-500" />
+          </div>
+
+          {/* Identity Headers */}
+          <div className="space-y-3">
+            <h1 className="text-3xl font-black text-white tracking-widest uppercase">
+              KHNCO<span className="text-blue-500 animate-pulse">.</span>
+            </h1>
+            <p className="text-[10px] font-bold text-zinc-500 tracking-[0.2em] uppercase max-w-xs leading-relaxed">
+              Orchestrating High-Impact Platforms
+            </p>
+          </div>
+
+        </div>
+      </div>
+    );
+  }
 
   // =========================================================================
   // PARADIGM 1: PREMIUM NATIVE MOBILE APPLICATION UI
@@ -325,9 +400,9 @@ export default function HybridAppRouter() {
                 
                 {/* Visual Node Map */}
                 <div className="relative flex justify-between items-center px-4 before:absolute before:inset-0 before:top-1/2 before:-translate-y-1/2 before:h-[2px] before:bg-zinc-200 dark:before:bg-zinc-800 before:mx-8">
-                  <div className="z-10 bg-zinc-100 dark:bg-[#09090b] p-2.5 rounded-full border border-zinc-200 dark:border-zinc-700 flex items-center justify-center shadow-sm"><MessageSquare className="w-4 h-4 text-zinc-500 dark:text-zinc-400" /></div>
-                  <div className="z-10 bg-zinc-100 dark:bg-[#09090b] p-2.5 rounded-full border border-purple-500/40 dark:border-purple-500 flex items-center justify-center shadow-sm"><Shield className="w-4 h-4 text-purple-600 dark:text-purple-400" /></div>
-                  <div className="z-10 bg-zinc-100 dark:bg-[#09090b] p-2.5 rounded-full border-2 border-blue-500 flex items-center justify-center shadow-sm"><Layers className="w-4 h-4 text-blue-600 dark:text-blue-400" /></div>
+                  <div className="z-10 bg-zinc-100 dark:bg-[#09090b] p-2.5 rounded-full border border-zinc-200 dark:border-zinc-700 flex items-center justify-center shadow-sm"><MessageSquare className="w-4 h-4 text-zinc-500" /></div>
+                  <div className="z-10 bg-white dark:bg-[#09090b] p-2.5 rounded-full border-2 border-purple-500 flex items-center justify-center shadow-sm dark:shadow-[0_0_10px_rgba(168,85,247,0.3)]"><Shield className="w-4 h-4 text-purple-500 dark:text-purple-400" /></div>
+                  <div className="z-10 bg-white dark:bg-[#09090b] p-2.5 rounded-full border-2 border-blue-500 flex items-center justify-center shadow-sm"><Layers className="w-4 h-4 text-blue-500 dark:text-blue-400" /></div>
                 </div>
                 <div className="flex justify-between text-[9px] font-bold tracking-wider uppercase mt-4">
                   <span className="w-20 text-center text-zinc-500 leading-tight">Comms &<br/>Liaison</span>
@@ -336,7 +411,7 @@ export default function HybridAppRouter() {
                 </div>
               </div>
 
-              {/* RECENT HIGHLIGHTS (Positioned cleanly below Domain Evolution) */}
+              {/* RECENT HIGHLIGHTS */}
               <div className="space-y-3 pt-2">
                 <div className="flex items-center justify-between px-1">
                   <h3 className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold">Recent Highlights</h3>
@@ -396,13 +471,13 @@ export default function HybridAppRouter() {
               <div className="flex bg-zinc-100 dark:bg-[#18181B] p-1.5 rounded-xl border border-zinc-200/60 dark:border-[#27272A]">
                 <button 
                   onClick={() => setJourneySegment('professional')}
-                  className={`flex-1 text-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'professional' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
+                  className={`flex-1 text-center py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'professional' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
                 >
                   Professional
                 </button>
                 <button 
                   onClick={() => setJourneySegment('educational')}
-                  className={`flex-1 text-center py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'educational' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
+                  className={`flex-1 text-center py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-all ${journeySegment === 'educational' ? 'bg-white dark:bg-[#3B82F6] text-zinc-900 dark:text-white shadow-sm' : 'text-zinc-500'}`}
                 >
                   Educational
                 </button>
@@ -411,7 +486,7 @@ export default function HybridAppRouter() {
               {/* Timeline Feed */}
               <div className="relative border-l-2 border-zinc-200 dark:border-[#27272A] pl-5 space-y-8 ml-2">
                 {paginatedExperience[journeySegment === 'professional' ? 1 : 2].map((block, idx) => (
-                  <div key={idx} className="relative bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-2xl p-6 shadow-sm">
+                  <div key={idx} className="relative bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-3xl p-6 shadow-sm">
                     <div className="absolute -left-[28px] top-6 w-3.5 h-3.5 rounded-full bg-zinc-50 dark:bg-[#09090b] border-[3px] border-blue-600 dark:border-[#3B82F6]" />
                     <div className="flex justify-between items-start mb-4">
                       <div>
@@ -703,7 +778,7 @@ export default function HybridAppRouter() {
               <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">{activeGameDetail.title}</span>
             </header>
             
-            {/* App URL query logic parameter strips duplicate standard header arrays */}
+            {/* App URL query parameter strips duplicate layout objects via game layout file */}
             <div className="flex-1 w-full bg-zinc-50 dark:bg-[#09090b] overflow-hidden relative">
               <iframe 
                 src={`/games/${activeGameDetail.slug}?app=true`} 
