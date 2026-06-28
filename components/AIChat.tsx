@@ -5,6 +5,7 @@ import { type UIMessage, DefaultChatTransport } from "ai";
 import { useState, useRef, useEffect } from "react";
 import { MessageSquare, X, Send, Sparkles, User, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import DraggableChat from "./DraggableChat";
 
 export default function AIChat() {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,19 +37,24 @@ export default function AIChat() {
 
   return (
     <>
-      <AnimatePresence>
-        {!isOpen && (
-          <motion.button 
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            onClick={() => setIsOpen(true)}
-            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 p-3.5 md:p-4 rounded-full z-[9999] transition-all duration-300 bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.8)] hover:-translate-y-1 group"
-          >
-            <MessageSquare className="w-6 h-6 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300" />
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {/* The DraggableChat wrapper controls the position on the screen.
+        AnimatePresence is kept inside so the exit animations still run smoothly.
+      */}
+      <DraggableChat>
+        <AnimatePresence>
+          {!isOpen && (
+            <motion.button 
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              onClick={() => setIsOpen(true)}
+              className="p-3.5 md:p-4 rounded-full transition-all duration-300 bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.8)] group"
+            >
+              <MessageSquare className="w-6 h-6 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </DraggableChat>
 
       <AnimatePresence>
         {isOpen && (
@@ -57,7 +63,8 @@ export default function AIChat() {
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: 20, scale: 0.95, filter: "blur(10px)" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 w-[calc(100vw-2rem)] md:w-[360px] h-[75vh] md:h-[550px] max-h-[85vh] bg-white dark:bg-[#09090b] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[9999] flex flex-col overflow-hidden font-sans"
+            // UPGRADED: bottom-[6rem] on mobile ensures the chat window clears the new BottomNav dock!
+            className="fixed bottom-[6rem] right-4 md:bottom-6 md:right-6 w-[calc(100vw-2rem)] md:w-[360px] h-[70vh] md:h-[550px] max-h-[85vh] bg-white dark:bg-[#09090b] border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl z-[9999] flex flex-col overflow-hidden font-sans"
           >
             <div className="px-5 py-4 border-b border-gray-200 dark:border-white/10 bg-gray-50/80 dark:bg-[#121214]/80 backdrop-blur-md flex justify-between items-center relative z-10">
               <div className="flex items-center gap-3">
@@ -127,7 +134,6 @@ export default function AIChat() {
                 </motion.div>
               )}
 
-              {/* FIXED: The dynamic error tracking alert banner */}
               {error && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center mt-4">
                   <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-xs px-4 py-3 rounded-xl flex items-center gap-2 max-w-[90%] font-mono break-all">
