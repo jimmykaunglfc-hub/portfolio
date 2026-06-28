@@ -26,7 +26,9 @@ export default function BottomNav() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  if (!isApp || pathname?.startsWith('/studio') || pathname?.startsWith('/admin')) return null;
+  // CRITICAL FIX: Hide the global web dock if we are inside the Native App.
+  // The app now relies entirely on the built-in dock inside page.tsx!
+  if (isApp || pathname?.startsWith('/studio') || pathname?.startsWith('/admin')) return null;
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/' && currentHash !== '#expertise';
@@ -50,7 +52,6 @@ export default function BottomNav() {
             </div>
           </Link>
           
-          {/* REVERTED: Back to hash link! */}
           <Link href="/#expertise" onClick={() => setCurrentHash('#expertise')} className="relative flex flex-col items-center justify-center w-[22%] h-[3.5rem] rounded-2xl transition-all duration-300 group">
             <div className={`flex flex-col items-center justify-center w-full h-full rounded-2xl transition-all duration-300 ${isActive('/#expertise') ? 'text-[#002e6a] dark:text-[#adc6ff] bg-black/5 dark:bg-white/10 shadow-inner' : 'text-zinc-500 dark:text-zinc-400 active:scale-90'}`}>
               <LayoutGrid className={`w-6 h-6 mb-1 transition-all duration-300 ${isActive('/#expertise') ? 'stroke-[2.5px]' : 'stroke-2'}`} />

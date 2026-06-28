@@ -32,7 +32,7 @@ export default function Navbar() {
     const isAndroidWebview = /android.*wv/.test(ua);
 
     if (isCapacitor || isStandalone || isIosWebview || isAndroidWebview) {
-      setIsApp(true); // Triggers App Mode (hides hamburger)
+      setIsApp(true);
     }
   }, []);
 
@@ -50,7 +50,8 @@ export default function Navbar() {
     }
   };
 
-  if (pathname?.startsWith('/studio') || pathname?.startsWith('/admin')) return null;
+  // CRITICAL FIX: Hide the global web Navbar completely if running inside the Native App.
+  if (isApp || pathname?.startsWith('/studio') || pathname?.startsWith('/admin')) return null;
 
   return (
     <>
@@ -87,9 +88,7 @@ export default function Navbar() {
                 <span className="material-symbols-outlined text-base transition-transform duration-300 group-hover:rotate-180">expand_more</span>
               </button>
               <div className="absolute top-[85%] left-[-10px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 rounded-xl shadow-xl min-w-[200px] overflow-hidden py-2">
-                {/* REVERTED: Route back to /#expertise */}
                 <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#expertise"><span className="material-symbols-outlined text-lg">layers</span> Capabilities</Link>
-                {/* REVERTED: Route back to /#experience */}
                 <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#experience"><span className="material-symbols-outlined text-lg">timeline</span> Trajectory</Link>
                 <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#contact"><span className="material-symbols-outlined text-lg">alternate_email</span> Contact</Link>
               </div>
@@ -106,20 +105,15 @@ export default function Navbar() {
             <button onClick={toggleTheme} className="p-2 text-zinc-900 dark:text-white material-symbols-outlined text-xl cursor-pointer hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
               {isDark ? 'light_mode' : 'dark_mode'}
             </button>
-            
-            {/* Show Hamburger ONLY if it's a Website (!isApp) */}
-            {!isApp && (
-              <button onClick={() => setIsMenuOpen(true)} className="text-zinc-900 dark:text-white material-symbols-outlined text-2xl p-2 cursor-pointer hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
-                menu
-              </button>
-            )}
+            <button onClick={() => setIsMenuOpen(true)} className="text-zinc-900 dark:text-white material-symbols-outlined text-2xl p-2 cursor-pointer hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
+              menu
+            </button>
           </div>
 
         </div>
       </nav>
 
-      {/* Website Mobile Menu Overlay */}
-      {!isApp && isMenuOpen && (
+      {isMenuOpen && (
         <div className="font-sans fixed inset-0 z-50 bg-white/95 dark:bg-[#131315]/95 backdrop-blur-2xl flex flex-col px-8 overflow-y-auto transition-all duration-300 pt-[calc(6rem+env(safe-area-inset-top))]">
           <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
             
@@ -133,9 +127,7 @@ export default function Navbar() {
               
               {isProfileOpen && (
                 <div className="flex flex-col gap-5 mt-4 ml-8 border-l-2 border-zinc-200 dark:border-zinc-800 pl-4 mb-4">
-                  {/* REVERTED: Route back to /#expertise */}
                   <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#expertise"><span className="material-symbols-outlined text-base">layers</span> Capabilities</Link>
-                  {/* REVERTED: Route back to /#experience */}
                   <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#experience"><span className="material-symbols-outlined text-base">timeline</span> Trajectory</Link>
                   <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#contact"><span className="material-symbols-outlined text-base">alternate_email</span> Contact</Link>
                 </div>
