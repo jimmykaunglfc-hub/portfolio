@@ -673,9 +673,9 @@ export default function HybridAppRouter() {
                 </a>
 
                 {/* Email */}
-                <a href="mailto:cohortexplorers@gmail.com" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
+                <a href="mailto:jimmykg.spacex@gmail.com" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
                   <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400"><Mail className="w-4 h-4" /></div>
-                  <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Secure Email</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">cohortexplorers@gmail.com</p></div>
+                  <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Secure Email</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">jimmykg.spacex@gmail.com</p></div>
                 </a>
                 
                 {/* LinkedIn */}
@@ -952,9 +952,9 @@ export default function HybridAppRouter() {
             </div>
             
             <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
-              <a href="mailto:cohortexplorers@gmail.com" className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 hover:border-[#4d8eff] dark:hover:border-[#adc6ff]/30 hover:bg-zinc-100 dark:hover:bg-white/[0.04] transition-all duration-300 group">
+              <a href="mailto:jimmykg.spacex@gmail.com" className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 hover:border-[#4d8eff] dark:hover:border-[#adc6ff]/30 hover:bg-zinc-100 dark:hover:bg-white/[0.04] transition-all duration-300 group">
                 <Mail className="w-6 h-6 text-[#002e6a] dark:text-[#adc6ff]" />
-                <div className="text-left"><p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">Secure Email Link</p><p className="text-sm font-medium group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff]">cohortexplorers@gmail.com</p></div>
+                <div className="text-left"><p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">Secure Email Link</p><p className="text-sm font-medium group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff]">jimmykg.spacex@gmail.com</p></div>
               </a>
               <a href="https://www.linkedin.com/in/kaung-htet-nyein-chan-oo-593952167/" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 hover:border-[#4d8eff] dark:hover:border-[#c0c1ff]/30 hover:bg-zinc-100 dark:hover:bg-white/[0.04] transition-all duration-300 group">
                 <LinkIcon className="w-6 h-6 text-[#002e6a] dark:text-[#c0c1ff]" />
