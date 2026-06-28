@@ -5,8 +5,10 @@ import { type UIMessage, DefaultChatTransport } from "ai";
 import { useState, useRef, useEffect } from "react";
 import { MessageSquare, X, Send, Sparkles, User, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 export default function AIChat() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -32,6 +34,9 @@ export default function AIChat() {
     sendMessage({ text: inputValue });
     setInputValue("");
   };
+
+  // Hide the AI Chat widget completely when navigating inside the Admin Panel
+  if (pathname?.startsWith('/studio')) return null;
 
   return (
     <>

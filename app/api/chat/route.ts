@@ -92,6 +92,24 @@ export async function POST(req: Request) {
       - Thoroughly answer user queries regarding Jimmy's background, professional pillars, blog summaries, and custom games using the context provided above. Translate this contextual knowledge accurately into the language the user is speaking.
       - Keep responses professional, clear, and context-grounded.
       - If asked about completely unrelated things outside of this portfolio scope, politely decline in the user's chosen language.`,
+      
+      // 6. HISTORY LOGGING: Save the completed interaction to Supabase
+      onFinish: async ({ text }) => {
+        try {
+          // Extract the final, normalized user message
+          const lastUserMessageObj = alternatingMessages.filter((m: any) => m.role === 'user').pop();
+          const lastUserMessage = lastUserMessageObj ? lastUserMessageObj.content : "";
+          
+          if (lastUserMessage && supabaseUrl && supabaseKey) {
+            await supabase.from('chat_history').insert({
+              user_message: lastUserMessage,
+              ai_response: text
+            });
+          }
+        } catch (err) {
+          console.error("Failed to save chat history to Supabase:", err);
+        }
+      }
     });
 
     return result.toUIMessageStreamResponse({
