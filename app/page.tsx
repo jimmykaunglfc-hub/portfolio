@@ -677,20 +677,53 @@ export default function HybridAppRouter() {
       )}
 
       {/* WEB OVERLAY DIALOG 2: TRAJECTORY MAP */}
-      {isWebMapOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 dark:bg-zinc-950/70 backdrop-blur-xl overflow-y-auto">
-          <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-3xl rounded-2xl p-6 md:p-10 relative shadow-2xl my-8 space-y-8 text-zinc-900 dark:text-white">
+      {isWebContactOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 dark:bg-zinc-950/70 backdrop-blur-xl">
+          <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-lg rounded-2xl p-8 relative shadow-2xl space-y-6 text-zinc-900 dark:text-white">
             <div className="flex justify-between items-start pb-4 border-b border-zinc-100 dark:border-white/5">
               <div>
-                <h5 className="text-2xl font-bold tracking-tight">Strategic Trajectory Blueprint</h5>
-                <p className="text-sm text-[#4d8eff] dark:text-[#adc6ff] font-mono mt-1">Cross-Functional Transition Map</p>
+                <h5 className="text-xl font-bold tracking-tight">Direct Engagement Channels</h5>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Senior Digital Operations Leadership Coordination</p>
               </div>
-              <button onClick={() => setIsWebMapOpen(false)} className="text-zinc-400 hover:text-zinc-950 dark:hover:text-white material-symbols-outlined p-1 cursor-pointer">close</button>
+              <button onClick={() => setIsWebContactOpen(false)} className="text-zinc-400 hover:text-zinc-950 dark:hover:text-white cursor-pointer"><X className="w-6 h-6" /></button>
             </div>
-            <div className="relative pl-6 md:pl-8 space-y-8 before:content-[''] before:absolute before:left-[11px] md:before:left-[15px] before:top-2 before:bottom-2 before:width-[2px] before:bg-gradient-to-b before:from-[#4d8eff] before:via-[#c0c1ff] before:to-zinc-200 dark:before:to-zinc-800">
-              <div className="p-4 text-sm text-zinc-400 text-center">Trajectory Visualization Loaded</div>
+            
+            {/* Added max-height and scrolling in case of smaller screens */}
+            <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
+              
+              {/* Email */}
+              <a href="mailto:jimmykg.spacex@gmail.com" className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 hover:border-[#4d8eff] dark:hover:border-[#adc6ff]/30 hover:bg-zinc-100 dark:hover:bg-white/[0.04] transition-all duration-300 group">
+                <Mail className="w-6 h-6 text-[#002e6a] dark:text-[#adc6ff]" />
+                <div className="text-left"><p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">Secure Email Link</p><p className="text-sm font-medium group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff]">jimmykg.spacex@gmail.com</p></div>
+              </a>
+              
+              {/* LinkedIn */}
+              <a href="https://www.linkedin.com/in/kaung-htet-nyein-chan-oo-593952167/" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 hover:border-[#4d8eff] dark:hover:border-[#c0c1ff]/30 hover:bg-zinc-100 dark:hover:bg-white/[0.04] transition-all duration-300 group">
+                <LinkIcon className="w-6 h-6 text-[#002e6a] dark:text-[#c0c1ff]" />
+                <div className="text-left"><p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">LinkedIn Network</p><p className="text-sm font-medium group-hover:text-[#4d8eff] dark:group-hover:text-[#c0c1ff]">kaung-htet-nyein-chan-oo</p></div>
+              </a>
+
+              {/* Phone */}
+              <a href="tel:+66620983201" className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 hover:border-emerald-500 dark:hover:border-emerald-400/30 hover:bg-zinc-100 dark:hover:bg-white/[0.04] transition-all duration-300 group">
+                <Phone className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                <div className="text-left"><p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">Voice Terminal</p><p className="text-sm font-medium group-hover:text-emerald-600 dark:group-hover:text-emerald-400">+66 62 098 3201</p></div>
+              </a>
+
+              {/* Telegram */}
+              <a href="https://t.me/jimmyooig1" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 hover:border-sky-500 dark:hover:border-sky-400/30 hover:bg-zinc-100 dark:hover:bg-white/[0.04] transition-all duration-300 group">
+                <Send className="w-6 h-6 text-sky-600 dark:text-sky-400" />
+                <div className="text-left"><p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">Telegram</p><p className="text-sm font-medium group-hover:text-sky-600 dark:group-hover:text-sky-400">@jimmykg</p></div>
+              </a>
+
+              {/* Facebook */}
+              <a href="https://facebook.com/handsomekaunghtet" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 hover:border-blue-500 dark:hover:border-blue-400/30 hover:bg-zinc-100 dark:hover:bg-white/[0.04] transition-all duration-300 group">
+                <MessageCircle className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <div className="text-left"><p className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">Facebook</p><p className="text-sm font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400">Connect Network</p></div>
+              </a>
+
             </div>
-            <button onClick={() => setIsWebMapOpen(false)} className="w-full py-4 bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shadow-lg cursor-pointer">Close Blueprint View</button>
+            
+            <button onClick={() => setIsWebContactOpen(false)} className="w-full py-3 bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-800 dark:text-white rounded-xl text-xs font-semibold uppercase tracking-wider transition-colors border border-zinc-200 dark:border-white/5 cursor-pointer">Dismiss Gateway</button>
           </div>
         </div>
       )}
