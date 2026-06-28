@@ -35,8 +35,8 @@ export default function AIChat() {
     setInputValue("");
   };
 
-  // Hide the AI Chat widget completely when navigating inside the Admin Panel
-  if (pathname?.startsWith('/studio')) return null;
+  // FIXED: Explicitly hides the widget on BOTH the CMS Studio and the custom Admin panel
+  if (pathname?.startsWith('/studio') || pathname?.startsWith('/admin')) return null;
 
   return (
     <>
@@ -45,16 +45,13 @@ export default function AIChat() {
           <motion.button 
             drag
             dragMomentum={false}
-            // touchAction "none" is critical so mobile browsers don't try to scroll the page when you drag the icon
             style={{ touchAction: "none" }} 
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setIsOpen(true)}
-            // Changed transition-all to transition-colors/shadows so CSS doesn't fight the JS drag physics
             className="fixed bottom-[6.5rem] right-4 md:bottom-6 md:right-6 p-3.5 md:p-4 rounded-full z-[9999] transition-colors transition-shadow duration-300 bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.8)] group cursor-grab active:cursor-grabbing"
           >
-            {/* pointer-events-none ensures the SVG doesn't accidentally catch the drag event */}
             <MessageSquare className="w-6 h-6 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300 pointer-events-none" />
           </motion.button>
         )}
