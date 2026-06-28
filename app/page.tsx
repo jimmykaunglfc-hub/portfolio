@@ -5,7 +5,7 @@ import {
   Home as HomeIcon, LineChart, Settings, BookOpen, Gamepad2, 
   User, Mail, Link as LinkIcon, Send, MessageCircle, Phone, ArrowRight, 
   ArrowLeft, Clock, Layers, Shield, Zap, X, ChevronRight, 
-  Activity, MessageSquare, Network, Globe
+  Activity, MessageSquare, Network, Sun, Moon, Calendar
 } from 'lucide-react';
 import Hero from '../components/Hero';
 import Footer from '../components/Footer';
@@ -13,6 +13,8 @@ import CapabilitiesMatrix from '../components/Capabilities';
 import TrajectoryHubs from '../components/TrajectoryHubs';
 import StrategicNetwork from '../components/StrategicNetwork';
 import DataNexus from '../components/DataNexus';
+// IMPORTANT: Make sure this path is correct for your project!
+import { supabase } from '../lib/supabase';
 
 // =========================================================================
 // TYPESCRIPT DEFINITIONS
@@ -38,141 +40,87 @@ type ExperienceData = {
 };
 
 // =========================================================================
-// GLOBAL DATA SCHEMAS (FULLY SYNCED WITH OFFICIAL RESUME)
+// GLOBAL DATA SCHEMAS
 // =========================================================================
 const paginatedExperience: ExperienceData = {
   1: [
     {
-      company: "digit7s",
-      timeline: "Full-time • 1 yr 3 mos",
-      type: "Hybrid",
+      company: "digit7s", timeline: "Full-time • 1 yr 3 mos", type: "Hybrid",
       roles: [
         {
-          title: "Head of Digital Operations",
-          period: "Jan 2026 - Present • 6 mos",
-          location: "Bangkok City, Thailand",
-          desc: "Leading end-to-end digital operations across Product Management, Quality Assurance (QA), and Product Operations teams to ensure efficient product delivery.",
-          bullets: [
-            "Managing product lifecycle from initial planning to release execution metrics.",
-            "Overseeing complex QA processes, automated testing strategies, and high-standard release protocols.",
-            "Driving operational workflows, process optimization, and close cross-functional collaboration loops.",
-            "Coordinating directly with Engineering, Design, Customer Support, and Business stakeholders to monitor KPIs."
-          ]
+          title: "Head of Digital Operations", period: "Jan 2026 - Present • 6 mos", location: "Bangkok City, Thailand",
+          desc: "Leading end-to-end digital operations across Product Management, Quality Assurance (QA), and Product Operations teams.",
+          bullets: ["Managing product lifecycle from initial planning to release execution metrics.", "Overseeing complex QA processes and automated testing strategies.", "Driving operational workflows and cross-functional collaboration loops.", "Coordinating directly with Engineering, Design, and Business stakeholders."]
         },
         {
-          title: "Product Development Manager",
-          period: "Apr 2025 - Present • 1 yr 3 mos",
-          location: "Chiang Mai, Thailand",
-          desc: "Lead the strategic development and execution of comprehensive product roadmaps, ensuring alignment with company vision and market demands.",
-          bullets: [
-            "Directed the full product lifecycle, from ideation and requirements definition to launch, iteration, and optimization.",
-            "Championed user experience (UX) and design initiatives, resulting in intuitive and engaging product interfaces."
-          ]
+          title: "Product Development Manager", period: "Apr 2025 - Present • 1 yr 3 mos", location: "Chiang Mai, Thailand",
+          desc: "Lead the strategic development and execution of comprehensive product roadmaps.",
+          bullets: ["Directed the full product lifecycle, from ideation to launch and optimization.", "Championed UX and design initiatives for engaging product interfaces."]
         }
       ]
     },
     {
-      company: "KBZ Bank",
-      timeline: "6 yrs 2 mos Fast-Track",
-      type: "On-site / Full-time",
+      company: "KBZ Bank", timeline: "6 yrs 2 mos Fast-Track", type: "On-site / Full-time",
       roles: [
         {
-          title: "Digital Channel Management Lead",
-          period: "Nov 2022 - Jan 2025",
-          location: "Yangon, Myanmar",
-          desc: "Leading the bank's premier digital financial platforms (KBZPay & KBZ m/i Banking), overseeing development, profitability, and customer value management.",
-          bullets: [
-            "Directed end-to-end KBZPay UI/UX relaunch, significantly increasing customer engagement.",
-            "Spearheaded new mobile and internet banking platform migration, ensuring smooth digital transitions."
-          ]
+          title: "Digital Channel Management Lead", period: "Nov 2022 - Jan 2025", location: "Yangon, Myanmar",
+          desc: "Leading the bank's premier digital financial platforms (KBZPay & KBZ m/i Banking).",
+          bullets: ["Directed end-to-end KBZPay UI/UX relaunch, significantly increasing customer engagement.", "Spearheaded new mobile and internet banking platform migrations."]
         },
         {
-          title: "Project Manager - CEO Project Office",
-          period: "Sep 2021 - Nov 2022",
-          location: "Yangon, Myanmar",
+          title: "Project Manager - CEO Project Office", period: "Sep 2021 - Nov 2022", location: "Yangon, Myanmar",
           desc: "Led high-impact strategic transformation projects under the direction of the Global CEO.",
-          bullets: [
-            "Implemented Queue Management System at branches, drastically reducing customer wait times.",
-            "Transformed traditional banking processes into automation, enhancing operational efficiency."
-          ]
+          bullets: ["Implemented Queue Management System at branches, drastically reducing customer wait times.", "Transformed traditional banking processes into automation."]
         },
         {
-          title: "Assistant Project Manager",
-          period: "Jan 2020 - Sep 2021",
-          location: "Cash & Logistics Management",
-          desc: "Oversaw cash handling, distribution, and logistics operations while driving massive efficiency improvements.",
-          bullets: [
-            "Designed and implemented Hub & Spoke Cash Management Model, streamlining operations.",
-            "Led the Target Operating Model transformation, improving compliance and risk management."
-          ]
+          title: "Assistant Project Manager", period: "Jan 2020 - Sep 2021", location: "Cash & Logistics Management",
+          desc: "Oversaw cash handling, distribution, and logistics operations.",
+          bullets: ["Designed and implemented Hub & Spoke Cash Management Model.", "Led Target Operating Model transformation for compliance."]
         },
         {
-          title: "Translator & Executive Assistant",
-          period: "Nov 2018 - Jan 2020",
-          location: "Branch Operations",
+          title: "Translator & Executive Assistant", period: "Nov 2018 - Jan 2020", location: "Branch Operations",
           desc: "Provided business and banking-related translation for the Chief Operating Officer.",
-          bullets: [
-            "Supported executive-level decision-making and meeting coordination.",
-            "Managed project documentation and internal corporate communications."
-          ]
+          bullets: ["Supported executive-level decision-making and meeting coordination."]
         }
       ]
     }
   ],
   2: [
     {
-      company: "Educational & Freelance Tracks",
-      timeline: "Independent",
-      type: "Project-Based",
+      company: "Educational & Freelance Tracks", timeline: "Independent", type: "Project-Based",
       roles: [
         {
-          title: "Academic English Teacher / Coach",
-          period: "2017 - May 2022",
-          location: "Wall Street English",
-          desc: "Delivered premium instructional communication coaching and optimized adult learning frameworks.",
+          title: "Academic English Teacher / Coach", period: "2017 - May 2022", location: "Wall Street English",
+          desc: "Delivered premium instructional communication coaching.",
           bullets: ["Refined execution matrices for training delivery systems."]
         },
         {
-          title: "Freelance Translator & Guide",
-          period: "2014 - 2017",
-          location: "Channel Myanmar & Tour Guide Assoc.",
+          title: "Freelance Translator & Guide", period: "2014 - 2017", location: "Channel Myanmar & Tour Guide Assoc.",
           desc: "Orchestrated large-scale localization and media subtitle translations.",
           bullets: ["Cultivated dynamic scheduling frameworks across fast-paced environments."]
         }
       ]
     },
     {
-      company: "Institutional Liaison Frameworks",
-      timeline: "State Projects",
-      type: "Advisory",
+      company: "Institutional Liaison Frameworks", timeline: "State Projects", type: "Advisory",
       roles: [
         {
-          title: "State Liaison Officer",
-          period: "2013 - 2016",
-          location: "Myanmar Gov & Football Federation",
+          title: "State Liaison Officer", period: "2013 - 2016", location: "Myanmar Gov & Football Federation",
           desc: "Managed key international communication links and logistics for cross-border events.",
           bullets: ["Facilitated state-level athletic delegation schedules and operations."]
         }
       ]
     },
     {
-      company: "Education & Recognitions",
-      timeline: "Academic Foundation",
-      type: "Credentials",
+      company: "Education & Recognitions", timeline: "Academic Foundation", type: "Credentials",
       roles: [
         {
-          title: "Project Management Certification",
-          period: "2021",
-          location: "London Business University",
-          desc: "Specialized in project initiation, execution, risk management, and closure.",
-          bullets: []
+          title: "Project Management Certification", period: "2021", location: "London Business University",
+          desc: "Specialized in project initiation, execution, risk management, and closure.", bullets: []
         },
         {
-          title: "Bachelor of Arts (Economics)",
-          period: "2012 - 2016",
-          location: "Dagon University",
-          desc: "Studied economic theories, analytical tools, and policy development.",
-          bullets: []
+          title: "Bachelor of Arts (Economics)", period: "2012 - 2016", location: "Dagon University",
+          desc: "Studied economic theories, analytical tools, and policy development.", bullets: []
         }
       ]
     }
@@ -182,12 +130,12 @@ const paginatedExperience: ExperienceData = {
 const visualTrajectoryMap = [
   { year: "2025 - Present", company: "digit7s", role: "Head of Digital Operations", context: "Orchestrating multi-tiered product workflows, agile scaling configurations, and cross-functional engineering management." },
   { year: "2022 - 2025", company: "KBZ Bank", role: "Digital Channel Management Lead", context: "Led KBZPay & m/i Banking platforms, overseeing development, profitability, and UX optimization." },
-  { year: "2020 - 2022", company: "KBZ Bank", role: "Project Manager (CEO Office & Logistics)", context: "Led high-impact strategic transformations, Queue Management Systems, and Hub & Spoke Cash Models." },
-  { year: "2013 - 2020", company: "Early Career & Liaison", role: "Executive Assistant, Teacher & Liaison", context: "Facilitated international stakeholder relations, translation pipelines, and adult education frameworks." }
+  { year: "2020 - 2022", company: "KBZ Bank", role: "Project Manager (CEO Office)", context: "Led high-impact strategic transformations, Queue Management Systems, and Hub & Spoke Cash Models." },
+  { year: "2013 - 2020", company: "Early Career", role: "Executive Assistant & Liaison", context: "Facilitated international stakeholder relations, translation pipelines, and adult education frameworks." }
 ];
 
 const coreCompetencies = [
-  { title: "Digital Operations Management", desc: "Directing end-to-end digital engineering and operational delivery frameworks across product divisions.", icon: Layers, color: "text-blue-500 bg-blue-500/10 border-blue-500/20 dark:text-blue-400 dark:border-blue-400/20 dark:bg-blue-500/5", tags: ["Agile Delivery", "KPIs"] },
+  { title: "Digital Operations Management", desc: "Directing end-to-end digital engineering and operational delivery frameworks.", icon: Layers, color: "text-blue-500 bg-blue-500/10 border-blue-500/20 dark:text-blue-400 dark:border-blue-400/20 dark:bg-blue-500/5", tags: ["Agile Delivery", "KPIs"] },
   { title: "FinTech Channel Ecosystems", desc: "Overseeing massive digital consumer channels including flagship mobile banking layers.", icon: Shield, color: "text-purple-500 bg-purple-500/10 border-purple-500/20 dark:text-purple-400 dark:border-purple-400/20 dark:bg-purple-500/5", tags: ["Ecosystem Scale", "Compliance"] },
   { title: "Strategic Product Engineering", desc: "Spearheading multi-phased product roadmaps from deep initial market ideation to high-frequency deployment.", icon: Zap, color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20 dark:text-emerald-400 dark:border-emerald-400/20 dark:bg-emerald-500/5", tags: ["Roadmaps", "UX/UI Focus"] }
 ];
@@ -199,16 +147,15 @@ const operationalArchitecturePhases = [
   { phase: "Phase 04", title: "Ecosystem Scaling", desc: "Maximizing market impact and driving continuous user acquisition loops.", metrics: ["Growth Loops", "Data Analytics"] }
 ];
 
-const appBlogCache = [
-  { id: 1, title: "Learning Through Experience is the Best Class", desc: "Real-world execution metrics dictate operational scale parameters infinitely better than classroom frameworks.", time: "5 min read", category: "Strategy", content: "True product management maturity cannot be simulated inside slide decks or hypothetical sprint definitions. When running user-base channels scaled to millions of active nodes, runtime execution abnormalities, regulatory shifting, and real-time customer behavior logic become the primary engineering classrooms.\n\nTo scale operations effectively, teams must transition away from isolated vanity metrics and align direct cross-functional loops between design testing arrays, active performance markers, and release governance pipelines." },
-  { id: 2, title: "The $300 Million Button: Refactoring Checkout", desc: "How a single semantic form adjustment rescued a platform from checkout cart abandonment loops.", time: "7 min read", category: "UX Testing", content: "The architecture was sound, the servers were optimized, yet transactions were failing at the final gateway pool. Deep user experience analytics revealed that forcing guest users to create a rigid registry node before completing standard checkout operations generated cognitive friction.\n\nBy simply refactoring the primary action element from 'Register' to 'Continue as Guest', checkout paths cleared instantly, producing over $300M in first-year operational recovery metrics." },
-  { id: 3, title: "The Market Is Not Waiting: The AI Era", desc: "Moving beyond static engineering timelines into an era where platforms compete purely on intelligence layers.", time: "6 min read", category: "Tech", content: "Modern digital management requires a complete departure from static roadmap timelines. As automated intelligence layers integrate deeper into consumer financial channels, platform optimization parameters must adapt programmatically.\n\nProduct leadership must focus on building resilient middleware data models capable of executing real-time system adjustments without unseating core compliance parameters." }
-];
+// Helper to calculate dynamic years of experience (from 2013)
+const calculateExperience = () => {
+  const currentYear = new Date().getFullYear();
+  return currentYear - 2013;
+};
 
-const appGamesCache = [
-  { id: 1, title: "Neural Decrypt Puzzle Engine", description: "A high-fidelity touch puzzle sandbox testing automated deductive logic capabilities and binary pattern alignment.", specs: "Runtime Environment: WebGL Engine" }
-];
-
+// =========================================================================
+// MAIN COMPONENT ROUTER
+// =========================================================================
 export default function HybridAppRouter() {
   // Global Environment
   const [isApp, setIsApp] = useState(false);
@@ -221,6 +168,10 @@ export default function HybridAppRouter() {
   const [activeBlogDetail, setActiveBlogDetail] = useState<any | null>(null);
   const [activeGameDetail, setActiveGameDetail] = useState<any | null>(null);
   const [activeArchitecturePhase, setActiveArchitecturePhase] = useState(1);
+  
+  // LIVE SUPABASE DATA
+  const [livePosts, setLivePosts] = useState<any[]>([]);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(true);
 
   // Web Specific States
   const [activeExperiencePage, setActiveExperiencePage] = useState(1);
@@ -228,10 +179,8 @@ export default function HybridAppRouter() {
   const [isWebMapOpen, setIsWebMapOpen] = useState(false);
 
   useEffect(() => {
-    // Theme sync
+    // Theme logic
     setIsDark(document.documentElement.classList.contains('dark'));
-    const observer = new MutationObserver(() => setIsDark(document.documentElement.classList.contains('dark')));
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
     // Advanced Native Framework Detection
     const isCapacitor = (window as any).Capacitor?.isNativePlatform?.();
@@ -240,11 +189,49 @@ export default function HybridAppRouter() {
     if (isCapacitor || isStandalone || /(iphone|ipod|ipad).*applewebkit(?!.*safari)/.test(ua) || /android.*wv/.test(ua)) {
       setIsApp(true);
     }
-    return () => observer.disconnect();
+
+    // Fetch Live Posts from Supabase
+    const fetchPosts = async () => {
+      try {
+        const { data, error } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false });
+        if (!error && data) {
+          setLivePosts(data);
+        }
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+      } finally {
+        setIsLoadingPosts(false);
+      }
+    };
+    fetchPosts();
+
   }, []);
 
+  const toggleTheme = () => {
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setIsDark(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDark(true);
+    }
+  };
+
+  // MARKDOWN PARSER ENGINE (Mirrors your blog/page.tsx logic)
+  const renderInlineStyles = (text: string) => {
+    const boldRegex = /\*\*(.*?)\*\*/g;
+    return text.split(boldRegex).map((part, i) => {
+      if (i % 2 === 1) return <strong key={i} className="font-extrabold text-zinc-900 dark:text-white">{part}</strong>;
+      return part;
+    });
+  };
+
   // =========================================================================
-  // PARADIGM 1: PREMIUM NATIVE MOBILE APPLICATION UI (STITCH AI INSPIRED)
+  // PARADIGM 1: PREMIUM NATIVE MOBILE APPLICATION UI
   // =========================================================================
   if (isApp) {
     return (
@@ -253,15 +240,17 @@ export default function HybridAppRouter() {
         {/* TOP APP BAR */}
         <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-5 h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] bg-white/70 dark:bg-[#131315]/80 backdrop-blur-2xl border-b border-zinc-200/50 dark:border-[#27272A]/50">
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-blue-600 dark:bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.6)] animate-pulse" />
+            <div className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.6)] animate-pulse" />
             <h1 className="text-sm font-black text-zinc-900 dark:text-white tracking-widest uppercase">KHNCO<span className="text-blue-600 dark:text-blue-500">.</span></h1>
           </div>
-          <button 
-            onClick={() => setIsContactModalOpen(true)}
-            className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all shadow-sm"
-          >
-            <User className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={toggleTheme} className="w-9 h-9 rounded-full flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all">
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+            <button onClick={() => setIsContactModalOpen(true)} className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-[#18181B] border border-zinc-200 dark:border-[#27272A] flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all shadow-sm">
+              <User className="w-4 h-4" />
+            </button>
+          </div>
         </header>
 
         {/* MAIN VIEWPORT */}
@@ -271,15 +260,15 @@ export default function HybridAppRouter() {
           {currentTab === 'home' && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
               
-              {/* Executive Hero Profile (No Image, High Contrast Glow) */}
+              {/* Executive Hero Profile */}
               <div className="bg-white dark:bg-[#18181B] rounded-3xl border border-zinc-200/60 dark:border-[#27272A] p-7 relative overflow-hidden shadow-xl dark:shadow-2xl">
                 <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-blue-500/20 dark:bg-blue-600/20 blur-[60px] rounded-full pointer-events-none" />
                 <div className="absolute bottom-[-10%] left-[-10%] w-40 h-40 bg-purple-500/10 dark:bg-purple-600/10 blur-[50px] rounded-full pointer-events-none" />
                 
-                <span className="text-[9px] font-bold tracking-widest uppercase bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 px-2.5 py-1.5 rounded-full border border-blue-200 dark:border-blue-500/20 relative z-10 inline-block">Head of Digital Operations</span>
+                <span className="text-[9px] font-bold tracking-widest uppercase bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 px-2.5 py-1.5 rounded-full border border-blue-200 dark:border-blue-500/20 relative z-10 inline-block">Executive Profile</span>
                 
                 <h2 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight mt-5 leading-[1.1] relative z-10">Kaung Htet <br/>Nyein Chan Oo</h2>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium mt-2 relative z-10">Project & Channel Management Leader</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium mt-2 relative z-10">Head of Digital Operations</p>
                 
                 <div className="mt-6 flex items-center gap-2 bg-zinc-50 dark:bg-[#09090b] px-3.5 py-2 rounded-full border border-zinc-200 dark:border-[#27272A] w-max relative z-10">
                   <span className="relative flex h-2.5 w-2.5">
@@ -290,41 +279,41 @@ export default function HybridAppRouter() {
                 </div>
               </div>
 
-              {/* Domain Movement Highlight Map */}
-              <div className="bg-white dark:bg-[#18181B] rounded-2xl border border-zinc-200/60 dark:border-[#27272A] p-5 shadow-sm">
-                <div className="flex items-center justify-between mb-5">
-                  <h3 className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold">Domain Evolution</h3>
-                  <Network className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
-                </div>
-                
-                {/* Visual Node Map */}
-                <div className="relative flex justify-between items-center mt-2 mb-2 px-2 before:absolute before:inset-0 before:top-1/2 before:-translate-y-1/2 before:h-0.5 before:bg-zinc-200 dark:before:bg-zinc-800 before:mx-6">
-                  <div className="z-10 bg-white dark:bg-[#09090b] p-2 rounded-full border-2 border-zinc-300 dark:border-zinc-600 shadow-sm dark:shadow-[0_0_10px_rgba(82,82,91,0.2)]"><MessageSquare className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" /></div>
-                  <div className="z-10 bg-white dark:bg-[#09090b] p-2 rounded-full border-2 border-purple-500 shadow-sm dark:shadow-[0_0_10px_rgba(168,85,247,0.3)]"><Shield className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" /></div>
-                  <div className="z-10 bg-white dark:bg-[#09090b] p-2 rounded-full border-2 border-blue-500 shadow-sm dark:shadow-[0_0_10px_rgba(59,130,246,0.4)]"><Layers className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" /></div>
-                </div>
-                <div className="flex justify-between text-[9px] font-bold tracking-wider uppercase mt-3 px-1">
-                  <span className="w-16 text-center text-zinc-500 leading-tight">Comms &<br/>Liaison</span>
-                  <span className="w-16 text-center text-purple-600 dark:text-purple-400 leading-tight">FinTech<br/>Ecosystems</span>
-                  <span className="w-16 text-center text-blue-600 dark:text-blue-400 leading-tight">Digital<br/>Operations</span>
-                </div>
-              </div>
-
               {/* Quick Metrics */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white dark:bg-[#18181B] rounded-2xl border border-zinc-200/60 dark:border-[#27272A] p-5 flex flex-col justify-between h-28 shadow-sm">
                   <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Track Record</span>
                   <div>
-                    <span className="text-xl font-black text-zinc-900 dark:text-white block">6+ Years</span>
-                    <span className="text-[10px] text-zinc-500 mt-1 block">Digital Ops</span>
+                    <span className="text-2xl font-black text-zinc-900 dark:text-white block">{calculateExperience()}+ Years</span>
+                    <span className="text-[10px] text-zinc-500 mt-1 block">Cross-Functional</span>
                   </div>
                 </div>
                 <div className="bg-white dark:bg-[#18181B] rounded-2xl border border-zinc-200/60 dark:border-[#27272A] p-5 flex flex-col justify-between h-28 shadow-sm">
                   <span className="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Global Scale</span>
                   <div>
-                    <span className="text-base font-black text-blue-600 dark:text-blue-400 block">Enterprise</span>
+                    <span className="text-lg font-black text-blue-600 dark:text-blue-400 block">Enterprise</span>
                     <span className="text-[10px] text-zinc-500 mt-1 block">High-Fidelity Ready</span>
                   </div>
+                </div>
+              </div>
+
+              {/* Domain Movement Highlight Map */}
+              <div className="bg-white dark:bg-[#18181B] rounded-2xl border border-zinc-200/60 dark:border-[#27272A] p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-8">
+                  <h3 className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase tracking-widest font-bold">Domain Evolution</h3>
+                  <Network className="w-4 h-4 text-zinc-400 dark:text-zinc-500" />
+                </div>
+                
+                {/* Visual Node Map (Aligned perfectly) */}
+                <div className="relative flex justify-between items-center px-4 before:absolute before:inset-0 before:top-1/2 before:-translate-y-1/2 before:h-0.5 before:bg-zinc-200 dark:before:bg-zinc-800 before:mx-8">
+                  <div className="z-10 bg-white dark:bg-[#09090b] p-2.5 rounded-full border-2 border-zinc-300 dark:border-zinc-600 flex items-center justify-center shadow-sm"><MessageSquare className="w-4 h-4 text-zinc-500" /></div>
+                  <div className="z-10 bg-white dark:bg-[#09090b] p-2.5 rounded-full border-2 border-purple-500 flex items-center justify-center shadow-sm dark:shadow-[0_0_10px_rgba(168,85,247,0.3)]"><Shield className="w-4 h-4 text-purple-500 dark:text-purple-400" /></div>
+                  <div className="z-10 bg-white dark:bg-[#09090b] p-2.5 rounded-full border-2 border-blue-500 flex items-center justify-center shadow-sm dark:shadow-[0_0_10px_rgba(59,130,246,0.4)]"><Layers className="w-4 h-4 text-blue-500 dark:text-blue-400" /></div>
+                </div>
+                <div className="flex justify-between text-[9px] font-bold tracking-wider uppercase mt-4">
+                  <span className="w-20 text-center text-zinc-500 leading-tight">Comms &<br/>Liaison</span>
+                  <span className="w-20 text-center text-purple-600 dark:text-purple-400 leading-tight">FinTech<br/>Channels</span>
+                  <span className="w-20 text-center text-blue-600 dark:text-blue-400 leading-tight">Digital<br/>Operations</span>
                 </div>
               </div>
 
@@ -334,8 +323,6 @@ export default function HybridAppRouter() {
           {/* TAB 2: JOURNEY (CAREER & EDUCATION) */}
           {currentTab === 'journey' && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              
-              {/* iOS Style Segmented Control */}
               <div className="flex bg-zinc-100 dark:bg-[#18181B] p-1.5 rounded-xl border border-zinc-200/60 dark:border-[#27272A]">
                 <button 
                   onClick={() => setJourneySegment('professional')}
@@ -351,7 +338,6 @@ export default function HybridAppRouter() {
                 </button>
               </div>
 
-              {/* Timeline Feed */}
               <div className="relative border-l-2 border-zinc-200 dark:border-[#27272A] pl-5 space-y-8 ml-2">
                 {paginatedExperience[journeySegment === 'professional' ? 1 : 2].map((block, idx) => (
                   <div key={idx} className="relative bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-2xl p-6 shadow-sm">
@@ -401,11 +387,6 @@ export default function HybridAppRouter() {
                 <div className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-2xl space-y-3 shadow-sm min-h-[140px]">
                   <h4 className="text-sm font-bold text-zinc-900 dark:text-white">{operationalArchitecturePhases[activeArchitecturePhase - 1].title}</h4>
                   <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">{operationalArchitecturePhases[activeArchitecturePhase - 1].desc}</p>
-                  <div className="flex flex-wrap gap-2 pt-3">
-                    {operationalArchitecturePhases[activeArchitecturePhase - 1].metrics.map((m, mIdx) => (
-                      <span key={mIdx} className="bg-zinc-50 dark:bg-[#09090b] text-zinc-600 dark:text-zinc-400 px-2.5 py-1 rounded text-[10px] font-mono border border-zinc-200 dark:border-[#27272A]">{m}</span>
-                    ))}
-                  </div>
                 </div>
               </div>
 
@@ -428,7 +409,7 @@ export default function HybridAppRouter() {
             </div>
           )}
 
-          {/* TAB 4: INSIGHTS (BLOG POSTS) */}
+          {/* TAB 4: INSIGHTS (LIVE BLOG POSTS) */}
           {currentTab === 'insights' && (
             <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="pb-2 border-b border-zinc-200 dark:border-[#27272A]">
@@ -437,25 +418,40 @@ export default function HybridAppRouter() {
               </div>
 
               <div className="space-y-4">
-                {appBlogCache.map((post) => (
-                  <div 
-                    key={post.id} 
-                    onClick={() => setActiveBlogDetail(post)}
-                    className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-2xl flex flex-col gap-3 active:scale-[0.98] transition-transform cursor-pointer shadow-sm"
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="text-[9px] text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">{post.category}</span>
-                      <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-bold flex items-center gap-1"><Clock className="w-3 h-3" /> {post.time}</span>
-                    </div>
-                    <h4 className="text-base font-bold text-zinc-900 dark:text-white leading-snug">{post.title}</h4>
-                    <p className="text-[12px] text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed font-light">{post.desc}</p>
+                {isLoadingPosts ? (
+                  <div className="flex items-center justify-center p-10">
+                    <Activity className="w-6 h-6 text-blue-500 animate-spin" />
                   </div>
-                ))}
+                ) : livePosts.length > 0 ? (
+                  livePosts.map((post) => (
+                    <div 
+                      key={post.id} 
+                      onClick={() => setActiveBlogDetail(post)}
+                      className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-2xl flex flex-col gap-3 active:scale-[0.98] transition-transform cursor-pointer shadow-sm overflow-hidden"
+                    >
+                      {post.cover_image && (
+                        <div className="w-full h-32 -mt-6 -mx-6 mb-2 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                          <img src={post.cover_image} alt={post.title} className="w-full h-full object-cover" />
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center">
+                        <span className="text-[9px] text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">Article</span>
+                        <span className="text-[10px] text-zinc-400 dark:text-zinc-500 font-bold flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> {new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      </div>
+                      <h4 className="text-base font-bold text-zinc-900 dark:text-white leading-snug">{post.title}</h4>
+                      <p className="text-[12px] text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed font-light">{post.summary || "Tap to read full article insights."}</p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center p-10 text-zinc-500 text-sm">No articles available at the moment.</div>
+                )}
               </div>
             </div>
           )}
 
-          {/* TAB 5: ARCADE (GAMES) */}
+          {/* TAB 5: ARCADE (GAMES PLACEHOLDER) */}
           {currentTab === 'arcade' && (
             <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="pb-2 border-b border-zinc-200 dark:border-[#27272A]">
@@ -463,25 +459,23 @@ export default function HybridAppRouter() {
                 <h2 className="text-xl font-black text-zinc-900 dark:text-white mt-0.5">Simulation Arcade</h2>
               </div>
 
-              {appGamesCache.map((game) => (
-                <div key={game.id} className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-3xl overflow-hidden shadow-lg">
-                  <div className="h-40 bg-gradient-to-br from-purple-100 to-white dark:from-purple-900/40 dark:to-[#09090b] flex items-center justify-center relative overflow-hidden border-b border-zinc-200 dark:border-[#27272A]">
-                    <Gamepad2 className="w-16 h-16 text-purple-400 dark:text-purple-500 opacity-30" />
-                  </div>
-                  <div className="p-6 space-y-5">
-                    <div>
-                      <h4 className="text-base font-bold text-zinc-900 dark:text-white mb-2">{game.title}</h4>
-                      <p className="text-[12px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-light">{game.description}</p>
-                    </div>
-                    <button 
-                      onClick={() => setActiveGameDetail(game)}
-                      className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 py-4 rounded-xl text-xs font-black uppercase tracking-wider active:scale-95 transition-transform shadow-md"
-                    >
-                      Initialize WebGL Node
-                    </button>
-                  </div>
+              <div className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] rounded-3xl overflow-hidden shadow-lg">
+                <div className="h-40 bg-gradient-to-br from-purple-100 to-white dark:from-purple-900/40 dark:to-[#09090b] flex items-center justify-center relative overflow-hidden border-b border-zinc-200 dark:border-[#27272A]">
+                  <Gamepad2 className="w-16 h-16 text-purple-400 dark:text-purple-500 opacity-30" />
                 </div>
-              ))}
+                <div className="p-6 space-y-5">
+                  <div>
+                    <h4 className="text-base font-bold text-zinc-900 dark:text-white mb-2">Neural Link Sandbox</h4>
+                    <p className="text-[12px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-light">Interactive physics and logic engine testing environment. Games will be populated here shortly.</p>
+                  </div>
+                  <button 
+                    onClick={() => setActiveGameDetail({ title: "Neural Link Sandbox" })}
+                    className="w-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 py-4 rounded-xl text-xs font-black uppercase tracking-wider active:scale-95 transition-transform shadow-md"
+                  >
+                    Initialize Environment
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -524,25 +518,18 @@ export default function HybridAppRouter() {
               </div>
               
               <div className="space-y-3">
-                {/* Email */}
                 <a href="mailto:cohortexplorers@gmail.com" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
                   <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400"><Mail className="w-4 h-4" /></div>
                   <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Secure Email</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">cohortexplorers@gmail.com</p></div>
                 </a>
-                
-                {/* LinkedIn */}
                 <a href="https://www.linkedin.com/in/kaung-htet-nyein-chan-oo-593952167/" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
                   <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-600/10 flex items-center justify-center text-blue-600 dark:text-blue-500"><LinkIcon className="w-4 h-4" /></div>
                   <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">LinkedIn Profile</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">Connect Network</p></div>
                 </a>
-
-                {/* Phone */}
                 <a href="tel:+66620983201" className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
                   <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-500"><Phone className="w-4 h-4" /></div>
                   <div><p className="text-[9px] text-zinc-500 uppercase font-bold tracking-widest">Voice Terminal</p><p className="text-xs font-bold text-zinc-900 dark:text-white mt-0.5">+66 62 098 3201</p></div>
                 </a>
-
-                {/* Telegram & Facebook */}
                 <div className="flex gap-3">
                   <a href="https://t.me/jimmyooig1" target="_blank" rel="noreferrer" className="flex-1 flex flex-col items-center gap-2 p-4 bg-zinc-50 dark:bg-[#09090b] border border-zinc-200 dark:border-[#27272A] rounded-2xl active:scale-95 transition-transform">
                     <Send className="w-5 h-5 text-sky-500 dark:text-sky-400" />
@@ -558,21 +545,62 @@ export default function HybridAppRouter() {
           </div>
         )}
 
-        {/* APP MODAL: BLOG READER */}
+        {/* APP MODAL: FULL BLOG READER (WITH PARSER ENGINE) */}
         {activeBlogDetail && (
           <div className="fixed inset-0 z-[110] bg-white dark:bg-[#09090b] flex flex-col font-sans animate-in slide-in-from-right duration-200">
             <header className="h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] border-b border-zinc-200 dark:border-[#27272A] bg-white/90 dark:bg-[#131315]/90 backdrop-blur-xl px-5 flex items-center justify-between shrink-0">
               <button onClick={() => setActiveBlogDetail(null)} className="flex items-center gap-1.5 text-xs font-bold text-blue-600 dark:text-blue-400 active:opacity-70">
                 <ArrowLeft className="w-4 h-4" /> Back
               </button>
-              <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">{activeBlogDetail.category}</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">Article View</span>
             </header>
-            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4 text-left [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <h1 className="text-xl font-black text-zinc-900 dark:text-white leading-tight">{activeBlogDetail.title}</h1>
-              <div className="flex items-center gap-3 text-[10px] font-bold text-zinc-500 pb-4 border-b border-zinc-200 dark:border-[#27272A]">
-                <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {activeBlogDetail.time}</span>
+            
+            <div className="flex-1 overflow-y-auto pb-10 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              {activeBlogDetail.cover_image && (
+                <div className="w-full h-56 relative border-b border-zinc-200 dark:border-[#27272A]">
+                  <img src={activeBlogDetail.cover_image} className="w-full h-full object-cover" alt="Cover" />
+                </div>
+              )}
+              
+              <div className="px-6 py-6 space-y-6 text-left">
+                <h1 className="text-2xl font-black text-zinc-900 dark:text-white leading-tight">{activeBlogDetail.title}</h1>
+                <div className="flex items-center gap-3 text-[10px] font-bold text-zinc-500 pb-4 border-b border-zinc-200 dark:border-[#27272A]">
+                  <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {new Date(activeBlogDetail.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                </div>
+                
+                {/* Markdown Parser Rendering Output */}
+                <div className="space-y-4 text-zinc-700 dark:text-zinc-300 text-[13px] leading-relaxed font-light pb-20">
+                  {activeBlogDetail.content ? (
+                    (() => {
+                      const lines = activeBlogDetail.content.split('\n');
+                      const compiledElements: React.ReactNode[] = [];
+                      
+                      lines.forEach((line: string, index: number) => {
+                        const tLine = line.trim();
+                        if (tLine.startsWith('![') && tLine.includes('](')) {
+                          const url = tLine.substring(tLine.indexOf('(') + 1, tLine.indexOf(')'));
+                          compiledElements.push(
+                            <div key={index} className="w-full my-6 rounded-xl overflow-hidden shadow-sm border border-zinc-200 dark:border-[#27272A]">
+                              <img src={url} className="w-full h-auto object-cover" alt="inline" />
+                            </div>
+                          );
+                        } else if (tLine.startsWith('## ')) {
+                          compiledElements.push(<h2 key={index} className="text-lg font-black text-zinc-900 dark:text-white mt-6 mb-2">{tLine.replace('## ', '')}</h2>);
+                        } else if (tLine.startsWith('### ')) {
+                          compiledElements.push(<h3 key={index} className="text-base font-bold text-zinc-900 dark:text-white mt-4 mb-2">{tLine.replace('### ', '')}</h3>);
+                        } else if (tLine.startsWith('- ')) {
+                          compiledElements.push(<li key={index} className="ml-4 mb-1">{renderInlineStyles(tLine.replace('- ', ''))}</li>);
+                        } else if (tLine) {
+                          compiledElements.push(<p key={index} className="mb-3">{renderInlineStyles(tLine)}</p>);
+                        }
+                      });
+                      return compiledElements;
+                    })()
+                  ) : (
+                    <p>{activeBlogDetail.summary}</p>
+                  )}
+                </div>
               </div>
-              <p className="text-sm text-zinc-700 dark:text-zinc-300 font-light leading-relaxed whitespace-pre-line pt-2">{activeBlogDetail.content || activeBlogDetail.desc}</p>
             </div>
           </div>
         )}
@@ -591,7 +619,7 @@ export default function HybridAppRouter() {
                 <Activity className="w-8 h-8 animate-pulse" />
               </div>
               <h2 className="text-lg font-black text-white">{activeGameDetail.title}</h2>
-              <p className="text-xs text-zinc-400 max-w-xs leading-relaxed font-light">Compiling simulation modules. The responsive interface pipeline will link instantly to your execution parameters.</p>
+              <p className="text-xs text-zinc-400 max-w-xs leading-relaxed font-light">Compiling simulation modules. Wait for integration of external game repositories.</p>
             </div>
           </div>
         )}
@@ -601,7 +629,7 @@ export default function HybridAppRouter() {
   }
 
   // =========================================================================
-  // PARADIGM 2: ORIGINAL PREMIUM LONG-SCROLL WEBSITE LAYOUT (WEB BROWSERS)
+  // PARADIGM 2: PREMIUM LONG-SCROLL WEBSITE LAYOUT (DESKTOP & MOBILE WEB)
   // =========================================================================
   return (
     <main className="w-full max-w-7xl mx-auto px-4 md:px-8 pb-4 relative z-20">
