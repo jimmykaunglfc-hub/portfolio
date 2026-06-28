@@ -160,9 +160,9 @@ export default function AIChat() {
                     
                     <div className={`max-w-[75%] p-3.5 text-sm leading-relaxed break-words ${isUser ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm shadow-md' : 'bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 rounded-2xl rounded-tl-sm shadow-sm'}`}>
                       {m.parts && m.parts.length > 0 
-  ? m.parts.map((part: any, i: number) => part.type === 'text' ? <span key={i}>{part.text}</span> : null)
-  : m.content
-}
+                        ? m.parts.map((part: any, i: number) => part.type === 'text' ? <span key={i}>{part.text}</span> : null)
+                        : m.content
+                      }
                     </div>
                   </motion.div>
                 );
