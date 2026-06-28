@@ -5,7 +5,7 @@ import {
   Home as HomeIcon, Layers, BookOpen, Gamepad2, User, Mail, 
   ArrowRight, Clock, ChevronRight, Sparkles, CheckCircle2, 
   Briefcase, MessageSquare, MapPin, Activity, Shield, Zap, 
-  ArrowLeft, Phone, Calendar
+  ArrowLeft, Phone, Calendar, X
 } from 'lucide-react';
 import Hero from '../components/Hero';
 import Footer from '../components/Footer';
@@ -13,6 +13,66 @@ import CapabilitiesMatrix from '../components/Capabilities';
 import TrajectoryHubs from '../components/TrajectoryHubs';
 import StrategicNetwork from '../components/StrategicNetwork';
 import DataNexus from '../components/DataNexus';
+
+// Global Web Experience Schema - Moved here to prevent initialization order errors
+const paginatedExperience = {
+  1: [
+    {
+      company: "digit7s",
+      timeline: "Full-time • 1 yr 2 mos",
+      type: "Hybrid",
+      roles: [
+        {
+          title: "Head of Digital Operations",
+          period: "Jan 2026 - Present • 6 mos",
+          location: "Bangkok City, Thailand",
+          desc: "Leading end-to-end digital operations across Product Management, Quality Assurance (QA), and Product Operations teams to ensure efficient product delivery, operational excellence, and continuous platform improvement.",
+          bullets: [
+            "Managing product lifecycle from initial planning to release execution metrics.",
+            "Overseeing complex QA processes, automated testing strategies, and high-standard release quality protocols.",
+            "Driving operational workflows, process optimization, and close cross-functional collaboration loops."
+          ]
+        }
+      ]
+    },
+    {
+      company: "KBZ Bank",
+      timeline: "6 yrs 2 mos",
+      type: "On-site / Full-time",
+      roles: [
+        {
+          title: "Manager - Digital Channels",
+          period: "Apr 2024 - Jan 2025 • 10 mos",
+          location: "Yangon, Myanmar",
+          desc: "Overseeing the primary Digital Channels (KBZPay & KBZ Mobile Banking) in order to drastically improve customer journeys, accessibility parameters, and financial channel security.",
+          bullets: [
+            "Drove massive user base scale across both platforms to improve financial growth through primary digital systems.",
+            "Built and structured manual operational procedures for handling customer experiences across digital platforms."
+          ]
+        }
+      ]
+    }
+  ],
+  2: [
+    {
+      company: "Educational & Freelance Consultancy",
+      timeline: "Multi-Year Independent Track",
+      type: "Contract / Project-Based",
+      roles: [
+        {
+          title: "Coach",
+          period: "Wall Street English Myanmar • May 2022",
+          location: "Yangon, Myanmar",
+          desc: "Delivered premium instructional communication coaching, managed professional progress tracks, and optimized adult corporate learning frameworks.",
+          bullets: [
+            "Refined execution matrices for training delivery systems.", 
+            "Cultivated professional cross-cultural organizational communication standards."
+          ]
+        }
+      ]
+    }
+  ]
+};
 
 export default function HybridAppRouter() {
   const [isApp, setIsApp] = useState(false);
@@ -25,7 +85,6 @@ export default function HybridAppRouter() {
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [activeBlogDetail, setActiveBlogDetail] = useState<any | null>(null);
   const [activeGameDetail, setActiveGameDetail] = useState<any | null>(null);
-  const [isProfileExpanded, setIsProfileExpanded] = useState(false);
 
   useEffect(() => {
     // Advanced Native Framework & Viewport Detection Engine
@@ -87,73 +146,76 @@ export default function HybridAppRouter() {
   // =========================================================================
   if (isApp) {
     return (
-      <div className="fixed inset-0 w-screen h-screen bg-[#131315] text-[#e5e1e4] flex flex-col font-sans antialiased overflow-hidden select-none pb-[env(safe-area-inset-bottom)]">
+      <div className="fixed inset-0 w-screen h-screen bg-[#0d0d0f] text-[#e5e1e4] flex flex-col font-sans antialiased overflow-hidden select-none pb-[env(safe-area-inset-bottom)]">
         
         {/* Top App Bar Component */}
-        <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-5 h-16 bg-[#131315]/80 backdrop-blur-md border-b border-zinc-800/60">
+        <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-5 h-16 bg-[#0d0d0f]/90 backdrop-blur-md border-b border-zinc-800/60">
           <div className="flex items-center gap-3">
-            <div className="h-8 rounded-lg bg-[#4F46E5] flex items-center justify-center text-white px-4 text-sm font-bold tracking-tight shadow-md shadow-[#4F46E5]/20">
+            <div className="h-8 rounded-lg bg-[#4F46E5] flex items-center justify-center text-white px-3.5 text-xs font-black tracking-widest shadow-md shadow-[#4F46E5]/20">
               KHNCO
             </div>
+          </div>
+          <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400">
+            <User className="w-4 h-4" />
           </div>
         </header>
 
         {/* Dynamic Viewport Window */}
-        <div className="flex-1 overflow-y-auto pt-20 pb-24 px-5 flex flex-col gap-4 bg-[#131315] custom-scrollbar">
+        <div className="flex-1 overflow-y-auto pt-20 pb-28 px-5 flex flex-col gap-4 bg-[#0d0d0f] scrollbar-none">
           
           {/* TAB: APPLICATION HOME FEED */}
           {currentTab === 'home' && (
             <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-200">
               
               {/* Stitch AI Premium Profile Hero Card */}
-              <div className="bg-[#18181b]/80 backdrop-blur-md border border-zinc-800/80 rounded-xl p-6 flex flex-col gap-4 relative overflow-hidden shadow-xl">
+              <div className="bg-[#141416] border border-zinc-800/80 rounded-xl p-6 flex flex-col gap-4 relative overflow-hidden shadow-xl">
                 <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#4F46E5] opacity-20 blur-3xl rounded-full" />
                 <div className="flex justify-between items-start">
                   <div>
                     <h1 className="text-xl font-bold tracking-tight text-white mb-1">Kaung Htet Nyein Chan Oo</h1>
-                    <p className="text-sm text-zinc-400 font-medium">Head of Digital Operations</p>
+                    <p className="text-xs text-zinc-400 font-medium tracking-wide">Head of Digital Operations & Product Development</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-1">
                   <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.7)] animate-pulse" />
-                  <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Live Node Connected</span>
+                  <span className="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">Operational Node Connected</span>
                 </div>
               </div>
 
               {/* Action Buttons Interface Blocks */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <button 
                   onClick={() => setIsContactOpen(true)}
-                  className="bg-white text-zinc-950 font-bold text-xs py-3.5 px-4 rounded-lg active:scale-95 transition-transform duration-150 flex items-center justify-center gap-2 shadow-md"
+                  className="bg-white text-zinc-950 font-bold text-xs py-3.5 px-4 rounded-lg active:scale-98 transition-transform duration-100 flex items-center justify-center gap-2 shadow-md"
                 >
                   <MessageSquare className="w-4 h-4" />
-                  Initiate Consultation
+                  Consultation
                 </button>
                 <button 
                   onClick={() => setIsMapOpen(true)}
-                  className="bg-transparent border border-zinc-800 text-white font-bold text-xs py-3.5 px-4 rounded-lg active:scale-95 transition-transform duration-150 flex items-center justify-center gap-2 hover:border-[#4F46E5]/40 transition-colors"
+                  className="bg-zinc-900 border border-zinc-800 text-white font-bold text-xs py-3.5 px-4 rounded-lg active:scale-98 transition-transform duration-100 flex items-center justify-center gap-2 hover:border-[#4F46E5]/40 transition-colors"
                 >
-                  <Layers className="w-4 h-4 text-blue-400" />
-                  Trajectory Blueprint
+                  <Layers className="w-4 h-4 text-indigo-400" />
+                  Blueprint
                 </button>
               </div>
 
               {/* Informative App Telemetrics Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-[#18181b]/80 backdrop-blur-md border border-zinc-800/80 rounded-xl p-4 flex flex-col justify-between h-24 shadow-sm">
-                  <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Track Record</span>
-                  <span className="text-lg font-bold text-white">6+ Yrs</span>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-[#141416] border border-zinc-800/80 rounded-xl p-4 flex flex-col justify-between h-24 shadow-sm">
+                  <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Track Record</span>
+                  <span className="text-xl font-bold text-white">6+ Years</span>
                 </div>
-                <div className="bg-[#18181b]/80 backdrop-blur-md border border-zinc-800/80 rounded-xl p-4 flex flex-col justify-between h-24 shadow-sm">
-                  <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Platform Status</span>
-                  <span className="text-sm font-bold text-white truncate leading-tight">Live Nodes Deployed</span>
+                <div className="bg-[#141416] border border-zinc-800/80 rounded-xl p-4 flex flex-col justify-between h-24 shadow-sm">
+                  <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Ecosystem Scope</span>
+                  <span className="text-xs font-bold text-indigo-400 leading-tight">FinTech & Digital Channels</span>
                 </div>
               </div>
 
               {/* Operations Narrative Micro-card */}
-              <div className="bg-[#18181b]/80 backdrop-blur-md border border-zinc-800/80 rounded-xl p-5 border-l-2 border-l-[#4F46E5] shadow-sm">
+              <div className="bg-[#141416] border border-zinc-800/80 rounded-xl p-5 border-l-2 border-l-[#4F46E5] shadow-sm">
                 <p className="text-xs text-zinc-300 leading-relaxed font-light">
-                  Driving digital transformation through strategic channel architecture and operational excellence. Focused on scalable, high-fidelity FinTech ecosystems.
+                  Driving corporate transformation through optimized channel architecture and cross-functional agility. Expert in scaling enterprise tier applications inside modern tech hubs.
                 </p>
               </div>
 
@@ -170,9 +232,9 @@ export default function HybridAppRouter() {
               </div>
 
               {coreCompetencies.map((comp, idx) => (
-                <div key={idx} className="bg-[#18181b]/80 border border-zinc-800/80 rounded-xl p-5 space-y-2.5 shadow-sm">
+                <div key={idx} className="bg-[#141416] border border-zinc-800/80 rounded-xl p-5 space-y-2.5 shadow-sm">
                   <h4 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> {comp.title}
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" /> {comp.title}
                   </h4>
                   <p className="text-[11px] text-zinc-400 font-light leading-relaxed">{comp.desc}</p>
                   <div className="flex flex-wrap gap-1 pt-1">
@@ -184,7 +246,7 @@ export default function HybridAppRouter() {
               ))}
 
               {/* Stylized Mobile Operational Architecture Module */}
-              <div className="bg-[#18181b]/80 border border-zinc-800/80 rounded-xl p-5 space-y-4 shadow-sm">
+              <div className="bg-[#141416] border border-zinc-800/80 rounded-xl p-5 space-y-4 shadow-sm">
                 <div>
                   <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider font-semibold">Lifecycle Nodes</span>
                   <h4 className="text-sm font-bold text-white mt-0.5">Operational Architecture</h4>
@@ -204,7 +266,7 @@ export default function HybridAppRouter() {
 
                 <div className="bg-zinc-950/60 border border-zinc-900 p-4 rounded-xl space-y-2 animate-in fade-in duration-150">
                   <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-mono font-bold text-blue-400">{operationalArchitecturePhases[activeArchitecturePhase - 1].phase}</span>
+                    <span className="text-[9px] font-mono font-bold text-indigo-400">{operationalArchitecturePhases[activeArchitecturePhase - 1].phase}</span>
                     <span className="text-xs font-bold text-white">{operationalArchitecturePhases[activeArchitecturePhase - 1].title}</span>
                   </div>
                   <p className="text-[11px] text-zinc-400 leading-relaxed font-light">{operationalArchitecturePhases[activeArchitecturePhase - 1].desc}</p>
@@ -229,14 +291,18 @@ export default function HybridAppRouter() {
 
               <div className="space-y-3">
                 {appBlogCache.map((post) => (
-                  <div key={post.id} className="bg-[#18181b]/80 border border-zinc-800/80 p-5 rounded-xl flex flex-col gap-2 shadow-sm active:bg-[#1c1c20] transition-colors">
+                  <div 
+                    key={post.id} 
+                    onClick={() => setActiveBlogDetail(post)}
+                    className="bg-[#141416] border border-zinc-800/80 p-5 rounded-xl flex flex-col gap-2 shadow-sm active:bg-zinc-900 transition-colors cursor-pointer"
+                  >
                     <div className="flex justify-between items-center text-[10px] font-mono">
                       <span className="text-[#4F46E5] bg-[#4F46E5]/10 border border-[#4F46E5]/20 px-2 py-0.5 rounded font-bold">{post.category}</span>
                       <span className="text-zinc-500 flex items-center gap-1"><Clock className="w-3 h-3" /> {post.time}</span>
                     </div>
                     <h4 className="text-sm font-bold text-white leading-snug">{post.title}</h4>
                     <p className="text-[11px] text-zinc-400 font-light leading-relaxed line-clamp-2">{post.desc}</p>
-                    <div className="flex items-center justify-between text-[11px] font-bold text-blue-400 pt-2 mt-1 border-t border-zinc-900/60">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-indigo-400 pt-2 mt-1 border-t border-zinc-900/60">
                       <span>Read Content Metrics</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </div>
@@ -254,25 +320,30 @@ export default function HybridAppRouter() {
                 <h2 className="text-base font-bold text-white mt-0.5">Digital Simulation</h2>
               </div>
 
-              <div className="bg-[#18181b]/80 border border-zinc-800/80 rounded-xl p-6 text-center space-y-4 shadow-sm">
-                <div className="w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mx-auto text-purple-400">
-                  <Gamepad2 className="w-6 h-6 animate-pulse" />
+              {appGamesCache.map((game) => (
+                <div key={game.id} className="bg-[#141416] border border-zinc-800/80 rounded-xl p-6 text-center space-y-4 shadow-sm">
+                  <div className="w-12 h-12 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mx-auto text-purple-400">
+                    <Gamepad2 className="w-6 h-6 animate-pulse" />
+                  </div>
+                  <div className="space-y-1 max-w-xs mx-auto">
+                    <h4 className="text-sm font-bold text-white">{game.title}</h4>
+                    <p className="text-[11px] text-zinc-400 font-light leading-relaxed">{game.description}</p>
+                  </div>
+                  <button 
+                    onClick={() => setActiveGameDetail(game)}
+                    className="w-full py-3 bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-lg text-xs font-bold uppercase tracking-wider shadow-md active:scale-98 transition-transform"
+                  >
+                    Initialize Session
+                  </button>
                 </div>
-                <div className="space-y-1 max-w-xs mx-auto">
-                  <h4 className="text-sm font-bold text-white">Neural Decrypt Puzzle Engine</h4>
-                  <p className="text-[11px] text-zinc-400 font-light leading-relaxed">Touch-optimized validation playground monitoring user decision paths and sequence testing structures.</p>
-                </div>
-                <button className="w-full py-3 bg-[#4F46E5] hover:bg-[#4338CA] text-white rounded-lg text-xs font-bold uppercase tracking-wider shadow-md shadow-[#4F46E5]/10">
-                  Initialize Session
-                </button>
-              </div>
+              ))}
             </div>
           )}
 
         </div>
 
-        {/* Stitch AI Formatted Bottom Navigation Dock Layout */}
-        <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-20 bg-[#201f22]/90 backdrop-blur-xl border-t border-zinc-800/60 shadow-2xl">
+        {/* Bottom Navigation Dock Layout */}
+        <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-20 bg-[#141416]/95 backdrop-blur-xl border-t border-zinc-800/60 shadow-2xl">
           {[
             { id: 'home', label: 'Home', icon: HomeIcon },
             { id: 'matrix', label: 'Matrix', icon: Layers },
@@ -285,10 +356,10 @@ export default function HybridAppRouter() {
               <button 
                 key={navBlock.id}
                 onClick={() => setCurrentTab(navBlock.id)}
-                className={`flex flex-col items-center justify-center w-16 pt-2 pb-1 transition-all duration-200 relative ${isSelected ? 'text-white border-t-2 border-l-0 border-r-0 border-b-0 border-[#4F46E5]' : 'text-zinc-500'}`}
+                className={`flex flex-col items-center justify-center w-16 pt-2 pb-1 transition-all duration-200 relative ${isSelected ? 'text-white border-t-2 border-[#4F46E5]' : 'text-zinc-500'}`}
               >
-                <IconComponent className={`w-5 h-5 mb-1 ${isSelected ? 'scale-105' : 'active:scale-90'}`} />
-                <span className="text-[10px] font-semibold tracking-wider uppercase">{navBlock.label}</span>
+                <IconComponent className={`w-5 h-5 mb-1 ${isSelected ? 'scale-105 text-[#4F46E5]' : 'active:scale-90'}`} />
+                <span className="text-[9px] font-bold tracking-wider uppercase">{navBlock.label}</span>
               </button>
             );
           })}
@@ -296,19 +367,19 @@ export default function HybridAppRouter() {
 
         {/* APP LEVEL MODAL DRAWER 1: CONTACT HUB */}
         {isContactOpen && (
-          <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-[#18181b] border-t border-zinc-800 w-full rounded-t-2xl p-6 space-y-4 animate-in slide-in-from-bottom duration-300 max-h-[75vh] overflow-y-auto pb-10">
+          <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-[#141416] border-t border-zinc-800 w-full rounded-t-2xl p-6 space-y-4 animate-in slide-in-from-bottom duration-300 max-h-[75vh] overflow-y-auto pb-10">
               <div className="w-12 h-1 bg-zinc-700 rounded-full mx-auto mb-2" onClick={() => setIsContactOpen(false)} />
               <div className="flex justify-between items-start">
                 <div>
                   <h5 className="text-sm font-bold text-white">Direct Communication Channels</h5>
                   <p className="text-[10px] font-mono text-zinc-500 uppercase mt-0.5">Secure Engagement Core</p>
                 </div>
-                <button onClick={() => setIsContactOpen(false)} className="text-[10px] uppercase font-bold bg-zinc-800 text-zinc-400 px-3 py-1.5 rounded-lg">Close</button>
+                <button onClick={() => setIsContactOpen(false)} className="text-zinc-400 hover:text-white"><X className="w-5 h-5" /></button>
               </div>
               <div className="space-y-3 pt-2">
                 <a href="mailto:jimmykg.spacex@gmail.com" className="flex items-center gap-4 p-4 bg-zinc-950 border border-zinc-900 rounded-xl">
-                  <Mail className="w-5 h-5 text-blue-400" />
+                  <Mail className="w-5 h-5 text-indigo-400" />
                   <div><p className="text-[9px] font-mono text-zinc-500 uppercase tracking-wider">Secure Email</p><p className="text-xs font-bold text-zinc-200">jimmykg.spacex@gmail.com</p></div>
                 </a>
                 <a href="tel:+66620983201" className="flex items-center gap-4 p-4 bg-zinc-950 border border-zinc-900 rounded-xl">
@@ -322,24 +393,65 @@ export default function HybridAppRouter() {
 
         {/* APP LEVEL MODAL DRAWER 2: TRAJECTORY MAP */}
         {isMapOpen && (
-          <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-[#18181b] border-t border-zinc-800 w-full rounded-t-2xl p-6 space-y-6 animate-in slide-in-from-bottom duration-300 max-h-[80vh] overflow-y-auto pb-10">
+          <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-[#141416] border-t border-zinc-800 w-full rounded-t-2xl p-6 space-y-6 animate-in slide-in-from-bottom duration-300 max-h-[80vh] overflow-y-auto pb-10">
               <div className="w-12 h-1 bg-zinc-700 rounded-full mx-auto mb-2" onClick={() => setIsMapOpen(false)} />
               <div className="flex justify-between items-start">
                 <h5 className="text-sm font-bold text-white">Strategic Trajectory Blueprint</h5>
-                <button onClick={() => setIsMapOpen(false)} className="text-[10px] uppercase font-bold bg-zinc-800 text-zinc-400 px-3 py-1.5 rounded-lg">Close</button>
+                <button onClick={() => setIsMapOpen(false)} className="text-zinc-400 hover:text-white"><X className="w-5 h-5" /></button>
               </div>
               <div className="relative border-l border-zinc-800 pl-4 space-y-5 ml-2 text-left">
                 {visualTrajectoryMap.map((item, mIdx) => (
                   <div key={mIdx} className="space-y-1 relative animate-in fade-in duration-300">
                     <div className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-[#4F46E5]" />
-                    <span className="text-[9px] font-mono font-bold px-2 py-0.5 bg-[#4F46E5]/10 border border-[#4F46E5]/20 text-blue-400 rounded-full">{item.year}</span>
+                    <span className="text-[9px] font-mono font-bold px-2 py-0.5 bg-[#4F46E5]/10 border border-[#4F46E5]/20 text-indigo-400 rounded-full">{item.year}</span>
                     <h6 className="text-xs font-bold text-white pt-1">{item.company}</h6>
                     <p className="text-[11px] text-zinc-300 font-medium">{item.role}</p>
                     <p className="text-[10px] text-zinc-500 leading-relaxed font-light">{item.context}</p>
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* APP LEVEL MODAL DRAWER 3: INSIGHT POST READER */}
+        {activeBlogDetail && (
+          <div className="fixed inset-0 z-[110] flex items-end justify-center bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-[#141416] border-t border-zinc-800 w-full rounded-t-2xl p-6 space-y-4 animate-in slide-in-from-bottom duration-300 max-h-[85vh] overflow-y-auto pb-12">
+              <div className="w-12 h-1 bg-zinc-700 rounded-full mx-auto mb-2" onClick={() => setActiveBlogDetail(null)} />
+              <div className="flex justify-between items-start">
+                <span className="text-[10px] font-mono text-[#4F46E5] bg-[#4F46E5]/10 px-2 py-0.5 rounded font-bold">{activeBlogDetail.category}</span>
+                <button onClick={() => setActiveBlogDetail(null)} className="text-zinc-400 hover:text-white"><X className="w-5 h-5" /></button>
+              </div>
+              <h3 className="text-base font-bold text-white">{activeBlogDetail.title}</h3>
+              <div className="text-xs text-zinc-400 leading-relaxed space-y-3 whitespace-pre-line font-light pt-2 border-t border-zinc-900">
+                {activeBlogDetail.content}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* APP LEVEL MODAL DRAWER 4: ARCADE RUNTIME EXECUTOR */}
+        {activeGameDetail && (
+          <div className="fixed inset-0 z-[110] flex items-end justify-center bg-black/75 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-[#141416] border-t border-zinc-800 w-full rounded-t-2xl p-6 space-y-4 animate-in slide-in-from-bottom duration-300 max-h-[80vh] overflow-y-auto pb-12">
+              <div className="w-12 h-1 bg-zinc-700 rounded-full mx-auto mb-2" onClick={() => setActiveGameDetail(null)} />
+              <div className="flex justify-between items-center">
+                <h5 className="text-sm font-bold text-white">{activeGameDetail.title}</h5>
+                <button onClick={() => setActiveGameDetail(null)} className="text-zinc-400 hover:text-white"><X className="w-5 h-5" /></button>
+              </div>
+              <div className="bg-zinc-950 rounded-xl p-8 border border-zinc-900 text-center space-y-3">
+                <Activity className="w-8 h-8 text-indigo-400 animate-spin mx-auto" />
+                <p className="text-xs text-zinc-300 font-mono">Initializing inline sandbox instance...</p>
+                <p className="text-[10px] text-zinc-500 font-mono">{activeGameDetail.specs}</p>
+              </div>
+              <button 
+                onClick={() => setActiveGameDetail(null)}
+                className="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs rounded-xl"
+              >
+                Terminate Session Gateway
+              </button>
             </div>
           </div>
         )}
@@ -507,60 +619,3 @@ export default function HybridAppRouter() {
     </main>
   );
 }
-
-// Global Web Experience Schema
-const paginatedExperience = {
-  1: [
-    {
-      company: "digit7s",
-      timeline: "Full-time • 1 yr 2 mos",
-      type: "Hybrid",
-      roles: [
-        {
-          title: "Head of Digital Operations",
-          period: "Jan 2026 - Present • 6 mos",
-          location: "Bangkok City, Thailand",
-          desc: "Leading end-to-end digital operations across Product Management, Quality Assurance (QA), and Product Operations teams to ensure efficient product delivery, operational excellence, and continuous platform improvement.",
-          bullets: [
-            "Managing product lifecycle from initial planning to release execution metrics.",
-            "Overseeing complex QA processes, automated testing strategies, and high-standard release quality protocols.",
-            "Driving operational workflows, process optimization, and close cross-functional collaboration loops."
-          ]
-        }
-      ]
-    },
-    {
-      company: "KBZ Bank",
-      timeline: "6 yrs 2 mos",
-      type: "On-site / Full-time",
-      roles: [
-        {
-          title: "Manager - Digital Channels",
-          period: "Apr 2024 - Jan 2025 • 10 mos",
-          location: "Yangon, Myanmar",
-          desc: "Overseeing the primary Digital Channels (KBZPay & KBZ Mobile Banking) in order to drastically improve customer journeys, accessibility parameters, and financial channel security.",
-          bullets: [
-            "Drove massive user base scale across both platforms to improve financial growth through primary digital systems.",
-            "Built and structured manual operational procedures for handling customer experiences across digital platforms."
-          ]
-        }
-      ]
-    }
-  ],
-  2: [
-    {
-      company: "Educational & Freelance Consultancy",
-      timeline: "Multi-Year Independent Track",
-      type: "Contract / Project-Based",
-      roles: [
-        {
-          title: "Coach",
-          period: "Wall Street English Myanmar • May 2022",
-          location: "Yangon, Myanmar",
-          desc: "Delivered premium instructional communication coaching, managed professional progress tracks, and optimized adult corporate learning frameworks.",
-          bullets: ["Refined execution matrices for training delivery systems.", "Cultivated professional cross-cultural organizational communication standards."]
-        }
-      ]
-    }
-  ]
-};
