@@ -29,7 +29,7 @@ export default function Home() {
       setIsApp(true);
     }
 
-    // 2. Tab Navigation Listener (Only affects the UI if isApp is true)
+    // 2. Tab Navigation Listener
     const handleHashChange = () => {
       const hash = window.location.hash;
       if (hash === '#expertise' || hash === '#experience') {
@@ -45,30 +45,6 @@ export default function Home() {
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
-
-  const coreCompetencies = [
-    {
-      title: "Digital Operations Management",
-      desc: "Directing end-to-end digital engineering and operational delivery frameworks across Product Management, Quality Assurance (QA), and Product Operations divisions to guarantee continuous platform optimization.",
-      icon: "hub",
-      badges: ["Agile Delivery", "Operational KPIs", "Cross-Functional Sync"],
-      color: "text-[#4d8eff] dark:text-[#adc6ff]"
-    },
-    {
-      title: "FinTech Channel Ecosystems",
-      desc: "Overseeing massive digital consumer channels including flagship mobile banking layers (KBZPay & KBZ Mobile Banking), maximizing customer journeys, core usability metrics, and regulatory alignment.",
-      icon: "payments",
-      badges: ["Ecosystem Scale", "UX Testing", "Compliance Governance"],
-      color: "text-[#4d8eff] dark:text-[#ddb7ff]"
-    },
-    {
-      title: "Strategic Product Engineering",
-      desc: "Spearheading multi-phased product roadmaps from deep initial market ideation up to high-frequency deployment execution, ensuring absolute harmonization with corporate vision.",
-      icon: "precision_manufacturing",
-      badges: ["Roadmap Architecture", "UX/UI Focus", "Market Analysis"],
-      color: "text-[#002e6a] dark:text-[#c0c1ff]"
-    }
-  ];
 
   const paginatedExperience = {
     1: [
@@ -170,34 +146,6 @@ export default function Home() {
             bullets: ["Cultivated dynamic scheduling frameworks across fast-paced environments.", "Optimized client relations and cross-functional interpersonal communications."]
           }
         ]
-      },
-      {
-        company: "Institutional Liaison Frameworks",
-        timeline: "Institutional Tracks",
-        type: "Liaison / Advisory",
-        roles: [
-          {
-            title: "Liaison Officer",
-            period: "Myanmar Football Federation • Feb 2014 - Sep 2016",
-            location: "Myanmar",
-            desc: "Managed key international communication links, protocol workflows, and logistics management for cross-border athletic events and administrative delegates.",
-            bullets: ["Supervised high-profile logistics and international communication parameters."]
-          },
-          {
-            title: "Translator Cum Personal Assistant",
-            period: "Myanma Awba Group • Feb 2015 - Mar 2016",
-            location: "Myanmar",
-            desc: "Anchored executive operational schedules, critical strategic communications, and document localization pipelines for senior leadership panels.",
-            bullets: ["Synchronized high-priority scheduling and localization flows."]
-          },
-          {
-            title: "Liaison Officer",
-            period: "Ministry of Sports, Myanmar • Jun 2013 - Feb 2014",
-            location: "Myanmar",
-            desc: "Facilitated state-level athletic delegation schedules, inter-departmental operations, and localized logistics support structures.",
-            bullets: ["Ensured fluid execution of governmental operational workflows."]
-          }
-        ]
       }
     ]
   };
@@ -224,55 +172,18 @@ export default function Home() {
         </div>
       </div>
 
-      {/* SECTION 2: MATRIX COMPONENTS (RESTORED FULLY) */}
+      {/* SECTION 2: MATRIX COMPONENTS */}
       <div className={isApp && activeAppTab !== 'matrix' ? 'hidden' : 'block animate-in fade-in duration-500 md:pt-6'}>
         
         {/* Visual Node Components */}
-        <CapabilitiesMatrix />
+        <div id="expertise" className="scroll-mt-24">
+          <CapabilitiesMatrix />
+        </div>
         <TrajectoryHubs />
         <StrategicNetwork />
 
-        {/* RESTORED: Core Operational Matrix Section */}
-        <section id="expertise" className="py-24 max-w-7xl mx-auto relative z-20 pointer-events-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 border-b border-zinc-300/80 dark:border-zinc-800 pb-8">
-            <div className="max-w-xl">
-              <h2 className="text-sm font-mono uppercase tracking-widest text-[#4d8eff] dark:text-[#adc6ff] mb-2 flex items-center gap-2">
-                <span className="material-symbols-outlined text-base">layers</span> Capabilities
-              </h2>
-              <h3 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Core Operational Matrix</h3>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-12 h-1 bg-zinc-300 dark:bg-white/10 rounded-full" />
-              <div className="w-24 h-1 bg-[#4d8eff] dark:bg-[#adc6ff] rounded-full" />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {coreCompetencies.map((item, index) => (
-              <div key={index} className="glass-card p-8 rounded-2xl flex flex-col justify-between gap-8 group">
-                <div className="space-y-6">
-                  <div className="w-12 h-12 bg-zinc-200/50 dark:bg-white/5 rounded-xl flex items-center justify-center border border-zinc-300/40 dark:border-white/10 group-hover:scale-110 transition-transform duration-300">
-                    <span className={`material-symbols-outlined text-2xl ${item.color}`}>{item.icon}</span>
-                  </div>
-                  <div className="space-y-3">
-                    <h4 className="text-xl font-semibold text-zinc-900 dark:text-white tracking-tight group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff] transition-colors duration-300">{item.title}</h4>
-                    <p className="text-zinc-600 dark:text-zinc-300 font-light text-sm leading-relaxed">{item.desc}</p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2 pt-2">
-                  {item.badges.map((badge, bIdx) => (
-                    <span key={bIdx} className="bg-zinc-200/40 dark:bg-white/[0.03] px-3 py-1 rounded-full text-xs text-zinc-600 dark:text-zinc-300 border border-zinc-300/40 dark:border-white/5 group-hover:border-[#adc6ff]/20 transition-colors duration-300">
-                      {badge}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* RESTORED: Professional Trajectory Section */}
-        <section id="experience" className="py-16 max-w-7xl mx-auto relative z-20 pointer-events-auto">
+        {/* Professional Trajectory Section */}
+        <section id="experience" className="py-16 max-w-7xl mx-auto relative z-20 pointer-events-auto scroll-mt-20">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12 border-b border-zinc-300/80 dark:border-zinc-800 pb-8">
             <div>
               <h2 className="text-sm font-mono uppercase tracking-widest text-[#4d8eff] dark:text-[#adc6ff] mb-2 flex items-center gap-2">
@@ -299,7 +210,7 @@ export default function Home() {
 
           <div className="space-y-12 transition-all duration-500">
             {paginatedExperience[activePage as 1 | 2].map((block, idx) => (
-              <div key={idx} className="glass-card p-6 md:p-10 rounded-2xl grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div key={idx} className="glass-card p-6 md:p-10 rounded-2xl grid grid-cols-1 md:grid-cols-4 gap-8 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors duration-300">
                 <div className="md:col-span-1 space-y-2">
                   <h4 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">{block.company}</h4>
                   <div className="space-y-1">
@@ -353,8 +264,8 @@ export default function Home() {
 
       {/* GLOBAL BOTTOM SECTIONS */}
       <div className="mt-12">
-        <section id="download" className="py-8 relative z-20 pointer-events-auto">
-          <div className="glass-card rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-zinc-200/50 dark:border-white/5 bg-gradient-to-r from-[#4d8eff]/5 to-transparent dark:from-[#adc6ff]/5 dark:to-transparent">
+        <section id="download" className="py-8 relative z-20 pointer-events-auto scroll-mt-20">
+          <div className="glass-card rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-zinc-200/50 dark:border-white/5 bg-gradient-to-r from-[#4d8eff]/5 to-transparent dark:from-[#adc6ff]/5 dark:to-transparent hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors duration-300">
             <div className="max-w-xl space-y-4 text-center md:text-left">
               <h2 className="text-sm font-mono uppercase tracking-widest text-[#4d8eff] dark:text-[#adc6ff] flex items-center justify-center md:justify-start gap-2">
                 <span className="material-symbols-outlined text-base">system_update</span> Native Ecosystem
@@ -377,8 +288,8 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="py-8 relative z-20 pointer-events-auto">
-          <div className="glass-card rounded-3xl p-12 md:p-20 text-center overflow-hidden bg-gradient-to-br from-zinc-50 to-transparent dark:from-white/[0.02] dark:to-transparent">
+        <section id="contact" className="py-8 relative z-20 pointer-events-auto scroll-mt-20">
+          <div className="glass-card rounded-3xl p-12 md:p-20 text-center overflow-hidden bg-gradient-to-br from-zinc-50 to-transparent dark:from-white/[0.02] dark:to-transparent hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors duration-300">
             <h4 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4 tracking-tight">Let's Orchestrate What's Next.</h4>
             <p className="text-zinc-600 dark:text-zinc-300 font-light text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
               I am open to strategic technology partnerships, digital banking ecosystem consulting, and senior enterprise operations leadership roles.
@@ -398,7 +309,7 @@ export default function Home() {
       {/* SHARED MODALS */}
       {isContactOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 dark:bg-zinc-950/70 backdrop-blur-xl">
-          <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-lg rounded-2xl p-8 relative shadow-2xl space-y-6 text-zinc-900 dark:text-white">
+          <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-lg rounded-2xl p-8 relative shadow-2xl space-y-6 text-zinc-900 dark:text-white animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-start pb-4 border-b border-zinc-100 dark:border-white/5">
               <div>
                 <h5 className="text-xl font-bold tracking-tight">Direct Engagement Channels</h5>
@@ -437,7 +348,7 @@ export default function Home() {
 
       {isMapOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 dark:bg-zinc-950/70 backdrop-blur-xl overflow-y-auto">
-          <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-3xl rounded-2xl p-6 md:p-10 relative shadow-2xl my-8 space-y-8 text-zinc-900 dark:text-white">
+          <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-3xl rounded-2xl p-6 md:p-10 relative shadow-2xl my-8 space-y-8 text-zinc-900 dark:text-white animate-in zoom-in-95 duration-200">
             <div className="flex justify-between items-start pb-4 border-b border-zinc-100 dark:border-white/5">
               <div>
                 <h5 className="text-2xl font-bold tracking-tight">Strategic Trajectory Blueprint</h5>
