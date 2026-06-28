@@ -3,10 +3,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { 
   LayoutDashboard, BookOpen, Gamepad2, User, Lock, Trash2, Plus, Eye, Edit3, 
-  Bold, Heading, Code, List, ExternalLink, LogOut, Search, FileText, Image, CheckCircle
+  Bold, Heading, Code, List, ExternalLink, LogOut, Search, FileText, Image, CheckCircle,
+  MessageSquare, Clock, ShieldAlert, LogIn
 } from 'lucide-react';
+import { createClient } from '@supabase/supabase-js';
+
+// Initialize Supabase for fetching chat logs
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function AdvancedAdminConsole() {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
@@ -18,6 +26,10 @@ export default function AdvancedAdminConsole() {
   const [aboutContent, setAboutContent] = useState('');
   const [blogs, setBlogs] = useState<any[]>([]);
   const [games, setGames] = useState<any[]>([]);
+  
+  // New AI Chat Logs State
+  const [chatLogs, setChatLogs] = useState<any[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
 
   // Form Management States
   const [newBlog, setNewBlog] = useState({ title: '', summary: '', content: '', cover_image: '' });
@@ -50,6 +62,16 @@ export default function AdvancedAdminConsole() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // 1. Verify Username locally via Environment Variables
+    const expectedUsername = process.env.NEXT_PUBLIC_ADMIN_USERNAME || "admin";
+    if (username !== expectedUsername) {
+      setError('Invalid Administrative Username.');
+      setTimeout(() => setError(''), 5000);
+      return;
+    }
+
+    // 2. Verify Password securely via your backend API
     const res = await apiRequest({ action: 'fetch', table: 'about_me' });
     if (res) {
       setIsAuthorized(true);
@@ -71,6 +93,24 @@ export default function AdvancedAdminConsole() {
 
     const gamesRes = await apiRequest({ action: 'fetch', table: 'games_data' });
     if (gamesRes) setGames(gamesRes.data || []);
+
+    // Fetch AI Chat Logs
+    fetchLogs();
+  };
+
+  const fetchLogs = async () => {
+    setLoadingLogs(true);
+    if (supabaseUrl && supabaseKey) {
+      const { data, error } = await supabase
+        .from('chat_history')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+      
+      if (data) setChatLogs(data);
+      if (error) console.error("Failed to fetch logs:", error);
+    }
+    setLoadingLogs(false);
   };
 
   const handleUpdateAbout = async () => {
@@ -240,6 +280,7 @@ export default function AdvancedAdminConsole() {
 
   const filteredBlogs = blogs.filter(b => b.title?.toLowerCase().includes(searchQuery.toLowerCase()));
   const filteredGames = games.filter(g => g.name?.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredChats = chatLogs.filter(c => c.user_message?.toLowerCase().includes(searchQuery.toLowerCase()) || c.ai_response?.toLowerCase().includes(searchQuery.toLowerCase()));
 
   if (!isAuthorized) {
     return (
@@ -247,21 +288,35 @@ export default function AdvancedAdminConsole() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f1f23_1px,transparent_1px),linear-gradient(to_bottom,#1f1f23_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-20" />
         <div className="relative w-full max-w-md border border-zinc-800 bg-zinc-900/50 backdrop-blur-xl p-8 rounded-2xl shadow-2xl">
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 mb-6">
-            <Lock className="w-5 h-5" />
+            <ShieldAlert className="w-5 h-5" />
           </div>
           <h1 className="text-xl font-bold tracking-tight text-white mb-1">Administrative Node Validation</h1>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="System Master Key"
-              className="w-full px-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950 text-white text-sm outline-none focus:border-blue-500 transition-colors"
-              required
-            />
-            {error && <p className="text-xs font-semibold text-red-400">{error}</p>}
-            <button type="submit" className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition-all shadow-lg">
-              Unlock Console Core
+          <form onSubmit={handleLogin} className="space-y-4 mt-6">
+            <div className="relative">
+              <User className="w-5 h-5 text-zinc-500 absolute left-4 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Admin Username"
+                className="w-full pl-12 pr-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950 text-white text-sm outline-none focus:border-blue-500 transition-colors"
+                required
+              />
+            </div>
+            <div className="relative">
+              <Lock className="w-5 h-5 text-zinc-500 absolute left-4 top-1/2 -translate-y-1/2" />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="System Master Key"
+                className="w-full pl-12 pr-4 py-3 rounded-xl border border-zinc-800 bg-zinc-950 text-white text-sm outline-none focus:border-blue-500 transition-colors"
+                required
+              />
+            </div>
+            {error && <p className="text-xs font-semibold text-red-400 text-center">{error}</p>}
+            <button type="submit" className="w-full py-3 mt-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm transition-all shadow-lg flex justify-center items-center gap-2">
+              <LogIn className="w-4 h-4" /> Unlock Console Core
             </button>
           </form>
         </div>
@@ -290,6 +345,7 @@ export default function AdvancedAdminConsole() {
               { id: 'about', label: 'Biography Core', icon: User },
               { id: 'blogs', label: 'Blog Engine', icon: BookOpen },
               { id: 'games', label: 'Games Drawer', icon: Gamepad2 },
+              { id: 'chat', label: 'AI Telemetry', icon: MessageSquare },
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -339,23 +395,25 @@ export default function AdvancedAdminConsole() {
           
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {[{ label: 'Active Insights Indexed', value: blogs.length, desc: 'Live dynamic articles cataloged', icon: BookOpen, color: 'text-blue-400' },
-                  { label: 'Custom App Environments', value: games.length, desc: 'Interactive systems online', icon: Gamepad2, color: 'text-cyan-400' },
-                  { label: 'Operational Schema Pools', value: '1 Default', desc: 'Secure Postgres storage maps operational', icon: FileText, color: 'text-purple-400' }
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+                {[{ label: 'Active Insights', value: blogs.length, desc: 'Dynamic articles cataloged', icon: BookOpen, color: 'text-blue-400' },
+                  { label: 'App Environments', value: games.length, desc: 'Interactive systems online', icon: Gamepad2, color: 'text-cyan-400' },
+                  { label: 'AI Interactions', value: chatLogs.length, desc: 'Total tracked AI queries', icon: MessageSquare, color: 'text-emerald-400' },
+                  { label: 'Operational Schemas', value: '1', desc: 'Secure Postgres maps', icon: FileText, color: 'text-purple-400' }
                 ].map((stat, idx) => {
                   const Icon = stat.icon;
                   return (
-                    <div key={idx} className="bg-[#0d0d11] border border-zinc-800 rounded-2xl p-6 shadow-sm">
+                    <div key={idx} className="bg-[#0d0d11] border border-zinc-800 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
                       <div className="flex justify-between items-start">
                         <div>
-                          <p className="text-xs font-semibold text-zinc-500 tracking-wide uppercase">{stat.label}</p>
+                          <p className="text-[10px] font-semibold text-zinc-500 tracking-wide uppercase">{stat.label}</p>
                           <h3 className="text-3xl font-black text-white tracking-tight mt-2">{stat.value}</h3>
                         </div>
                         <div className={`p-3 rounded-xl bg-zinc-900 border border-zinc-800 ${stat.color}`}>
                           <Icon className="w-5 h-5" />
                         </div>
                       </div>
+                      <p className="text-xs text-zinc-600 mt-4">{stat.desc}</p>
                     </div>
                   );
                 })}
@@ -366,8 +424,8 @@ export default function AdvancedAdminConsole() {
           {activeTab === 'about' && (
             <div className="bg-[#0d0d11] border border-zinc-800 rounded-2xl p-6 shadow-md max-w-4xl">
               <h2 className="text-base font-bold text-white mb-4">Modify Portfolio Biography Layer</h2>
-              <textarea value={aboutContent} onChange={(e) => setAboutContent(e.target.value)} rows={10} className="w-full p-4 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 text-sm leading-relaxed outline-none" />
-              <button onClick={handleUpdateAbout} className="mt-4 px-5 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs uppercase tracking-wider">Commit Changes</button>
+              <textarea value={aboutContent} onChange={(e) => setAboutContent(e.target.value)} rows={10} className="w-full p-4 rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 text-sm leading-relaxed outline-none custom-scrollbar" />
+              <button onClick={handleUpdateAbout} className="mt-4 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider transition-colors">Commit Changes</button>
             </div>
           )}
 
@@ -442,7 +500,7 @@ export default function AdvancedAdminConsole() {
 
                     <div>
                       <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">Card Excerpt Summary</label>
-                      <textarea placeholder="Dynamic card description layer..." value={newBlog.summary} onChange={(e) => setNewBlog({ ...newBlog, summary: e.target.value })} rows={2} className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs outline-none resize-none" required />
+                      <textarea placeholder="Dynamic card description layer..." value={newBlog.summary} onChange={(e) => setNewBlog({ ...newBlog, summary: e.target.value })} rows={2} className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs outline-none resize-none custom-scrollbar" required />
                     </div>
 
                     <div>
@@ -459,9 +517,9 @@ export default function AdvancedAdminConsole() {
                           })}
                         </div>
                       </div>
-                      <textarea id="markdown-editor" placeholder="# Layout body markdown texts..." value={newBlog.content} onChange={(e) => setNewBlog({ ...newBlog, content: e.target.value })} rows={10} className="w-full p-4 bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-300 text-xs font-mono outline-none" />
+                      <textarea id="markdown-editor" placeholder="# Layout body markdown texts..." value={newBlog.content} onChange={(e) => setNewBlog({ ...newBlog, content: e.target.value })} rows={10} className="w-full p-4 bg-zinc-950 border border-zinc-800 rounded-xl text-zinc-300 text-xs font-mono outline-none custom-scrollbar" />
                     </div>
-                    <button type="submit" className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                    <button type="submit" className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 transition-colors text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2">
                       <Plus className="w-4 h-4" /> Push Article Registry Live
                     </button>
                   </div>
@@ -471,7 +529,7 @@ export default function AdvancedAdminConsole() {
                     <h1 className="text-2xl font-black text-white">{newBlog.title || 'Untitled Article'}</h1>
                     <p className="text-xs text-zinc-400 border-l-2 border-zinc-700 pl-3 italic">{newBlog.summary}</p>
                     <hr className="border-zinc-800" />
-                    <div className="text-xs leading-relaxed text-zinc-300 whitespace-pre-line font-sans space-y-4 max-h-[350px] overflow-y-auto">{newBlog.content}</div>
+                    <div className="text-xs leading-relaxed text-zinc-300 whitespace-pre-line font-sans space-y-4 max-h-[350px] overflow-y-auto custom-scrollbar">{newBlog.content}</div>
                   </div>
                 )}
               </form>
@@ -503,9 +561,9 @@ export default function AdvancedAdminConsole() {
               <form onSubmit={handleAddGame} className="xl:col-span-2 bg-[#0d0d11] border border-zinc-800 rounded-2xl p-6 space-y-4">
                 <h2 className="text-sm font-bold text-white border-b border-zinc-800 pb-3">Deploy New Application Instance</h2>
                 <input type="text" placeholder="Instance Identity" value={newGame.name} onChange={(e) => setNewGame({ ...newGame, name: e.target.value })} className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-sm outline-none" required />
-                <textarea placeholder="Specifications..." value={newGame.description} onChange={(e) => setNewGame({ ...newGame, description: e.target.value })} rows={3} className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs outline-none" required />
+                <textarea placeholder="Specifications..." value={newGame.description} onChange={(e) => setNewGame({ ...newGame, description: e.target.value })} rows={3} className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs outline-none custom-scrollbar" required />
                 <input type="text" placeholder="AI optimization path..." value={newGame.hint} onChange={(e) => setNewGame({ ...newGame, hint: e.target.value })} className="w-full p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white text-xs outline-none" required />
-                <button type="submit" className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold text-xs uppercase tracking-wider">Commit Game Node</button>
+                <button type="submit" className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-500 transition-colors text-white font-bold text-xs uppercase tracking-wider">Commit Game Node</button>
               </form>
               <div className="xl:col-span-3 space-y-3">
                 {filteredGames.map((game) => (
@@ -517,6 +575,66 @@ export default function AdvancedAdminConsole() {
               </div>
             </div>
           )}
+
+          {/* TAB: AI CHAT TELEMETRY */}
+          {activeTab === 'chat' && (
+            <div className="bg-[#0d0d11] border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl">
+              <div className="p-5 border-b border-zinc-800 flex justify-between items-center bg-zinc-950/40">
+                <div>
+                  <h2 className="text-base font-bold text-white flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-blue-500" /> AI Interaction Logs
+                  </h2>
+                  <p className="text-xs text-zinc-500 mt-0.5">Real-time monitoring of all global AI queries.</p>
+                </div>
+                <button 
+                  onClick={fetchLogs} 
+                  disabled={loadingLogs}
+                  className="text-xs font-semibold px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors"
+                >
+                  {loadingLogs ? "Syncing..." : "Refresh Telemetry"}
+                </button>
+              </div>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-zinc-900 text-zinc-400 uppercase tracking-wider font-semibold border-b border-zinc-800">
+                    <tr>
+                      <th className="px-6 py-4">Timestamp (UTC)</th>
+                      <th className="px-6 py-4 w-1/3">User Query</th>
+                      <th className="px-6 py-4 w-1/2">AI Response</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-800/50">
+                    {filteredChats.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} className="px-6 py-12 text-center text-zinc-600 italic">
+                          No interaction data found matching query.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredChats.map((log) => (
+                        <tr key={log.id} className="hover:bg-zinc-900/50 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap text-zinc-500 flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5" />
+                            {new Date(log.created_at).toLocaleString()}
+                          </td>
+                          <td className="px-6 py-4 text-zinc-300 font-medium align-top">
+                            {log.user_message}
+                          </td>
+                          <td className="px-6 py-4 text-zinc-400 leading-relaxed align-top">
+                            <div className="max-h-32 overflow-y-auto pr-2 custom-scrollbar">
+                              {log.ai_response}
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
         </div>
       </section>
     </main>
