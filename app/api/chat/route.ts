@@ -29,7 +29,6 @@ export async function POST(req: Request) {
       .from('games_data')
       .select('*');
 
-    // Log any errors if RLS blocks the fetch or tables are missing
     if (blogError || aboutError || gamesError) {
       console.error("Supabase fetch error:", blogError || aboutError || gamesError);
     }
@@ -93,21 +92,27 @@ export async function POST(req: Request) {
       - Keep responses professional, clear, and context-grounded.
       - If asked about completely unrelated things outside of this portfolio scope, politely decline in the user's chosen language.`,
       
-      // 6. HISTORY LOGGING: Save the completed interaction to Supabase
+      // 6. HISTORY LOGGING: Save the completed interaction to Supabase with strict error tracking
       onFinish: async ({ text }) => {
         try {
-          // Extract the final, normalized user message
           const lastUserMessageObj = alternatingMessages.filter((m: any) => m.role === 'user').pop();
           const lastUserMessage = lastUserMessageObj ? lastUserMessageObj.content : "";
           
           if (lastUserMessage && supabaseUrl && supabaseKey) {
-            await supabase.from('chat_history').insert({
+            const { error: insertError } = await supabase.from('chat_history').insert({
               user_message: lastUserMessage,
               ai_response: text
             });
+            
+            // If Supabase rejects it, print the exact error to the server console
+            if (insertError) {
+              console.error("Supabase Chat Insert Failed:", insertError.message);
+            } else {
+              console.log("AI Chat successfully logged to Supabase!");
+            }
           }
         } catch (err) {
-          console.error("Failed to save chat history to Supabase:", err);
+          console.error("Failed to execute onFinish chat logging:", err);
         }
       }
     });
