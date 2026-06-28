@@ -1,3 +1,4 @@
+import BottomNav from '../components/BottomNav';
 import type { Metadata, Viewport } from "next";
 import './globals.css';
 import Navbar from '../components/Navbar';
@@ -78,10 +79,13 @@ export default function RootLayout({
       <body className="bg-[#09090b] text-[#e5e1e4] antialiased">
         <Navbar />
         
-        {/* FIXED: Wraps content to shift everything down by ONLY the precise height of the iOS safe area/notch */}
-        <div className="pt-[env(safe-area-inset-top)]">
+        {/* ADDED: pb-24 md:pb-0 so content isn't hidden behind the new mobile BottomNav */}
+        <div className="pt-[env(safe-area-inset-top)] pb-24 md:pb-0">
           {children}
         </div>
+        
+        {/* ADDED: The mobile bottom navigation bar */}
+        <BottomNav />
         
         <Analytics />
         <AIChat />

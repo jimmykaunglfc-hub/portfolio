@@ -125,3 +125,26 @@ html[lang="my"] p {
   line-height: 1.8 !important;
   word-break: keep-all !important; /* Prevents awkward mid-word line breaks */
 }
+/* ==========================================================================
+   NATIVE APP TOUCH & FEEL OPTIMIZATIONS
+   ========================================================================== */
+
+/* Prevent rubber-banding/bouncing on iOS and Android */
+html, body {
+  overscroll-behavior-y: none;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide scrollbar for a cleaner app look */
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Prevent ugly tap highlights, callouts, and text selection on UI elements */
+.no-select {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
