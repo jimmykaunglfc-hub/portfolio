@@ -12,26 +12,32 @@ const RTH_TRIGGERS = [
   "contact", "email", "talk to jimmy", "speak to", "meeting", "appointment"
 ];
 
-// UNIVERSAL STREAM FORMATTER - Guaranteed to work with any useChat version
-function createUniversalStream(text: string) {
+function createMockStream(text: string) {
   const stream = new ReadableStream({
     start(controller) {
-      controller.enqueue(new TextEncoder().encode(text));
+      controller.enqueue(new TextEncoder().encode(`0:${JSON.stringify(text)}\n`));
       controller.close();
     }
   });
   return new Response(stream, {
-    headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'x-vercel-ai-data-stream': 'v1'
+    }
   });
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { messages, sessionId } = body;
+    const { messages } = body;
+    
+    // NEW: Extract sessionId from the URL search parameters!
+    const url = new URL(req.url);
+    const sessionId = url.searchParams.get('sessionId');
     
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      return new Response("No messages available", { status: 400 });
+      return new Response(JSON.stringify({ error: "No messages available" }), { status: 400 });
     }
 
     const lastUserMessageObj = messages.filter((m: any) => m.role === 'user').pop();
@@ -51,33 +57,31 @@ export async function POST(req: Request) {
     const activeSessionId: string = sessionId || `session-${Date.now()}`;
 
     // ============================================================================
-    // 1. THE INTERCEPTOR
+    // 1. THE INTERCEPTOR: Case-insensitive RTH Match
     // ============================================================================
     const requiresHuman = RTH_TRIGGERS.some(trigger => cleanUserMessage.includes(trigger));
 
     if (requiresHuman) {
       const rthMessage = "I have paused my AI responses and flagged this conversation for Jimmy. He has been notified and will reply to you here or via email shortly to coordinate your consultation!";
       
-      // Fire Email Alert 
       sendSMTPAlert(originalUserMessageText, activeSessionId).catch(err => 
         console.error("Background SMTP alert failed:", err)
       );
       
-      // Log to Supabase (Requires session_id and requires_human columns to exist!)
       if (supabaseUrl && supabaseKey && originalUserMessageText) {
-        const { error: dbErr } = await supabase.from('chat_history').insert({
-          session_id: activeSessionId,
-          user_message: originalUserMessageText,
-          ai_response: rthMessage,
-          requires_human: true
-        });
-        
-        if (dbErr) {
-          console.error("CRITICAL: Failed to save RTH row to Supabase. Check your table columns!", dbErr.message);
+        try {
+          await supabase.from('chat_history').insert({
+            session_id: activeSessionId,
+            user_message: originalUserMessageText,
+            ai_response: rthMessage,
+            requires_human: true
+          });
+        } catch (dbErr) {
+          console.error("Failed to save RTH row:", dbErr);
         }
       }
 
-      return createUniversalStream(rthMessage);
+      return createMockStream(rthMessage);
     }
 
     // ============================================================================
@@ -127,13 +131,12 @@ export async function POST(req: Request) {
       onFinish: async ({ text }) => {
         try {
           if (originalUserMessageText && supabaseUrl && supabaseKey) {
-            const { error: insertErr } = await supabase.from('chat_history').insert({
+            await supabase.from('chat_history').insert({
               session_id: activeSessionId,
               user_message: originalUserMessageText,
               ai_response: text,
               requires_human: false
             });
-            if (insertErr) console.error("Normal Chat Insert Failed:", insertErr.message);
           }
         } catch (err) {
           console.error("Failed chat logging:", err);
@@ -145,7 +148,7 @@ export async function POST(req: Request) {
 
   } catch (globalError: any) {
     console.error("Global chat router catch intercept:", globalError);
-    return createUniversalStream("Hello! I am currently optimizing my system. If you have questions, please reach out directly via my contact details!");
+    return createMockStream("Hello! I am currently optimizing my system. If you have questions, please reach out directly via my contact details!");
   }
 }
 
@@ -154,7 +157,7 @@ async function sendSMTPAlert(userMessage: string, sessionId: string) {
     service: 'gmail',
     auth: {
       user: 'jimmykg.spacex@gmail.com',
-      pass: process.env.SMTP_PASS, // NOTE: Make sure this is in your .env.local!
+      pass: process.env.SMTP_PASS,
     },
   });
 

@@ -6,6 +6,12 @@ import { useState, useRef, useEffect } from "react";
 import { MessageSquare, X, Send, Sparkles, User, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
+
+// Initialize Supabase for Realtime Listening
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function AIChat() {
   const pathname = usePathname();
@@ -13,13 +19,53 @@ export default function AIChat() {
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  const { messages, sendMessage, status, error } = useChat({
+  // 1. GENERATE A STABLE SESSION ID
+  const [sessionId] = useState(() => `session-${Date.now()}-${Math.floor(Math.random() * 10000)}`);
+  
+  // 2. USE THE STRICT TRANSPORT API & PASS SESSION ID IN URL
+  const { messages, setMessages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
-      api: '/api/chat'
+      api: `/api/chat?sessionId=${sessionId}` 
     })
   });
 
   const isLoading = status === "submitted" || status === "streaming";
+
+  // 3. THE REALTIME LISTENER
+  useEffect(() => {
+    if (!supabaseUrl || !supabaseKey) return;
+
+    const channel = supabase
+      .channel('admin_replies')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'chat_history',
+          filter: `session_id=eq.${sessionId}` 
+        },
+        (payload) => {
+          const newRow = payload.new;
+          if (newRow.user_message === 'SYSTEM_ADMIN_OVERRIDE') {
+            // Updated to strictly match the new 'parts' type requirement!
+            setMessages((prevMessages: any[]) => [
+              ...prevMessages,
+              {
+                id: newRow.id || Date.now().toString(),
+                role: 'assistant',
+                parts: [{ type: 'text', text: newRow.ai_response }]
+              }
+            ]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [sessionId, setMessages]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -31,11 +77,11 @@ export default function AIChat() {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
     
+    // Using the required 'sendMessage' instead of 'append'
     sendMessage({ text: inputValue });
     setInputValue("");
   };
 
-  // FIXED: Explicitly hides the widget on BOTH the CMS Studio and the custom Admin panel
   if (pathname?.startsWith('/studio') || pathname?.startsWith('/admin')) return null;
 
   return (
@@ -99,7 +145,7 @@ export default function AIChat() {
                 </div>
               )}
               
-              {messages.map((m: UIMessage) => {
+              {messages.map((m: any) => {
                 const isUser = m.role === 'user';
                 return (
                   <motion.div 
