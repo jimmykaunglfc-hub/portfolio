@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Navbar() {
   const [isDark, setIsDark] = useState(true);
@@ -17,6 +16,8 @@ export default function Navbar() {
     } else {
       document.documentElement.classList.add('dark');
       document.body.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setIsDark(true);
     }
   }, []);
 
@@ -78,11 +79,9 @@ export default function Navbar() {
                 <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#contact"><span className="material-symbols-outlined text-lg">alternate_email</span> Contact</Link>
               </div>
             </div>
-            <Link href="/blog" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">article</span> Blog Post</Link>
+            <Link href="/blog" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">article</span> Blog</Link>
             <Link href="/games" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">sports_esports</span> Games</Link>
             
-            <LanguageSwitcher />
-
             <button onClick={toggleTheme} className="flex items-center justify-center p-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95"><span className="material-symbols-outlined text-lg block text-inherit">{isDark ? 'light_mode' : 'dark_mode'}</span></button>
 
             <Link href="/#contact" className="bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] px-5 py-2.5 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 hover:scale-105 shadow-sm flex items-center gap-1.5"><span className="material-symbols-outlined text-sm font-bold text-white dark:text-[#002e6a]">mail</span> Get in Touch</Link>
@@ -90,7 +89,6 @@ export default function Navbar() {
 
           {/* Mobile Right Controls */}
           <div className="flex items-center gap-3 md:hidden pointer-events-auto">
-            <LanguageSwitcher />
             <button onClick={toggleTheme} className="p-2 text-zinc-900 dark:text-white material-symbols-outlined text-xl cursor-pointer hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
               {isDark ? 'light_mode' : 'dark_mode'}
             </button>
