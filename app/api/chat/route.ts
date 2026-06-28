@@ -3,7 +3,6 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
 
-// Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -13,11 +12,9 @@ const RTH_TRIGGERS = [
   "contact", "email", "talk to jimmy", "speak to", "meeting", "appointment"
 ];
 
-// BULLETPROOF STREAM MOCKER: Bypasses SDK version issues by manually formatting the stream
 function createMockStream(text: string) {
   const stream = new ReadableStream({
     start(controller) {
-      // Vercel AI SDK protocol formats text chunks as '0:"text"\n'
       controller.enqueue(new TextEncoder().encode(`0:${JSON.stringify(text)}\n`));
       controller.close();
     }
@@ -39,11 +36,20 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ error: "No messages available" }), { status: 400 });
     }
 
-    // --- TYPESCRIPT SAFE EXTRACTION ---
+    // --- BULLETPROOF TEXT EXTRACTION ---
+    // This handles both Strings AND complex Vercel AI Arrays perfectly
     const lastUserMessageObj = messages.filter((m: any) => m.role === 'user').pop();
-    const originalUserMessageText: string = lastUserMessageObj && typeof lastUserMessageObj.content === 'string' 
-      ? lastUserMessageObj.content 
-      : "";
+    let originalUserMessageText = "";
+    
+    if (lastUserMessageObj) {
+      if (typeof lastUserMessageObj.content === 'string') {
+        originalUserMessageText = lastUserMessageObj.content;
+      } else if (Array.isArray(lastUserMessageObj.parts)) {
+        originalUserMessageText = lastUserMessageObj.parts.map((p: any) => p.text || "").join("");
+      } else if (Array.isArray(lastUserMessageObj.content)) {
+        originalUserMessageText = lastUserMessageObj.content.map((c: any) => c.text || "").join("");
+      }
+    }
       
     const cleanUserMessage: string = originalUserMessageText.trim().toLowerCase();
     const activeSessionId: string = sessionId || `session-${Date.now()}`;
@@ -56,12 +62,12 @@ export async function POST(req: Request) {
     if (requiresHuman) {
       const rthMessage = "I have paused my AI responses and flagged this conversation for Jimmy. He has been notified and will reply to you here or via email shortly to coordinate your consultation!";
       
-      // Fire Email Alert asynchronously
+      // Fire Email Alert
       sendSMTPAlert(originalUserMessageText, activeSessionId).catch(err => 
         console.error("Background SMTP alert failed:", err)
       );
       
-      // Log flagged ticket to Supabase
+      // Log to Supabase
       if (supabaseUrl && supabaseKey && originalUserMessageText) {
         try {
           await supabase.from('chat_history').insert({
@@ -71,21 +77,16 @@ export async function POST(req: Request) {
             requires_human: true
           });
         } catch (dbErr) {
-          console.error("Failed to save RTH row to Supabase:", dbErr);
+          console.error("Failed to save RTH row:", dbErr);
         }
       }
 
-      // Return the handoff message securely via the manual stream
       return createMockStream(rthMessage);
     }
 
     // ============================================================================
     // 2. NORMAL AI PROCESSING 
     // ============================================================================
-    if (!supabaseUrl || !supabaseKey) {
-      console.warn("Supabase keys are missing. AI will not have access to live database.");
-    }
-
     const { data: liveBlogPosts } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false });
     const { data: liveAboutMe } = await supabase.from('about_me').select('*');
     const { data: liveGamesData } = await supabase.from('games_data').select('*');
@@ -115,9 +116,7 @@ export async function POST(req: Request) {
     const rawKeyString = process.env.GEMINI_API_KEYS || process.env.GOOGLE_GENERATIVE_AI_API_KEY || "";
     const activeKey = rawKeyString.replace(/['"]/g, "").split(',')[0]?.trim();
 
-    if (!activeKey) {
-      return new Response("Configuration Error: Missing API credentials.", { status: 400 });
-    }
+    if (!activeKey) return new Response("Configuration Error: Missing API credentials.", { status: 400 });
 
     const googleProvider = createGoogleGenerativeAI({ apiKey: activeKey });
 
@@ -125,18 +124,9 @@ export async function POST(req: Request) {
       model: googleProvider('gemini-2.5-flash'), 
       messages: alternatingMessages, 
       system: `You are the official, highly capable AI assistant for Jimmy Kaung's portfolio website.
-      
-      CRITICAL MULTILINGUAL MANDATE:
-      - You must natively understand and speak all global languages supported by Gemini, with special coverage for Burmese (Myanmar script), Thai, and English.
       - ALWAYS match the exact language and script used by the user.
-      
-      Here is Jimmy Kaung's comprehensive, verified portfolio context:
-      ${JSON.stringify(livePortfolioData)}
-      
-      Instructions:
-      - Thoroughly answer user queries regarding Jimmy's background, professional pillars, blog summaries, and custom games.
-      - Keep responses professional, clear, and context-grounded.
-      - If asked about completely unrelated things outside of this portfolio scope, politely decline in the user's chosen language.`,
+      Context: ${JSON.stringify(livePortfolioData)}
+      Instructions: Answer queries based on the context. If asked about unrelated things, politely decline.`,
       
       onFinish: async ({ text }) => {
         try {
@@ -154,29 +144,20 @@ export async function POST(req: Request) {
       }
     });
 
-    return result.toUIMessageStreamResponse({
-      originalMessages: messages,
-      onError: (err: any) => err?.message || 'Streaming exception occurred.',
-      headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
-      }
-    });
+    return result.toUIMessageStreamResponse({ originalMessages: messages });
 
   } catch (globalError: any) {
     console.error("Global chat router catch intercept:", globalError);
-    return createMockStream("Hello! I am currently optimizing my system background configuration parameters. If you have questions about working together or would like to schedule a consultation, please feel free to reach out directly via my contact details or try again shortly!");
+    return createMockStream("Hello! I am currently optimizing my system. If you have questions, please reach out directly via my contact details!");
   }
 }
 
-// ============================================================================
-// 3. SMTP EMAIL SENDER HELPER
-// ============================================================================
 async function sendSMTPAlert(userMessage: string, sessionId: string) {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: 'jimmykg.spacex@gmail.com',
-      pass: process.env.SMTP_PASS, 
+      pass: process.env.SMTP_PASS, // NOTE: Make sure this is in your .env.local!
     },
   });
 
@@ -193,7 +174,6 @@ async function sendSMTPAlert(userMessage: string, sessionId: string) {
           "${userMessage}"
         </div>
         <p><strong>Session ID:</strong> <code>${sessionId}</code></p>
-        <p>Log in to your <a href="https://yourdomain.com/admin" style="color: #3b82f6; font-weight: bold;">Admin Console</a> to reply directly.</p>
       </div>
     `,
   };
