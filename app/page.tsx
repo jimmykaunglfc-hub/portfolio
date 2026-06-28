@@ -38,61 +38,86 @@ type ExperienceData = {
 };
 
 // =========================================================================
-// GLOBAL DATA SCHEMAS
+// GLOBAL DATA SCHEMAS (FULLY SYNCED WITH OFFICIAL RESUME)
 // =========================================================================
 const paginatedExperience: ExperienceData = {
   1: [
     {
       company: "digit7s",
-      timeline: "Full-time • 1 yr 2 mos",
+      timeline: "Full-time • 1 yr 3 mos",
       type: "Hybrid",
       roles: [
         {
           title: "Head of Digital Operations",
           period: "Jan 2026 - Present • 6 mos",
           location: "Bangkok City, Thailand",
-          desc: "Leading end-to-end digital operations across Product Management, Quality Assurance (QA), and Product Operations teams to ensure efficient product delivery.",
+          desc: "Leading end-to-end digital operations across Product Management, Quality Assurance (QA), and Product Operations teams to ensure efficient product delivery, operational excellence, and continuous platform improvement.",
           bullets: [
             "Managing product lifecycle from initial planning to release execution metrics.",
-            "Overseeing complex QA processes, automated testing strategies, and high-standard release protocols.",
-            "Driving operational workflows, process optimization, and close cross-functional collaboration loops."
+            "Overseeing complex QA processes, automated testing strategies, and high-standard release quality protocols.",
+            "Driving operational workflows, process optimization, and close cross-functional collaboration loops.",
+            "Coordinating directly with Engineering, Design, Customer Support, and Business stakeholders to monitor KPIs."
           ]
         },
         {
           title: "Product Development Manager",
           period: "Apr 2025 - Present • 1 yr 3 mos",
           location: "Chiang Mai, Thailand",
-          desc: "Directed the strategic development and execution of comprehensive product roadmaps, ensuring alignment with company vision.",
+          desc: "Lead the strategic development and execution of comprehensive product roadmaps, ensuring alignment with company vision and market demands.",
           bullets: [
-            "Supervised the full product lifecycle, from deep ideation to launch and optimization.",
-            "Championed user experience (UX) and design initiatives for engaging product interfaces."
+            "Directed the full product lifecycle, from ideation and requirements definition to launch, iteration, and optimization.",
+            "Championed user experience (UX) and design initiatives, resulting in intuitive and engaging product interfaces.",
+            "Analyzed market trends, competitive landscapes, and customer insights to identify new opportunities."
           ]
         }
       ]
     },
     {
       company: "KBZ Bank",
-      timeline: "6 yrs 2 mos",
+      timeline: "6 yrs 2 mos Fast-Track Progression",
       type: "On-site / Full-time",
       roles: [
         {
-          title: "Manager - Digital Channels",
-          period: "Apr 2024 - Jan 2025 • 10 mos",
+          title: "Digital Channel Management Lead (Transaction Banking)",
+          period: "Nov 2022 - Jan 2025",
           location: "Yangon, Myanmar",
-          desc: "Overseeing primary Digital Channels (KBZPay & KBZ Mobile Banking) to drastically improve customer journeys and channel security.",
+          desc: "Leading the bank's premier digital financial platforms (KBZPay & KBZ m/i Banking), overseeing their development, profitability, user experience optimization, and customer value management.",
           bullets: [
-            "Drove massive user base scale across both platforms to improve financial growth.",
-            "Built and structured manual operational procedures for handling customer experiences."
+            "Directed end-to-end KBZPay UI/UX relaunch, significantly increasing customer engagement.",
+            "Developed and implemented loyalty programs and remittance projects with Thai banks.",
+            "Spearheaded new mobile and internet banking platform migration, ensuring smooth digital transitions."
           ]
         },
         {
-          title: "Deputy Manager & Assistant Manager",
-          period: "Apr 2019 - May 2024 • 5 yrs 1 mo",
+          title: "Project Manager - CEO Project Office",
+          period: "Sep 2021 - Nov 2022",
           location: "Yangon, Myanmar",
-          desc: "Pivotal operational track record optimizing corporate execution workflows and expanding regional ecosystem footprints.",
+          desc: "Led high-impact strategic transformation projects under the direction of the Global CEO to modernize banking operations.",
           bullets: [
-            "Formulated foundational channel operating procedures adopted bank-wide.",
-            "Managed tactical sprint tracking and cross-departmental delivery governance."
+            "Implemented Queue Management System at branches, drastically reducing customer wait times.",
+            "Transformed traditional banking processes into automation, enhancing operational efficiency.",
+            "Developed privilege service centers and business bundles to elevate corporate banking services."
+          ]
+        },
+        {
+          title: "Assistant Project Manager",
+          period: "Jan 2020 - Sep 2021",
+          location: "Cash & Logistics Management",
+          desc: "Oversaw cash handling, distribution, and logistics operations while driving massive efficiency improvements.",
+          bullets: [
+            "Designed and implemented Hub & Spoke Cash Management Model, streamlining operations.",
+            "Launched Cash Pickup & Delivery Service, enhancing financial accessibility.",
+            "Led the Target Operating Model transformation, improving compliance and risk management."
+          ]
+        },
+        {
+          title: "Translator & Executive Assistant",
+          period: "Nov 2018 - Jan 2020",
+          location: "Branch Operations",
+          desc: "Provided business and banking-related translation for the Chief Operating Officer and assisted in strategic initiatives.",
+          bullets: [
+            "Supported executive-level decision-making and meeting coordination.",
+            "Managed project documentation and internal corporate communications."
           ]
         }
       ]
@@ -100,42 +125,98 @@ const paginatedExperience: ExperienceData = {
   ],
   2: [
     {
-      company: "Educational & Freelance Consultancy",
+      company: "Educational & Freelance Tracks",
       timeline: "Multi-Year Independent Track",
       type: "Contract / Project-Based",
       roles: [
         {
-          title: "Instructional Coach",
-          period: "Wall Street English Myanmar • May 2022",
-          location: "Yangon, Myanmar",
+          title: "Academic English Teacher / Coach",
+          period: "2017 - May 2022",
+          location: "Wall Street English Myanmar",
           desc: "Delivered premium instructional communication coaching and optimized adult corporate learning frameworks.",
-          bullets: ["Refined execution matrices for training delivery systems.", "Cultivated professional cross-cultural organizational communication standards."]
+          bullets: ["Refined execution matrices for training delivery systems."]
         },
         {
-          title: "Freelance Translator & Guide",
+          title: "Freelance Translator",
           period: "Dec 2014 - Oct 2017",
-          location: "Myanmar",
-          desc: "Orchestrated large-scale localization and fast-turnaround media subtitle translations for regional broadcast networks.",
-          bullets: ["Maintained high accuracy under strict broadcast timeline windows.", "Simultaneously balanced operational logic across localized educational programs."]
+          location: "Channel Myanmar & MRTV-4",
+          desc: "Orchestrated large-scale localization and media subtitle translations for regional broadcast networks.",
+          bullets: ["Maintained high accuracy under strict broadcast timeline windows."]
+        },
+        {
+          title: "Freelance Tour Guide",
+          period: "Dec 2014 - Mar 2017",
+          location: "Myanmar Tour Guide Association",
+          desc: "Managed international stakeholder client logistics and coordinated tours.",
+          bullets: ["Cultivated dynamic scheduling frameworks across fast-paced environments."]
         }
       ]
     },
     {
       company: "Institutional Liaison Frameworks",
-      timeline: "Institutional Tracks",
+      timeline: "Event & State Projects",
       type: "Liaison / Advisory",
       roles: [
         {
-          title: "State Liaison Officer",
-          period: "Myanmar Gov & Football Federation • 2013 - 2016",
-          location: "Myanmar",
-          desc: "Managed key international communication links, protocol workflows, and logistics management for cross-border events.",
-          bullets: ["Facilitated state-level athletic delegation schedules and inter-departmental operations."]
+          title: "Liaison Officer",
+          period: "Feb 2014 - Sep 2016",
+          location: "Myanmar Football Federation (Suzuki Cup)",
+          desc: "Managed key international communication links and logistics for cross-border athletic events.",
+          bullets: []
+        },
+        {
+          title: "Translator Cum Personal Assistant",
+          period: "Feb 2015 - Mar 2016",
+          location: "Myanma Awba Group",
+          desc: "Anchored executive operational schedules and critical strategic communications.",
+          bullets: []
+        },
+        {
+          title: "Liaison Officer",
+          period: "Jun 2013 - Feb 2014",
+          location: "Ministry of Sports (2013 SEA Games)",
+          desc: "Facilitated state-level athletic delegation schedules and localized logistics support structures.",
+          bullets: []
+        }
+      ]
+    },
+    {
+      company: "Education & Recognitions",
+      timeline: "Academic Foundation",
+      type: "Credentials",
+      roles: [
+        {
+          title: "Project Management Certification",
+          period: "2021",
+          location: "London Business University",
+          desc: "Specialized in project initiation, execution, risk management, and closure.",
+          bullets: []
+        },
+        {
+          title: "Bachelor of Arts (Economics)",
+          period: "2012 - 2016",
+          location: "Dagon University | Yangon, Myanmar",
+          desc: "Studied economic theories, analytical tools, and policy development.",
+          bullets: []
+        },
+        {
+          title: "First Prize Winner & Public Favorite Speaker",
+          period: "2014",
+          location: "Third Yangon Debate Tournament",
+          desc: "Recognized for exceptional public speaking and debate structuring.",
+          bullets: []
         }
       ]
     }
   ]
 };
+
+const visualTrajectoryMap = [
+  { year: "2025 - Present", company: "digit7s", role: "Head of Digital Operations", context: "Orchestrating multi-tiered product workflows, agile scaling configurations, and cross-functional engineering management." },
+  { year: "2022 - 2025", company: "KBZ Bank", role: "Digital Channel Management Lead", context: "Led KBZPay & m/i Banking platforms, overseeing development, profitability, and UX optimization." },
+  { year: "2020 - 2022", company: "KBZ Bank", role: "Project Manager (CEO Office & Logistics)", context: "Led high-impact strategic transformations, Queue Management Systems, and Hub & Spoke Cash Models." },
+  { year: "2013 - 2020", company: "Early Career & Liaison", role: "Executive Assistant, Teacher & Liaison", context: "Facilitated international stakeholder relations, translation pipelines, and adult education frameworks." }
+];
 
 const coreCompetencies = [
   { title: "Digital Operations Management", desc: "Directing end-to-end digital engineering and operational delivery frameworks across product divisions.", icon: Layers, color: "text-blue-400 border-blue-400/20 bg-blue-500/5", tags: ["Agile Delivery", "KPIs"] },
@@ -143,14 +224,21 @@ const coreCompetencies = [
   { title: "Strategic Product Engineering", desc: "Spearheading multi-phased product roadmaps from deep initial market ideation to high-frequency deployment.", icon: Zap, color: "text-emerald-400 border-emerald-400/20 bg-emerald-500/5", tags: ["Roadmaps", "UX/UI Focus"] }
 ];
 
+const operationalArchitecturePhases = [
+  { phase: "Phase 01", title: "Discovery & Strategy", desc: "Architecting the foundational blueprint before a single line of code is written.", metrics: ["Market Analysis", "Roadmap Architecture"] },
+  { phase: "Phase 02", title: "Operational Architecture", desc: "Translating strategy into execution. Structuring agile delivery frameworks.", metrics: ["Agile Delivery", "Process Optimization"] },
+  { phase: "Phase 03", title: "QA & Compliance", desc: "Establishing non-negotiable quality and security standards.", metrics: ["Automated Testing", "Risk Mitigation"] },
+  { phase: "Phase 04", title: "Ecosystem Scaling", desc: "Maximizing market impact and driving continuous user acquisition loops.", metrics: ["Growth Loops", "Data Analytics"] }
+];
+
 const appBlogCache = [
-  { id: 1, title: "Learning Through Experience is the Best Class", desc: "Real-world execution metrics dictate operational scale parameters infinitely better than classroom frameworks.", time: "5 min read", category: "Strategy" },
-  { id: 2, title: "The $300 Million Button: Refactoring Checkout", desc: "How a single semantic form adjustment rescued a platform from checkout cart abandonment loops.", time: "7 min read", category: "UX Testing" },
-  { id: 3, title: "The Market Is Not Waiting: The AI Era", desc: "Moving beyond static engineering timelines into an era where platforms compete purely on intelligence layers.", time: "6 min read", category: "Tech" }
+  { id: 1, title: "Learning Through Experience is the Best Class", desc: "Real-world execution metrics dictate operational scale parameters infinitely better than classroom frameworks.", time: "5 min read", category: "Strategy", content: "True product management maturity cannot be simulated inside slide decks or hypothetical sprint definitions. When running user-base channels scaled to millions of active nodes, runtime execution abnormalities, regulatory shifting, and real-time customer behavior logic become the primary engineering classrooms.\n\nTo scale operations effectively, teams must transition away from isolated vanity metrics and align direct cross-functional loops between design testing arrays, active performance markers, and release governance pipelines." },
+  { id: 2, title: "The $300 Million Button: Refactoring Checkout", desc: "How a single semantic form adjustment rescued a platform from checkout cart abandonment loops.", time: "7 min read", category: "UX Testing", content: "The architecture was sound, the servers were optimized, yet transactions were failing at the final gateway pool. Deep user experience analytics revealed that forcing guest users to create a rigid registry node before completing standard checkout operations generated cognitive friction.\n\nBy simply refactoring the primary action element from 'Register' to 'Continue as Guest', checkout paths cleared instantly, producing over $300M in first-year operational recovery metrics." },
+  { id: 3, title: "The Market Is Not Waiting: The AI Era", desc: "Moving beyond static engineering timelines into an era where platforms compete purely on intelligence layers.", time: "6 min read", category: "Tech", content: "Modern digital management requires a complete departure from static roadmap timelines. As automated intelligence layers integrate deeper into consumer financial channels, platform optimization parameters must adapt programmatically.\n\nProduct leadership must focus on building resilient middleware data models capable of executing real-time system adjustments without unseating core compliance parameters." }
 ];
 
 const appGamesCache = [
-  { id: 1, title: "Neural Decrypt Puzzle Engine", description: "A high-fidelity touch puzzle sandbox testing automated deductive logic capabilities and binary pattern alignment.", specs: "WebGL Engine" }
+  { id: 1, title: "Neural Decrypt Puzzle Engine", description: "A high-fidelity touch puzzle sandbox testing automated deductive logic capabilities and binary pattern alignment.", specs: "Runtime Environment: WebGL Engine" }
 ];
 
 export default function HybridAppRouter() {
@@ -163,6 +251,7 @@ export default function HybridAppRouter() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [activeBlogDetail, setActiveBlogDetail] = useState<any | null>(null);
   const [activeGameDetail, setActiveGameDetail] = useState<any | null>(null);
+  const [activeArchitecturePhase, setActiveArchitecturePhase] = useState(1);
 
   // Web Specific States
   const [activeExperiencePage, setActiveExperiencePage] = useState(1);
@@ -417,10 +506,10 @@ export default function HybridAppRouter() {
           })}
         </nav>
 
-        {/* MODAL: PROFILE & CONTACT (BOTTOM SHEET) */}
+        {/* APP MODAL: PROFILE & CONTACT (BOTTOM SHEET) */}
         {isContactModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-[#18181B] border-t border-[#27272A] w-full rounded-t-3xl p-6 space-y-6 animate-in slide-in-from-bottom duration-300 pb-10 shadow-2xl">
+            <div className="bg-[#18181B] border-t border-[#27272A] w-full rounded-t-3xl p-6 space-y-6 animate-in slide-in-from-bottom duration-300 pb-10 shadow-2xl max-h-[85vh] overflow-y-auto custom-scrollbar">
               <div className="w-12 h-1.5 bg-[#27272A] rounded-full mx-auto" onClick={() => setIsContactModalOpen(false)} />
               <div className="flex justify-between items-center">
                 <h5 className="text-lg font-black text-white tracking-tight">Executive Network</h5>
@@ -448,11 +537,11 @@ export default function HybridAppRouter() {
 
                 {/* Telegram & Facebook (Side by side) */}
                 <div className="flex gap-3">
-                  <a href="https://t.me/jimmykg" target="_blank" rel="noreferrer" className="flex-1 flex flex-col items-center gap-2 p-4 bg-[#09090b] border border-[#27272A] rounded-xl active:scale-95 transition-transform">
+                  <a href="https://t.me/jimmyooig1" target="_blank" rel="noreferrer" className="flex-1 flex flex-col items-center gap-2 p-4 bg-[#09090b] border border-[#27272A] rounded-xl active:scale-95 transition-transform">
                     <Send className="w-5 h-5 text-sky-400" />
                     <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Telegram</span>
                   </a>
-                  <a href="https://facebook.com" target="_blank" rel="noreferrer" className="flex-1 flex flex-col items-center gap-2 p-4 bg-[#09090b] border border-[#27272A] rounded-xl active:scale-95 transition-transform">
+                  <a href="https://facebook.com/handsomekaunghtet" target="_blank" rel="noreferrer" className="flex-1 flex flex-col items-center gap-2 p-4 bg-[#09090b] border border-[#27272A] rounded-xl active:scale-95 transition-transform">
                     <MessageCircle className="w-5 h-5 text-blue-600" />
                     <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Facebook</span>
                   </a>
@@ -462,7 +551,7 @@ export default function HybridAppRouter() {
           </div>
         )}
 
-        {/* MODAL: BLOG READER */}
+        {/* APP MODAL: BLOG READER */}
         {activeBlogDetail && (
           <div className="fixed inset-0 z-[110] bg-[#09090b] flex flex-col font-sans animate-in slide-in-from-right duration-200">
             <header className="h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] border-b border-[#27272A] bg-[#131315]/90 backdrop-blur-xl px-5 flex items-center justify-between shrink-0">
@@ -481,7 +570,7 @@ export default function HybridAppRouter() {
           </div>
         )}
 
-        {/* MODAL: ARCADE RUNTIME */}
+        {/* APP MODAL: ARCADE RUNTIME */}
         {activeGameDetail && (
           <div className="fixed inset-0 z-[110] bg-black flex flex-col font-sans animate-in slide-in-from-right duration-200">
             <header className="h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] border-b border-[#27272A] bg-[#09090b]/90 backdrop-blur-md px-5 flex items-center justify-between shrink-0">
@@ -659,36 +748,9 @@ export default function HybridAppRouter() {
                 <h5 className="text-xl font-bold tracking-tight">Direct Engagement Channels</h5>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Senior Digital Operations Leadership Coordination</p>
               </div>
-              <button onClick={() => setIsWebContactOpen(false)} className="text-zinc-400 hover:text-zinc-950 dark:hover:text-white material-symbols-outlined p-1 cursor-pointer">close</button>
-            </div>
-            <div className="space-y-4">
-              <a href="mailto:jimmykg.spacex@gmail.com" className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 hover:border-[#4d8eff] dark:hover:border-[#adc6ff]/30 hover:bg-zinc-100 dark:hover:bg-white/[0.04] transition-all duration-300 group">
-                <span className="material-symbols-outlined text-[#002e6a] dark:text-[#adc6ff] text-2xl">mail</span>
-                <div className="text-left"><p className="text-xs text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">Secure Email Link</p><p className="text-sm font-medium group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff]">jimmykg.spacex@gmail.com</p></div>
-              </a>
-              <a href="https://www.linkedin.com/in/kaung-htet-nyein-chan-oo-593952167/" target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.02] border border-zinc-200 dark:border-white/5 hover:border-[#4d8eff] dark:hover:border-[#c0c1ff]/30 hover:bg-zinc-100 dark:hover:bg-white/[0.04] transition-all duration-300 group">
-                <span className="material-symbols-outlined text-[#002e6a] dark:text-[#c0c1ff] text-2xl">share</span>
-                <div className="text-left"><p className="text-xs text-zinc-400 dark:text-zinc-500 uppercase tracking-widest font-mono">LinkedIn Network</p><p className="text-sm font-medium group-hover:text-[#4d8eff] dark:group-hover:text-[#c0c1ff]">kaung-htet-nyein-chan-oo</p></div>
-              </a>
-            </div>
-            <button onClick={() => setIsWebContactOpen(false)} className="w-full py-3 bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-800 dark:text-white rounded-xl text-xs font-semibold uppercase tracking-wider transition-colors border border-zinc-200 dark:border-white/5 cursor-pointer">Dismiss Gateway</button>
-          </div>
-        </div>
-      )}
-
-      {/* WEB OVERLAY DIALOG 2: TRAJECTORY MAP */}
-      {isWebContactOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 dark:bg-zinc-950/70 backdrop-blur-xl">
-          <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-lg rounded-2xl p-8 relative shadow-2xl space-y-6 text-zinc-900 dark:text-white">
-            <div className="flex justify-between items-start pb-4 border-b border-zinc-100 dark:border-white/5">
-              <div>
-                <h5 className="text-xl font-bold tracking-tight">Direct Engagement Channels</h5>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Senior Digital Operations Leadership Coordination</p>
-              </div>
               <button onClick={() => setIsWebContactOpen(false)} className="text-zinc-400 hover:text-zinc-950 dark:hover:text-white cursor-pointer"><X className="w-6 h-6" /></button>
             </div>
             
-            {/* Added max-height and scrolling in case of smaller screens */}
             <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar">
               
               {/* Email */}
@@ -724,6 +786,39 @@ export default function HybridAppRouter() {
             </div>
             
             <button onClick={() => setIsWebContactOpen(false)} className="w-full py-3 bg-zinc-100 dark:bg-white/5 hover:bg-zinc-200 dark:hover:bg-white/10 text-zinc-800 dark:text-white rounded-xl text-xs font-semibold uppercase tracking-wider transition-colors border border-zinc-200 dark:border-white/5 cursor-pointer">Dismiss Gateway</button>
+          </div>
+        </div>
+      )}
+
+      {/* WEB OVERLAY DIALOG 2: TRAJECTORY MAP */}
+      {isWebMapOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 dark:bg-zinc-950/70 backdrop-blur-xl overflow-y-auto">
+          <div className="bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 w-full max-w-3xl rounded-2xl p-6 md:p-10 relative shadow-2xl my-8 space-y-8 text-zinc-900 dark:text-white">
+            <div className="flex justify-between items-start pb-4 border-b border-zinc-100 dark:border-white/5">
+              <div>
+                <h5 className="text-2xl font-bold tracking-tight">Strategic Trajectory Blueprint</h5>
+                <p className="text-sm text-[#4d8eff] dark:text-[#adc6ff] font-mono mt-1">Cross-Functional Transition Map</p>
+              </div>
+              <button onClick={() => setIsWebMapOpen(false)} className="text-zinc-400 hover:text-zinc-950 dark:hover:text-white material-symbols-outlined p-1 cursor-pointer"><X className="w-6 h-6" /></button>
+            </div>
+            <div className="relative pl-6 md:pl-8 space-y-8 before:content-[''] before:absolute before:left-[11px] md:before:left-[15px] before:top-2 before:bottom-2 before:width-[2px] before:bg-gradient-to-b before:from-[#4d8eff] before:via-[#c0c1ff] before:to-zinc-200 dark:before:to-zinc-800">
+              {visualTrajectoryMap.map((mapItem, mIdx) => (
+                <div key={mIdx} className="relative group/map-node space-y-2">
+                  <div className="absolute -left-[21px] md:-left-[29px] top-1.5 w-4 h-4 rounded-full bg-white dark:bg-zinc-900 border-2 border-[#4d8eff] dark:border-[#adc6ff] transition-colors duration-300 flex items-center justify-center shadow-sm">
+                    <div className="w-1.5 h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-950" />
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+                    <span className="text-xs font-mono font-semibold text-[#002e6a] dark:text-[#adc6ff] bg-[#4d8eff]/10 dark:bg-[#adc6ff]/10 border border-[#4d8eff]/20 dark:border-[#adc6ff]/20 px-2.5 py-0.5 rounded-full w-max">{mapItem.year}</span>
+                    <h6 className="text-lg font-bold tracking-tight">{mapItem.company}</h6>
+                  </div>
+                  <div className="p-4 rounded-xl bg-zinc-50 dark:bg-white/[0.01] border border-zinc-100 dark:border-white/5 space-y-1">
+                    <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{mapItem.role}</p>
+                    <p className="text-xs font-light text-zinc-600 dark:text-slate-400 leading-relaxed">{mapItem.context}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => setIsWebMapOpen(false)} className="w-full py-4 bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shadow-lg cursor-pointer">Close Blueprint View</button>
           </div>
         </div>
       )}
