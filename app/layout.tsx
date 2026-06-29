@@ -1,8 +1,9 @@
-import BottomNav from '../components/BottomNav';
 import type { Metadata, Viewport } from "next";
 import './globals.css';
 import Navbar from '../components/Navbar';
+import BottomNav from '../components/BottomNav';
 import AIChat from '../components/AIChat';
+import ClientWrapper from '../components/ClientWrapper';
 import { Analytics } from '@vercel/analytics/react'
 
 // Viewport configuration to unlock iOS safe-area insets
@@ -18,20 +19,15 @@ export const metadata: Metadata = {
   title: "Jimmy Kaung | Head of Digital Operations & Product",
   description: "Portfolio of Jimmy Kaung. Orchestrating high-impact digital platforms, optimizing operational infrastructure, and leading cross-functional teams in FinTech.",
   keywords: [
-    // Personal & Brand Identity
     "Jimmy Kaung", 
     "Kaung Htet Oo", 
     "KHNCO", 
     "Jimmy Kaung Portfolio",
-    
-    // Core Roles & Titles
     "Head of Digital Operations", 
     "Product Manager", 
     "Senior Product Owner", 
     "Digital Transformation Lead",
     "Tech Lead",
-
-    // Industry & Expertise
     "FinTech", 
     "Financial Technology", 
     "Digital Platforms", 
@@ -39,12 +35,8 @@ export const metadata: Metadata = {
     "Operations Infrastructure", 
     "Cross-functional Leadership",
     "Product Lifecycle Management",
-
-    // Past Experience Context (Helps if people search your old roles)
     "KBZ Bank", 
     "digit7s",
-
-    // Technical Context
     "Next.js", 
     "React", 
     "Technical Portfolio"
@@ -69,24 +61,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    // Removed hardcoded "dark" class. Let the system or next-themes handle it!
+    <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body className="bg-[#09090b] text-[#e5e1e4] antialiased">
-        <Navbar />
+      {/* PERFECTED CONTRAST: Deep black for dark mode, crisp slate for light mode */}
+      <body className="bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white antialiased transition-colors duration-300">
         
-        {/* REVERTED: Removed pb-24 because BottomNav now handles spacing dynamically based on App vs Web mode */}
-        <div className="pt-[env(safe-area-inset-top)]">
-          {children}
-        </div>
-        
-        <BottomNav />
-        <Analytics />
-        <AIChat />
+        {/* ClientWrapper kills the FOUC (Flash of Unstyled Content) on initial load */}
+        <ClientWrapper>
+          <Navbar />
+          
+          {/* Re-added pb-28 on mobile only so content clears the Glass Bottom Nav */}
+          <div className="pt-[env(safe-area-inset-top)] pb-28 md:pb-0 min-h-screen">
+            {children}
+          </div>
+          
+          <BottomNav />
+          <Analytics />
+          <AIChat />
+        </ClientWrapper>
+
       </body>
     </html>
   );

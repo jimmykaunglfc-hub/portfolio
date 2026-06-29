@@ -346,12 +346,15 @@ export default function HybridAppRouter() {
                 <h2 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight mt-5 leading-[1.1] relative z-10">Kaung Htet <br/>Nyein Chan Oo</h2>
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium mt-2 relative z-10">Project & Channel Management Leader</p>
                 
-                <div className="mt-6 flex items-center gap-2 bg-zinc-50 dark:bg-[#09090b] px-3.5 py-2 rounded-full border border-zinc-200 dark:border-[#27272A] w-max relative z-10">
-                  <span className="relative flex h-2.5 w-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                {/* NEW: Polished "Available for Consultations" Badge */}
+                <div className="mt-6 flex items-center gap-2 bg-emerald-500/10 dark:bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-full w-max relative z-10 transition-colors">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                   </span>
-                  <span className="text-[10px] font-bold text-zinc-700 dark:text-white uppercase tracking-wider">Live Node Active</span>
+                  <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
+                    Available for Consultations
+                  </span>
                 </div>
               </div>
 
