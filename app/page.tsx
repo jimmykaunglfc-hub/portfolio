@@ -14,6 +14,7 @@ import TrajectoryHubs from '../components/TrajectoryHubs';
 import StrategicNetwork from '../components/StrategicNetwork';
 import DataNexus from '../components/DataNexus';
 import { supabase } from '../lib/supabase';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // =========================================================================
 // TYPESCRIPT DEFINITIONS
@@ -512,56 +513,71 @@ export default function HybridAppRouter() {
             </div>
           )}
 
-          {/* TAB 3: OPS (CAPABILITIES MATRIX) */}
-          {currentTab === 'ops' && (
-            <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="pb-2 border-b border-zinc-200 dark:border-[#27272A]">
-                <span className="text-[10px] font-mono text-purple-600 dark:text-purple-400 uppercase tracking-wider font-bold">Execution Frameworks</span>
-                <h2 className="text-xl font-black text-zinc-900 dark:text-white mt-0.5">Capabilities Matrix</h2>
-              </div>
-
-              {/* Horizontal Stepper */}
-              <div className="space-y-4 pt-2">
-                <div className="flex overflow-x-auto space-x-2 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                  {operationalArchitecturePhases.map((p, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveArchitecturePhase(idx + 1)}
-                      className={`flex-shrink-0 px-4 py-2.5 rounded-2xl text-[10px] font-bold tracking-wider uppercase border transition-all ${activeArchitecturePhase === idx + 1 ? 'bg-blue-600 border-blue-600 dark:bg-[#3B82F6] dark:border-[#3B82F6] text-white shadow-md' : 'bg-white dark:bg-[#18181B] border-zinc-200 dark:border-[#27272A] text-zinc-500'}`}
-                    >
-                      {p.phase}
-                    </button>
-                  ))}
-                </div>
-                <div className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-3xl space-y-3 shadow-sm min-h-[140px]">
-                  <h4 className="text-sm font-bold text-zinc-900 dark:text-white">{operationalArchitecturePhases[activeArchitecturePhase - 1].title}</h4>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">{operationalArchitecturePhases[activeArchitecturePhase - 1].desc}</p>
-                  <div className="flex flex-wrap gap-2 pt-3">
-                    {operationalArchitecturePhases[activeArchitecturePhase - 1].metrics.map((m, mIdx) => (
-                      <span key={mIdx} className="bg-zinc-50 dark:bg-[#09090b] text-zinc-600 dark:text-zinc-400 px-2.5 py-1 rounded text-[10px] font-mono border border-zinc-200 dark:border-[#27272A]">{m}</span>
-                    ))}
+          {/* 🚀 UPGRADED: Unified Phase Control Panel */}
+              <div className="pt-2">
+                <div className="bg-zinc-100/80 dark:bg-white/[0.02] p-2.5 rounded-[2.5rem] border border-zinc-200/80 dark:border-white/5 shadow-inner">
+                  
+                  {/* 1. Sliding Animated Tabs */}
+                  <div className="flex overflow-x-auto space-x-1 pb-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-10 px-1 pt-1">
+                    {operationalArchitecturePhases.map((p, idx) => {
+                      const isActive = activeArchitecturePhase === idx + 1;
+                      return (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveArchitecturePhase(idx + 1)}
+                          className={`relative flex-shrink-0 px-5 py-3 rounded-2xl text-[10px] font-bold tracking-wider uppercase transition-colors duration-300 ${isActive ? 'text-white' : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300'}`}
+                        >
+                          {/* The magic sliding pill background */}
+                          {isActive && (
+                            <motion.div
+                              layoutId="activeOpsPhase"
+                              className="absolute inset-0 bg-blue-600 dark:bg-[#3B82F6] rounded-2xl shadow-md"
+                              initial={false}
+                              transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                            />
+                          )}
+                          <span className="relative z-10">{p.phase}</span>
+                        </button>
+                      );
+                    })}
                   </div>
+
+                  {/* 2. Linked Card Content with Smooth Animations */}
+                  <div className="bg-white dark:bg-[#18181B] border border-zinc-200/80 dark:border-[#27272A] p-6 rounded-3xl min-h-[170px] shadow-sm relative overflow-hidden">
+                    {/* Top connecting glow to visually bind it to the tabs above */}
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/20 dark:via-blue-500/30 to-transparent" />
+                    
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={activeArchitecturePhase}
+                        initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+                        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                        exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                        transition={{ duration: 0.25, ease: "easeOut" }}
+                        className="flex flex-col h-full justify-between gap-4"
+                      >
+                        <div>
+                          <h4 className="text-base font-black text-zinc-900 dark:text-white leading-tight mb-2">
+                            {operationalArchitecturePhases[activeArchitecturePhase - 1].title}
+                          </h4>
+                          <p className="text-[13px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                            {operationalArchitecturePhases[activeArchitecturePhase - 1].desc}
+                          </p>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-2 pt-3 border-t border-zinc-100 dark:border-white/5">
+                          {operationalArchitecturePhases[activeArchitecturePhase - 1].metrics.map((m, mIdx) => (
+                            <span key={mIdx} className="bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-wide uppercase border border-blue-200/50 dark:border-blue-500/20">
+                              {m}
+                            </span>
+                          ))}
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
                 </div>
               </div>
-
-              <div className="grid grid-cols-1 gap-4 pt-4">
-                {coreCompetencies.map((comp, idx) => {
-                  const Icon = comp.icon;
-                  return (
-                    <div key={idx} className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-3xl space-y-4 shadow-sm">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${comp.color}`}>
-                          <Icon className="w-6 h-6" />
-                        </div>
-                        <h4 className="text-sm font-bold text-zinc-900 dark:text-white leading-tight">{comp.title}</h4>
-                      </div>
-                      <p className="text-[12px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-light">{comp.desc}</p>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )}
 
           {/* TAB 4: INSIGHTS (LIVE BLOG POSTS) */}
           {currentTab === 'insights' && (
