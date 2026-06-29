@@ -16,9 +16,11 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 export default function AIChat() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [hasUnread, setHasUnread] = useState(false); // NEW: Tracks unread admin replies
+  const [hasUnread, setHasUnread] = useState(false); // Tracks unread admin replies
   const [inputValue, setInputValue] = useState("");
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null); // NEW: Reference for the hidden audio player
   
   // Track open state in a ref for the realtime listener to access without re-subscribing
   const isOpenRef = useRef(isOpen);
@@ -57,19 +59,15 @@ export default function AIChat() {
           const newRow = payload.new;
           if (newRow.user_message === 'SYSTEM_ADMIN_OVERRIDE') {
             
-            // 🔊 PLAY NOTIFICATION SOUND
-            try {
-              const audio = new Audio('/sounds/notification.mp3');
-              audio.volume = 0.8;
-              const playPromise = audio.play();
-              
+            // 🔊 PLAY NOTIFICATION SOUND VIA REF
+            if (audioRef.current) {
+              audioRef.current.volume = 0.8;
+              const playPromise = audioRef.current.play();
               if (playPromise !== undefined) {
                 playPromise.catch((err) => {
-                  console.warn("Browser blocked autoplay. The user must interact with the site first.", err);
+                  console.warn("Browser blocked the audio, or file is missing:", err);
                 });
               }
-            } catch (soundError) {
-              console.error("Failed to initialize audio:", soundError);
             }
 
             // 🔴 TRIGGER UNREAD BADGE IF CHAT IS CLOSED
@@ -106,6 +104,14 @@ export default function AIChat() {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
     
+    // 🔓 THE HACK: Silently unlock audio when user sends a message
+    if (audioRef.current) {
+      audioRef.current.play().then(() => {
+        audioRef.current?.pause();
+        if (audioRef.current) audioRef.current.currentTime = 0;
+      }).catch(() => {});
+    }
+
     sendMessage({ text: inputValue });
     setInputValue("");
   };
@@ -114,6 +120,9 @@ export default function AIChat() {
 
   return (
     <>
+      {/* 🔊 Hidden Audio Element preloaded by the browser */}
+      <audio ref={audioRef} src="/sounds/notification.mp3" preload="auto" />
+
       <AnimatePresence>
         {!isOpen && (
           <motion.button 
@@ -123,13 +132,22 @@ export default function AIChat() {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            onClick={() => setIsOpen(true)}
+            onClick={() => {
+              setIsOpen(true);
+              // 🔓 THE HACK: Silently unlock audio when user first opens the chat
+              if (audioRef.current) {
+                audioRef.current.play().then(() => {
+                  audioRef.current?.pause();
+                  if (audioRef.current) audioRef.current.currentTime = 0;
+                }).catch(() => {});
+              }
+            }}
             className="fixed bottom-[6.5rem] right-4 md:bottom-6 md:right-6 p-3.5 md:p-4 rounded-full z-[9999] transition-colors transition-shadow duration-300 bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.8)] group cursor-grab active:cursor-grabbing"
           >
             <div className="relative">
               <MessageSquare className="w-6 h-6 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300 pointer-events-none" />
               
-              {/* NEW: Pulsing Red Unread Badge */}
+              {/* Pulsing Red Unread Badge */}
               {hasUnread && (
                 <span className="absolute -top-2 -right-2 flex h-4 w-4">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
