@@ -16,8 +16,16 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 export default function AIChat() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [hasUnread, setHasUnread] = useState(false); // NEW: Tracks unread admin replies
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Track open state in a ref for the realtime listener to access without re-subscribing
+  const isOpenRef = useRef(isOpen);
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+    if (isOpen) setHasUnread(false); // Clear unread badge when opened
+  }, [isOpen]);
   
   // 1. GENERATE A STABLE SESSION ID
   const [sessionId] = useState(() => `session-${Date.now()}-${Math.floor(Math.random() * 10000)}`);
@@ -31,7 +39,7 @@ export default function AIChat() {
 
   const isLoading = status === "submitted" || status === "streaming";
 
-  // 3. THE REALTIME LISTENER WITH SOUND NOTIFICATION
+  // 3. THE REALTIME LISTENER WITH SOUND & BADGE
   useEffect(() => {
     if (!supabaseUrl || !supabaseKey) return;
 
@@ -52,16 +60,24 @@ export default function AIChat() {
             // 🔊 PLAY NOTIFICATION SOUND
             try {
               const audio = new Audio('/sounds/notification.mp3');
-              audio.volume = 0.6; // Sets volume to 60%
-              audio.play().catch((err) => {
-                // Catches strict browser autoplay rules if the user hasn't clicked anything yet
-                console.log("Audio playback deferred until next user interaction:", err);
-              });
+              audio.volume = 0.8;
+              const playPromise = audio.play();
+              
+              if (playPromise !== undefined) {
+                playPromise.catch((err) => {
+                  console.warn("Browser blocked autoplay. The user must interact with the site first.", err);
+                });
+              }
             } catch (soundError) {
-              console.error("Failed to initialize audio execution instance:", soundError);
+              console.error("Failed to initialize audio:", soundError);
             }
 
-            // Updated to strictly match the new 'parts' type requirement!
+            // 🔴 TRIGGER UNREAD BADGE IF CHAT IS CLOSED
+            if (!isOpenRef.current) {
+              setHasUnread(true);
+            }
+
+            // Append the message to the UI
             setMessages((prevMessages: any[]) => [
               ...prevMessages,
               {
@@ -90,7 +106,6 @@ export default function AIChat() {
     e.preventDefault();
     if (!inputValue.trim() || isLoading) return;
     
-    // Using the required 'sendMessage' instead of 'append'
     sendMessage({ text: inputValue });
     setInputValue("");
   };
@@ -111,7 +126,17 @@ export default function AIChat() {
             onClick={() => setIsOpen(true)}
             className="fixed bottom-[6.5rem] right-4 md:bottom-6 md:right-6 p-3.5 md:p-4 rounded-full z-[9999] transition-colors transition-shadow duration-300 bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.8)] group cursor-grab active:cursor-grabbing"
           >
-            <MessageSquare className="w-6 h-6 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300 pointer-events-none" />
+            <div className="relative">
+              <MessageSquare className="w-6 h-6 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300 pointer-events-none" />
+              
+              {/* NEW: Pulsing Red Unread Badge */}
+              {hasUnread && (
+                <span className="absolute -top-2 -right-2 flex h-4 w-4">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 border-2 border-white dark:border-[#09090b]"></span>
+                </span>
+              )}
+            </div>
           </motion.button>
         )}
       </AnimatePresence>
