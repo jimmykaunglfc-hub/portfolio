@@ -172,6 +172,7 @@ export default function HybridAppRouter() {
   // Splash Screen State
   const [showSplash, setShowSplash] = useState(false);
   const [countdown, setCountdown] = useState(5);
+  const [splashConfig, setSplashConfig] = useState<any>(null); // NEW: Holds DB settings
   
   // App Specific States
   const [currentTab, setCurrentTab] = useState('home');
@@ -200,22 +201,37 @@ export default function HybridAppRouter() {
     
     if (isCapacitor || isStandalone || /(iphone|ipod|ipad).*applewebkit(?!.*safari)/.test(ua) || /android.*wv/.test(ua)) {
       setIsApp(true);
-      setShowSplash(true); // Enable Splash Screen ONLY if running as a Native App
+      setShowSplash(true); // Optimistically show splash, override later if disabled
     }
 
-    const fetchPosts = async () => {
+    const fetchData = async () => {
       try {
-        const { data, error } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false });
-        if (!error && data) {
-          setLivePosts(data);
+        // 1. Fetch App Settings for the Splash Screen
+        const { data: settingsData } = await supabase.from('app_settings').select('*').single();
+        if (settingsData) {
+          setSplashConfig(settingsData);
+          
+          // Apply Admin Panel config values robustly checking common column names
+          const dbCountdown = settingsData.countdown_duration ?? settingsData.countdown;
+          if (dbCountdown !== undefined) setCountdown(dbCountdown);
+
+          // If you add an 'is_enabled' column to Supabase, this will instantly hide the splash
+          const isEnabled = settingsData.is_enabled ?? settingsData.is_active ?? true;
+          if (!isEnabled) setShowSplash(false);
+        }
+
+        // 2. Fetch Blog Posts
+        const { data: postsData, error } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false });
+        if (!error && postsData) {
+          setLivePosts(postsData);
         }
       } catch (err) {
-        console.error("Error fetching posts:", err);
+        console.error("Error fetching data:", err);
       } finally {
         setIsLoadingPosts(false);
       }
     };
-    fetchPosts();
+    fetchData();
   }, []);
 
   // Countdown Ticker Loop for Splash Screen
@@ -256,45 +272,61 @@ export default function HybridAppRouter() {
   };
 
   // =========================================================================
-  // PARADIGM 0: HIGH-TECH APPS SPLASH SCREEN OVERLAY
+  // PARADIGM 0: HIGH-TECH APPS SPLASH SCREEN OVERLAY (NOW DYNAMIC)
   // =========================================================================
   if (isApp && showSplash) {
+    // Robustly check possible column names for the admin panel data
+    const bgImage = splashConfig?.splash_background || splashConfig?.image_url || splashConfig?.background_url;
+    const skipText = splashConfig?.skip_button_text || splashConfig?.skip_text || "Skip";
+
     return (
       <div className="fixed inset-0 w-screen h-screen bg-[#09090B] flex flex-col items-center justify-center z-[200] select-none font-sans overflow-hidden animate-in fade-in duration-300">
         
+        {/* Render uploaded image if it exists */}
+        {bgImage && (
+          <div className="absolute inset-0 z-0">
+            <img src={bgImage} alt="Splash Background" className="w-full h-full object-cover opacity-60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/60 to-transparent" />
+          </div>
+        )}
+
         {/* Top Floating Action Ticker Bar */}
         <div className="absolute top-[calc(1.5rem+env(safe-area-inset-top))] right-5 z-[210]">
           <button 
             onClick={() => setShowSplash(false)}
-            className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[11px] font-bold text-zinc-400 hover:text-white active:scale-95 transition-all"
+            className="flex items-center gap-1.5 bg-zinc-900/60 border border-zinc-800 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[11px] font-bold text-zinc-400 hover:text-white active:scale-95 transition-all shadow-lg"
           >
-            <span>Skip</span>
+            <span>{skipText}</span>
             <span className="w-4 h-4 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center text-[9px] text-blue-400 font-mono font-black tracking-tighter">
               {countdown}
             </span>
           </button>
         </div>
 
-        {/* Ambient Network Core Background Glow */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-25">
-          <div className="w-96 h-96 bg-blue-500 rounded-full blur-[110px]" />
-        </div>
+        {/* Fallback Ambient Glow if no custom image is set */}
+        {!bgImage && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-25 z-0">
+            <div className="w-96 h-96 bg-blue-500 rounded-full blur-[110px]" />
+          </div>
+        )}
 
         {/* Animated Main Branding Container */}
-        <div className="flex flex-col items-center text-center px-6 animate-in slide-in-from-bottom-6 duration-700 ease-out">
+        <div className={`flex flex-col items-center text-center px-6 animate-in slide-in-from-bottom-6 duration-700 ease-out relative z-10 ${bgImage ? 'mt-auto pb-32' : ''}`}>
           
-          {/* Pulsing Core Ring Geometry */}
-          <div className="w-28 h-24 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex items-center justify-center mb-8 relative group shadow-[0_0_40px_rgba(59,130,246,0.05)]">
-            <div className="absolute inset-0 border-2 border-blue-500/20 rounded-2xl animate-ping opacity-25 duration-1000" />
-            <Network className="w-10 h-10 text-blue-500" />
-          </div>
+          {/* Hide the fallback Network icon if they uploaded a clean background image */}
+          {!bgImage && (
+            <div className="w-28 h-24 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex items-center justify-center mb-8 relative group shadow-[0_0_40px_rgba(59,130,246,0.05)]">
+              <div className="absolute inset-0 border-2 border-blue-500/20 rounded-2xl animate-ping opacity-25 duration-1000" />
+              <Network className="w-10 h-10 text-blue-500" />
+            </div>
+          )}
 
           {/* Identity Headers */}
           <div className="space-y-3">
-            <h1 className="text-3xl font-black text-white tracking-widest uppercase">
+            <h1 className="text-3xl font-black text-white tracking-widest uppercase shadow-sm">
               KHNCO<span className="text-blue-500 animate-pulse">.</span>
             </h1>
-            <p className="text-[10px] font-bold text-zinc-500 tracking-[0.2em] uppercase max-w-xs leading-relaxed">
+            <p className="text-[10px] font-bold text-zinc-400 tracking-[0.2em] uppercase max-w-xs leading-relaxed">
               Orchestrating High-Impact Platforms
             </p>
           </div>
