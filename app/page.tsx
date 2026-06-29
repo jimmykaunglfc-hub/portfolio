@@ -513,7 +513,15 @@ export default function HybridAppRouter() {
             </div>
           )}
 
-          {/* 🚀 UPGRADED: Unified Phase Control Panel */}
+          {/* TAB 3: OPS (CAPABILITIES MATRIX) */}
+          {currentTab === 'ops' && (
+            <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="pb-2 border-b border-zinc-200 dark:border-[#27272A]">
+                <span className="text-[10px] font-mono text-purple-600 dark:text-purple-400 uppercase tracking-wider font-bold">Execution Frameworks</span>
+                <h2 className="text-xl font-black text-zinc-900 dark:text-white mt-0.5">Capabilities Matrix</h2>
+              </div>
+
+              {/* 🚀 UPGRADED: Unified Phase Control Panel */}
               <div className="pt-2">
                 <div className="bg-zinc-100/80 dark:bg-white/[0.02] p-2.5 rounded-[2.5rem] border border-zinc-200/80 dark:border-white/5 shadow-inner">
                   
@@ -578,6 +586,25 @@ export default function HybridAppRouter() {
 
                 </div>
               </div>
+
+              <div className="grid grid-cols-1 gap-4 pt-4">
+                {coreCompetencies.map((comp, idx) => {
+                  const Icon = comp.icon;
+                  return (
+                    <div key={idx} className="bg-white dark:bg-[#18181B] border border-zinc-200/60 dark:border-[#27272A] p-6 rounded-3xl space-y-4 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border ${comp.color}`}>
+                          <Icon className="w-6 h-6" />
+                        </div>
+                        <h4 className="text-sm font-bold text-zinc-900 dark:text-white leading-tight">{comp.title}</h4>
+                      </div>
+                      <p className="text-[12px] text-zinc-600 dark:text-zinc-400 leading-relaxed font-light">{comp.desc}</p>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
 
           {/* TAB 4: INSIGHTS (LIVE BLOG POSTS) */}
           {currentTab === 'insights' && (
