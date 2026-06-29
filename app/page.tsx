@@ -344,7 +344,7 @@ export default function HybridAppRouter() {
                 <span className="text-[9px] font-bold tracking-widest uppercase bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 px-2.5 py-1.5 rounded-full border border-blue-200 dark:border-blue-500/20 relative z-10 inline-block">Executive Profile</span>
                 
                 <h2 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight mt-5 leading-[1.1] relative z-10">Kaung Htet <br/>Nyein Chan Oo</h2>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium mt-2 relative z-10">Product & Digital Operations Head}</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 font-medium mt-2 relative z-10">Product & Digital Operations Head</p>
                 
                 {/* NEW: Polished "Available for Consultations" Badge */}
                 <div className="mt-6 flex items-center gap-2 bg-emerald-500/10 dark:bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1.5 rounded-full w-max relative z-10 transition-colors">
