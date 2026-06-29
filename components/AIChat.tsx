@@ -31,7 +31,7 @@ export default function AIChat() {
 
   const isLoading = status === "submitted" || status === "streaming";
 
-  // 3. THE REALTIME LISTENER
+  // 3. THE REALTIME LISTENER WITH SOUND NOTIFICATION
   useEffect(() => {
     if (!supabaseUrl || !supabaseKey) return;
 
@@ -48,6 +48,19 @@ export default function AIChat() {
         (payload) => {
           const newRow = payload.new;
           if (newRow.user_message === 'SYSTEM_ADMIN_OVERRIDE') {
+            
+            // 🔊 PLAY NOTIFICATION SOUND
+            try {
+              const audio = new Audio('/sounds/notification.mp3');
+              audio.volume = 0.6; // Sets volume to 60%
+              audio.play().catch((err) => {
+                // Catches strict browser autoplay rules if the user hasn't clicked anything yet
+                console.log("Audio playback deferred until next user interaction:", err);
+              });
+            } catch (soundError) {
+              console.error("Failed to initialize audio execution instance:", soundError);
+            }
+
             // Updated to strictly match the new 'parts' type requirement!
             setMessages((prevMessages: any[]) => [
               ...prevMessages,
