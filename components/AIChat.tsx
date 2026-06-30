@@ -116,7 +116,7 @@ export default function AIChat() {
     setInputValue("");
   };
 
-  if (pathname?.startsWith('/studio') || pathname?.startsWith('/admin')) return null;
+  if (pathname?.startsWith('/studio') || pathname?.startsWith('/admin') || pathname?.startsWith('/games')) return null;
 
   return (
     <>
