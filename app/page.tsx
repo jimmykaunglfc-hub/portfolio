@@ -153,7 +153,8 @@ const appGamesCache = [
   { id: 3, title: "Lexicon Lock", slug: "lexicon-lock", description: "An English anagram puzzle. Unscramble the letters to crack the vault.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-purple-500 dark:text-purple-400 bg-purple-500/10 border-purple-500/20" },
   { id: 4, title: "Sprint Planner", slug: "sprint-planner", description: "Manage resources and deliver the project on time in this strategy simulation.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20" },
   { id: 5, title: "QA Test Simulator", slug: "qa-test", description: "Test your quality assurance skills by finding edge cases.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-orange-500 dark:text-orange-400 bg-orange-500/10 border-orange-500/20" },
-  { id: 6, title: "Logic Puzzle", slug: "puzzle", description: "A high-fidelity touch puzzle sandbox testing automated deductive logic capabilities.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-cyan-500 dark:text-cyan-400 bg-cyan-500/10 border-cyan-500/20" }
+  { id: 6, title: "Logic Puzzle", slug: "puzzle", description: "A high-fidelity touch puzzle sandbox testing automated deductive logic capabilities.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-cyan-500 dark:text-cyan-400 bg-cyan-500/10 border-cyan-500/20" },
+  { id: 7, title: "Liar's Dice", slug: "liars-dice", description: "A high-fidelity digital dice cup. Play in-person with friends.", specs: "Interactive Physics • Hardware Sensors", iconColor: "text-blue-500 dark:text-blue-400 bg-blue-500/10 border-blue-500/20" },
 ];
 
 const calculateExperience = () => {
