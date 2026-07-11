@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Play, Brain, Bug, Target, Gamepad2, Keyboard, Type, Hexagon, Box, Fingerprint, Zap, Layers, Scissors, Swords} from "lucide-react";
+import { Play, Brain, Bug, Target, Gamepad2, Keyboard, Type, Hexagon, Box, Fingerprint, Zap, Layers, Scissors, Swords, Compass} from "lucide-react";
 
 export default function GamesIndex() {
   return (
@@ -268,6 +268,27 @@ export default function GamesIndex() {
               A 1v1 split-screen reflex duel. Wait for the flash and tap your side first. If you tap early, your system short-circuits.
             </p>
             <Link href="/games/neural-duel" className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-3 rounded-xl font-bold tracking-wide hover:bg-green-600 dark:hover:bg-green-500 dark:hover:text-white transition-all duration-300 mt-auto">
+              <Play className="w-4 h-4 fill-current" /> Play Now
+            </Link>
+          </div>
+        </div>
+
+        {/* Game 14: Quantum Compass */}
+        <div className="group bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-fuchsia-500/10 hover:border-fuchsia-500/30">
+          <div className="h-48 relative flex items-center justify-center border-b border-gray-200 dark:border-white/10 overflow-hidden bg-gray-900">
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-[#261026] to-[#4c184c] dark:from-black dark:via-gray-900 dark:to-fuchsia-950"></div>
+            <div className="absolute inset-0 bg-fuchsia-500/10 blur-3xl rounded-full group-hover:bg-fuchsia-500/20 transition-colors duration-700"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(#d946ef_1.5px,transparent_1.5px)] opacity-[0.10] [background-size:16px_16px]"></div>
+            <Compass className="relative z-10 w-24 h-24 text-fuchsia-500 drop-shadow-[0_0_15px_rgba(217,70,239,0.5)] group-hover:scale-110 transition-transform duration-500" />
+          </div>
+          <div className="p-6 relative z-10 flex flex-col h-[calc(100%-12rem)]">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-fuchsia-500 transition-colors duration-300">
+              Quantum Compass
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">
+              A high-tech digital roulette. Put the device in the center of the table and forcefully swipe to spin the baton.
+            </p>
+            <Link href="/games/quantum-compass" className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-3 rounded-xl font-bold tracking-wide hover:bg-fuchsia-600 dark:hover:bg-fuchsia-500 dark:hover:text-white transition-all duration-300 mt-auto">
               <Play className="w-4 h-4 fill-current" /> Play Now
             </Link>
           </div>

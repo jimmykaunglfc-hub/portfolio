@@ -148,6 +148,7 @@ const operationalArchitecturePhases = [
 ];
 
 const appGamesCache = [
+  { id: 14, title: "Quantum Compass", slug: "quantum-compass", description: "Modern spin-the-bottle. Swipe to spin the holographic baton and select a random target.", specs: "Swipe Velocity Physics • Zero Setup", iconColor: "text-fuchsia-500 dark:text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/20" },
   { id: 13, title: "Neural Duel", slug: "neural-duel", description: "Split-screen reflex duel. Wait for the flash and tap first. Early taps short-circuit!", specs: "Split-Screen • Microsecond Reflex", iconColor: "text-green-500 dark:text-green-400 bg-green-500/10 border-green-500/20" },
   { id: 12, title: "Terminal Defuse", slug: "terminal-defuse", description: "Action-movie wire cutting. Swipe to snap the neon wires, but don't cut the live trap.", specs: "Swipe Gestures • Haptic Snaps", iconColor: "text-red-500 dark:text-red-400 bg-red-500/10 border-red-500/20" },
   { id: 11, title: "The Glitch Deck", slug: "glitch-deck", description: "A high-stakes 3D card draw. Take turns flipping cards, but don't draw the Glitch.", specs: "3D CSS Transformations • Probability", iconColor: "text-indigo-500 dark:text-indigo-400 bg-indigo-500/10 border-indigo-500/20" },
