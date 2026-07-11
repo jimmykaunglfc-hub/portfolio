@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Play, Brain, Bug, Target, Gamepad2, Keyboard, Type, Hexagon, Box } from "lucide-react";
+import { Play, Brain, Bug, Target, Gamepad2, Keyboard, Type, Hexagon, Box, Fingerprint } from "lucide-react";
 
 export default function GamesIndex() {
   return (
@@ -163,6 +163,27 @@ export default function GamesIndex() {
               An English anagram puzzle. Unscramble the letters to crack the vault. Difficulty scales up to 8-letter master words!
             </p>
             <Link href="/games/lexicon-lock" className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-3 rounded-xl font-bold tracking-wide hover:bg-pink-600 dark:hover:bg-pink-500 dark:hover:text-white transition-all duration-300 mt-auto">
+              <Play className="w-4 h-4 fill-current" /> Play Now
+            </Link>
+          </div>
+        </div>
+
+        {/* Game 9: Biometric Override */}
+        <div className="group bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-rose-500/10 hover:border-rose-500/30">
+          <div className="h-48 relative flex items-center justify-center border-b border-gray-200 dark:border-white/10 overflow-hidden bg-gray-900">
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-[#2a0a18] to-[#4c0519] dark:from-black dark:via-gray-900 dark:to-rose-950"></div>
+            <div className="absolute inset-0 bg-rose-500/10 blur-3xl rounded-full group-hover:bg-rose-500/20 transition-colors duration-700"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(#f43f5e_1.5px,transparent_1.5px)] opacity-[0.10] [background-size:16px_16px]"></div>
+            <Fingerprint className="relative z-10 w-24 h-24 text-rose-500 drop-shadow-[0_0_15px_rgba(244,63,94,0.5)] group-hover:scale-110 transition-transform duration-500" />
+          </div>
+          <div className="p-6 relative z-10 flex flex-col h-[calc(100%-12rem)]">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-rose-500 transition-colors duration-300">
+              Biometric Override
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">
+              A native multi-touch selector. Everyone places a finger on the scanner; the system randomly locks onto one target.
+            </p>
+            <Link href="/games/biometric-override" className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-3 rounded-xl font-bold tracking-wide hover:bg-rose-600 dark:hover:bg-rose-500 dark:hover:text-white transition-all duration-300 mt-auto">
               <Play className="w-4 h-4 fill-current" /> Play Now
             </Link>
           </div>

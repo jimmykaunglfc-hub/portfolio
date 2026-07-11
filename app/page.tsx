@@ -148,6 +148,7 @@ const operationalArchitecturePhases = [
 ];
 
 const appGamesCache = [
+  { id: 9, title: "Biometric Override", slug: "biometric-override", description: "Multi-touch random player selection. Everyone place a finger to find the chosen one.", specs: "Hardware Native • Multi-Touch Physics", iconColor: "text-rose-500 dark:text-rose-400 bg-rose-500/10 border-rose-500/20" },
   { id: 8, title: "Nexus Breach", slug: "nexus-breach", description: "A high-stakes 4x4 grid puzzle. 15 safe nodes. 1 corrupted trap. Push your luck.", specs: "React State Physics • Probability Matrix", iconColor: "text-cyan-500 dark:text-cyan-400 bg-cyan-500/10 border-cyan-500/20" },
   { id: 1, title: "Techle", slug: "techle", description: "A daily word puzzle game for tech enthusiasts.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-blue-500 dark:text-blue-400 bg-blue-500/10 border-blue-500/20" },
   { id: 2, title: "Bug Blaster", slug: "bug-blaster", description: "Squash bugs and optimize your code in this fast-paced arcade shooter.", specs: "Next.js Route • Interactive WebGL", iconColor: "text-red-500 dark:text-red-400 bg-red-500/10 border-red-500/20" },
