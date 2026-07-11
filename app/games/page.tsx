@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Play, Brain, Bug, Target, Gamepad2, Keyboard, Type, Hexagon, Box, Fingerprint, Zap, Layers } from "lucide-react";
+import { Play, Brain, Bug, Target, Gamepad2, Keyboard, Type, Hexagon, Box, Fingerprint, Zap, Layers, Scissors } from "lucide-react";
 
 export default function GamesIndex() {
   return (
@@ -226,6 +226,27 @@ export default function GamesIndex() {
               A high-stakes 3D card draw. Select your player count and take turns flipping cards, but don't draw the Glitch.
             </p>
             <Link href="/games/glitch-deck" className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-3 rounded-xl font-bold tracking-wide hover:bg-indigo-600 dark:hover:bg-indigo-500 dark:hover:text-white transition-all duration-300 mt-auto">
+              <Play className="w-4 h-4 fill-current" /> Play Now
+            </Link>
+          </div>
+        </div>
+
+        {/* Game 12: Terminal Defuse */}
+        <div className="group bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/10 hover:border-red-500/30">
+          <div className="h-48 relative flex items-center justify-center border-b border-gray-200 dark:border-white/10 overflow-hidden bg-gray-900">
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-[#241212] to-[#4c1818] dark:from-black dark:via-gray-900 dark:to-red-950"></div>
+            <div className="absolute inset-0 bg-red-500/10 blur-3xl rounded-full group-hover:bg-red-500/20 transition-colors duration-700"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(#ef4444_1.5px,transparent_1.5px)] opacity-[0.10] [background-size:16px_16px]"></div>
+            <Scissors className="relative z-10 w-24 h-24 text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)] group-hover:scale-110 group-hover:rotate-[-10deg] transition-transform duration-500" />
+          </div>
+          <div className="p-6 relative z-10 flex flex-col h-[calc(100%-12rem)]">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-red-500 transition-colors duration-300">
+              Terminal Defuse
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">
+              Action-movie wire cutting. Swipe to snap the neon wires, but do not trigger the live trap. 
+            </p>
+            <Link href="/games/terminal-defuse" className="w-full flex items-center justify-center gap-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 py-3 rounded-xl font-bold tracking-wide hover:bg-red-600 dark:hover:bg-red-500 dark:hover:text-white transition-all duration-300 mt-auto">
               <Play className="w-4 h-4 fill-current" /> Play Now
             </Link>
           </div>
