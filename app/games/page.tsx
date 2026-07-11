@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Play, Brain, Bug, Target, Gamepad2, Keyboard, Type, Hexagon, Box, Fingerprint } from "lucide-react";
+import { Play, Brain, Bug, Target, Gamepad2, Keyboard, Type, Hexagon, Box, Fingerprint, Zap } from "lucide-react";
 
 export default function GamesIndex() {
   return (
