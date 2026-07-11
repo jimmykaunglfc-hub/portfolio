@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, AlertTriangle, ShieldCheck, RotateCcw, Hexagon, Skull } from "lucide-react";
+import { ArrowLeft, Sparkles, AlertTriangle, ShieldCheck, RotateCcw, Hexagon, Skull, X } from "lucide-react";
 import Link from "next/link";
 
 type PenaltyTheme = 'Standard' | 'Drink' | 'Truth' | 'Dare';
@@ -11,8 +11,9 @@ const PENALTY_THEMES: PenaltyTheme[] = ['Standard', 'Drink', 'Truth', 'Dare'];
 export default function NexusBreachPage() {
   const [trapIndex, setTrapIndex] = useState<number>(0);
   const [clearedIndexes, setClearedIndexes] = useState<number[]>([]);
-  const [gameStatus, setGameStatus] = useState<'idle' | 'playing' | 'gameover' | 'won'>('idle');
+  const [gameStatus, setGameStatus] = useState<'idle' | 'playing' | 'gameover'>('idle');
   const [penaltyTheme, setPenaltyTheme] = useState<PenaltyTheme>('Drink'); // Default to Drink mode!
+  const [showPenalty, setShowPenalty] = useState(false); 
   
   // Detect if we are inside the Mobile App's iframe or on the standard Website
   const [isApp, setIsApp] = useState(true); 
@@ -29,6 +30,7 @@ export default function NexusBreachPage() {
     setTrapIndex(Math.floor(Math.random() * 16));
     setClearedIndexes([]);
     setGameStatus('playing');
+    setShowPenalty(false);
   };
 
   const cycleTheme = () => {
@@ -39,17 +41,12 @@ export default function NexusBreachPage() {
     if (gameStatus !== 'playing' || clearedIndexes.includes(index)) return;
 
     if (index === trapIndex) {
-      // Hit the trap!
+      // Hit the trap! Game Over.
       setGameStatus('gameover');
+      setShowPenalty(true); // Trigger the dialog
     } else {
-      // Safe!
-      const newCleared = [...clearedIndexes, index];
-      setClearedIndexes(newCleared);
-      
-      // If 15 boxes are cleared, user wins
-      if (newCleared.length === 15) {
-        setGameStatus('won');
-      }
+      // Safe! Keep playing until someone hits the trap.
+      setClearedIndexes([...clearedIndexes, index]);
     }
   };
 
@@ -82,10 +79,9 @@ export default function NexusBreachPage() {
             <span className="text-[10px] text-slate-500 dark:text-zinc-500 uppercase tracking-widest font-bold mb-1">System Status</span>
             <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full border ${
               gameStatus === 'playing' ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20' :
-              gameStatus === 'gameover' ? 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20 animate-pulse' :
-              'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+              'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20 animate-pulse'
             }`}>
-              {gameStatus === 'playing' ? 'Active' : gameStatus === 'gameover' ? 'Breached' : 'Secured'}
+              {gameStatus === 'playing' ? 'Active' : 'Breached'}
             </span>
           </div>
         </div>
@@ -127,7 +123,7 @@ export default function NexusBreachPage() {
                 disabled={gameStatus !== 'playing' || isCleared}
                 className={`relative w-full h-full rounded-2xl flex items-center justify-center transition-all duration-300 overflow-hidden ${
                   revealTrap 
-                    ? "bg-red-500/20 border-2 border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.6)] z-20" 
+                    ? "bg-red-500/20 border-2 border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.8)] z-20" 
                     : isCleared || revealSafe
                     ? "bg-slate-200/50 dark:bg-zinc-900/50 border border-slate-300 dark:border-white/5 shadow-[inset_0_5px_15px_rgba(0,0,0,0.1)] dark:shadow-[inset_0_5px_15px_rgba(0,0,0,0.5)]"
                     : "bg-gradient-to-br from-blue-50 to-blue-100 dark:from-[#1e1e24] dark:to-[#121214] border border-blue-200 dark:border-white/10 shadow-[0_10px_20px_rgba(0,0,0,0.05),_inset_0_-2px_5px_rgba(0,0,0,0.05)] dark:shadow-[0_10px_20px_rgba(0,0,0,0.4),_inset_0_-2px_5px_rgba(0,0,0,0.5)] hover:border-blue-400 dark:hover:border-blue-500/50"
@@ -146,10 +142,14 @@ export default function NexusBreachPage() {
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-3 h-3 bg-emerald-400 rounded-full shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
                 )}
 
-                {/* Revealed Trap State */}
+                {/* Revealed Trap State - Flashes indefinitely once hit */}
                 {revealTrap && (
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1, rotate: [0, -10, 10, -10, 0] }} transition={{ duration: 0.4 }}>
-                    <AlertTriangle className="w-8 h-8 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
+                  <motion.div 
+                    initial={{ scale: 0 }} 
+                    animate={{ scale: 1, rotate: [0, -10, 10, -10, 0] }} 
+                    transition={{ duration: 0.4 }}
+                  >
+                    <AlertTriangle className="w-8 h-8 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,1)] animate-pulse" />
                   </motion.div>
                 )}
               </motion.button>
@@ -158,7 +158,7 @@ export default function NexusBreachPage() {
         </div>
       </div>
 
-      {/* 4. BOTTOM ACTION BAR (Only visible if won or playing) */}
+      {/* 4. BOTTOM ACTION BAR / RESTART PANEL */}
       <div className="w-full px-6 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-8 h-32 flex flex-col items-center justify-center relative z-50">
         <AnimatePresence mode="wait">
           {gameStatus === 'playing' ? (
@@ -169,7 +169,7 @@ export default function NexusBreachPage() {
             >
               15 safe nodes. 1 corrupted trap.<br/>Push your luck.
             </motion.p>
-          ) : gameStatus === 'won' ? (
+          ) : (
             <motion.div 
               key="action"
               initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
@@ -177,18 +177,19 @@ export default function NexusBreachPage() {
             >
               <button 
                 onClick={initGame}
-                className="w-full font-black py-4 rounded-2xl tracking-widest transition-all flex items-center justify-center gap-3 shadow-lg active:scale-95 bg-emerald-600 text-white shadow-emerald-600/30 hover:bg-emerald-500"
+                className="w-full font-black py-4 rounded-2xl tracking-widest transition-all flex items-center justify-center gap-3 shadow-lg active:scale-95 bg-red-600 text-white shadow-red-600/30 hover:bg-red-500"
               >
-                <RotateCcw className="w-5 h-5" /> PLAY AGAIN
+                <RotateCcw className="w-5 h-5" />
+                REBOOT SYSTEM
               </button>
             </motion.div>
-          ) : null}
+          )}
         </AnimatePresence>
       </div>
 
-      {/* 5. DRAMATIC PENALTY POPUP MODAL */}
+      {/* 5. DRAMATIC PENALTY POPUP MODAL (Closable) */}
       <AnimatePresence>
-        {gameStatus === 'gameover' && (
+        {showPenalty && (
           <motion.div 
             initial={{ opacity: 0 }} 
             animate={{ opacity: 1 }} 
@@ -203,6 +204,14 @@ export default function NexusBreachPage() {
             >
               {/* Flashing Danger Background */}
               <div className="absolute inset-0 bg-red-500/5 animate-pulse pointer-events-none" />
+
+              {/* Close Button */}
+              <button 
+                onClick={() => setShowPenalty(false)} 
+                className="absolute top-4 right-4 text-red-400 hover:text-red-200 bg-red-500/10 p-2 rounded-full transition-colors z-20"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
               <div className="w-20 h-20 bg-red-50 dark:bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-200 dark:border-red-500/20 relative z-10">
                 <AlertTriangle className="w-10 h-10 text-red-500" />
@@ -226,10 +235,10 @@ export default function NexusBreachPage() {
               </div>
 
               <button 
-                onClick={initGame} 
+                onClick={() => setShowPenalty(false)} 
                 className="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl tracking-widest transition-transform active:scale-95 shadow-lg shadow-red-600/20 flex items-center justify-center gap-2 relative z-10"
               >
-                <RotateCcw className="w-5 h-5" /> REBOOT SYSTEM
+                ACCEPT PENALTY
               </button>
             </motion.div>
           </motion.div>
