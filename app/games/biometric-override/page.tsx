@@ -90,7 +90,7 @@ export default function BiometricOverridePage() {
         if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
           window.navigator.vibrate([200, 100, 200]);
         }
-      }, 3000); // 3 seconds of suspense!
+      }, 1500); // <-- REDUCED FROM 3000ms TO 1500ms FOR FAST, SNAPPY GAMEPLAY!
     }
 
     return () => {
@@ -142,7 +142,8 @@ export default function BiometricOverridePage() {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               className="absolute inset-0 flex items-center justify-center"
             >
-              <div className="w-[150vw] h-[150vw] rounded-full border border-blue-500/10 animate-[spin_4s_linear_infinite]" 
+              {/* Sped up the radar spin from 4s to 2s to match the faster tension */}
+              <div className="w-[150vw] h-[150vw] rounded-full border border-blue-500/10 animate-[spin_2s_linear_infinite]" 
                    style={{ background: 'conic-gradient(from 0deg, transparent 70%, rgba(59, 130, 246, 0.1) 100%)' }} />
             </motion.div>
           )}

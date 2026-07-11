@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Radiation, Skull, RotateCcw, Zap, X } from "lucide-react";
+import { ArrowLeft, Radiation, Skull, RotateCcw, Zap } from "lucide-react";
 import Link from "next/link";
 
 type PenaltyTheme = 'Standard' | 'Drink' | 'Truth' | 'Dare';
@@ -12,23 +12,14 @@ export default function CoreMeltdownPage() {
   const [phase, setPhase] = useState<'idle' | 'active' | 'meltdown'>('idle');
   const [dangerLevel, setDangerLevel] = useState(0); // 0 to 100
   const [passCount, setPassCount] = useState(0);
+  const [targetTaps, setTargetTaps] = useState(10); // The hidden random trigger
   const [penaltyTheme, setPenaltyTheme] = useState<PenaltyTheme>('Drink');
   const [isApp, setIsApp] = useState(true);
-
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const dangerIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     setIsApp(urlParams.get('app') === 'true');
-    
-    return () => cleanupTimers();
   }, []);
-
-  const cleanupTimers = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    if (dangerIntervalRef.current) clearInterval(dangerIntervalRef.current);
-  };
 
   const cycleTheme = () => {
     if (phase !== 'idle') return;
@@ -36,47 +27,37 @@ export default function CoreMeltdownPage() {
   };
 
   const startCore = () => {
-    cleanupTimers();
     setPassCount(0);
     setDangerLevel(0);
     setPhase('active');
 
-    // Random duration between 5 to 15 seconds
-    const duration = Math.floor(Math.random() * 10000) + 5000;
-    const startTime = Date.now();
-
-    // The hidden bomb timer
-    timerRef.current = setTimeout(() => {
-      triggerMeltdown();
-    }, duration);
-
-    // The UI intensity updater
-    dangerIntervalRef.current = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(100, (elapsed / duration) * 100);
-      setDangerLevel(progress);
-
-      // Heartbeat vibration that gets faster as danger rises
-      if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
-        if (Math.random() > (1 - progress / 100)) {
-          window.navigator.vibrate(20 + progress / 2);
-        }
-      }
-    }, 100);
+    // Generate a random explosion limit between 5 and 30 taps
+    const randomLimit = Math.floor(Math.random() * 26) + 5; 
+    setTargetTaps(randomLimit);
   };
 
   const passCore = () => {
     if (phase !== 'active') return;
-    setPassCount(c => c + 1);
     
-    // Quick confirm vibration for passing
-    if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
-      window.navigator.vibrate(50);
+    const newCount = passCount + 1;
+    setPassCount(newCount);
+    
+    // Visually increase the heat of the core based on how close they are to the limit
+    const progress = Math.min(100, (newCount / targetTaps) * 100);
+    setDangerLevel(progress);
+    
+    if (newCount >= targetTaps) {
+      // Boom! This tap pushed it over the edge!
+      triggerMeltdown();
+    } else {
+      // Safe pass vibration (gets slightly stronger as danger rises)
+      if (typeof window !== "undefined" && window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(40 + (progress / 2));
+      }
     }
   };
 
   const triggerMeltdown = () => {
-    cleanupTimers();
     setPhase('meltdown');
     setDangerLevel(100);
     
@@ -88,7 +69,7 @@ export default function CoreMeltdownPage() {
 
   // Calculate dynamic styling based on danger level
   const coreColor = `rgb(${Math.min(255, dangerLevel * 2.5)}, ${Math.max(0, 200 - dangerLevel * 2)}, ${Math.max(0, 255 - dangerLevel * 2.5)})`;
-  const shakeIntensity = (dangerLevel / 100) * 15; // Max shake in pixels
+  const shakeIntensity = (dangerLevel / 100) * 12; // Max shake in pixels
 
   return (
     <div className={`${isApp ? 'fixed inset-0 overflow-hidden' : 'min-h-screen pt-32 pb-12'} flex flex-col items-center w-full bg-slate-900 dark:bg-[#09090b] font-sans text-white overscroll-none selection:bg-transparent transition-colors duration-300 relative`}>
@@ -96,7 +77,7 @@ export default function CoreMeltdownPage() {
       {/* Background Danger Aura */}
       {phase === 'active' && (
         <div 
-          className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-100"
+          className="absolute inset-0 z-0 pointer-events-none transition-opacity duration-300"
           style={{ 
             background: `radial-gradient(circle at center, rgba(239,68,68,${dangerLevel / 150}) 0%, transparent 70%)`,
             opacity: dangerLevel / 100 
@@ -165,7 +146,7 @@ export default function CoreMeltdownPage() {
         >
           {/* Core Outer Glow */}
           <div 
-            className={`absolute inset-0 rounded-full blur-3xl transition-colors duration-100`}
+            className={`absolute inset-0 rounded-full blur-3xl transition-colors duration-200`}
             style={{ backgroundColor: phase === 'meltdown' ? 'rgba(239,68,68,0.5)' : phase === 'active' ? coreColor : 'rgba(59,130,246,0.1)' }}
           />
 
@@ -186,12 +167,12 @@ export default function CoreMeltdownPage() {
             {phase === 'active' && (
               <motion.div 
                 animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ repeat: Infinity, duration: Math.max(0.2, 1 - dangerLevel / 100) }}
+                transition={{ repeat: Infinity, duration: Math.max(0.15, 1 - dangerLevel / 100) }}
                 className="absolute inset-0 border-[8px] border-white/20 rounded-full"
               />
             )}
             
-            <Radiation className={`w-20 h-20 ${phase === 'idle' ? 'text-blue-500' : phase === 'meltdown' ? 'text-white' : 'text-black'}`} />
+            <Radiation className={`w-20 h-20 transition-colors duration-200 ${phase === 'idle' ? 'text-blue-500' : phase === 'meltdown' ? 'text-white' : 'text-black'}`} />
           </button>
         </motion.div>
       </div>
@@ -205,7 +186,7 @@ export default function CoreMeltdownPage() {
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
               className="text-[12px] text-zinc-400 font-medium tracking-widest uppercase text-center max-w-[250px]"
             >
-              Tap the core to start the timer.<br/>Pass it before it explodes!
+              Tap the core to initialize.<br/>Every tap increases the pressure.
             </motion.p>
           ) : phase === 'active' ? (
             <motion.p 
