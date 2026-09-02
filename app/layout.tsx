@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import './globals.css';
 import Navbar from '../components/Navbar';
-import BottomNav from '../components/BottomNav';
 import AIChat from '../components/AIChat';
 import ClientWrapper from '../components/ClientWrapper';
 import { Analytics } from '@vercel/analytics/react'
@@ -76,12 +75,10 @@ export default function RootLayout({
         <ClientWrapper>
           <Navbar />
           
-          {/* Re-added pb-28 on mobile only so content clears the Glass Bottom Nav */}
-          <div className="pt-[env(safe-area-inset-top)] pb-28 md:pb-0 min-h-screen">
+          <div className="pt-[env(safe-area-inset-top)] min-h-screen">
             {children}
           </div>
           
-          <BottomNav />
           <Analytics />
           <AIChat />
         </ClientWrapper>
