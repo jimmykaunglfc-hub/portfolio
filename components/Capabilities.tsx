@@ -127,7 +127,7 @@ export default function CapabilitiesMatrix() {
                 <button
                   key={phase.id}
                   onClick={() => setActivePhaseIndex(index)}
-                  className={`snap-start whitespace-nowrap shrink-0 px-6 py-3 rounded-2xl text-xs font-bold tracking-wider uppercase transition-all duration-300 ${
+                  className={`snap-start whitespace-nowrap shrink-0 px-6 py-3 rounded-sm text-xs font-bold tracking-wider uppercase transition-all duration-300 ${
                     isActive 
                       ? "bg-[#c2ff3a] text-[#10170a] shadow-[0_8px_24px_rgba(194,255,58,0.16)]"
                       : "bg-transparent text-zinc-500 dark:text-[#8891ae] border border-[#0d1020]/10 dark:border-white/10 hover:bg-white/70 dark:hover:bg-white/5"
