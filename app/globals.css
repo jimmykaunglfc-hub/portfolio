@@ -62,9 +62,10 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Bricolage Grotesque', 'Inter', sans-serif
    mechanics and page data remain independent from the visual shell. */
 .games-catalog > div:last-child > .group,
 .editorial-page .group {
-  border-radius: 2px;
+  border-radius: 0;
   border-color: rgba(13, 16, 32, 0.10);
-  box-shadow: 0 14px 38px rgba(13, 16, 32, 0.06);
+  box-shadow: none;
+  transition: transform .35s cubic-bezier(.16, 1, .3, 1), border-color .3s ease, background-color .3s ease, box-shadow .3s ease;
 }
 .dark .games-catalog > div:last-child > .group,
 .dark .editorial-page .group {
@@ -72,11 +73,11 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Bricolage Grotesque', 'Inter', sans-serif
   box-shadow: none;
 }
 .games-catalog > div:last-child > .group:hover,
-.editorial-page .group:hover { border-color: rgba(194, 255, 58, 0.58); }
+.editorial-page .group:hover { border-color: rgba(194, 255, 58, 0.72); transform: translateY(-6px) scale(1.015); box-shadow: 0 18px 40px rgba(13, 16, 32, 0.10); }
 .games-catalog > div:last-child > .group > div:last-child > a {
   background: #c2ff3a;
   color: #10170a;
-  border-radius: 2px;
+  border-radius: 0;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.72rem;
   text-transform: uppercase;
@@ -88,6 +89,15 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Bricolage Grotesque', 'Inter', sans-serif
 .games-shell { color: #0d1020; }
 .dark .games-shell { color: #dfe2ee; }
 .games-shell h1, .games-shell h2, .games-shell h3 { letter-spacing: -0.025em; }
+
+@media (hover: hover) {
+  a, button { transition-timing-function: cubic-bezier(.16, 1, .3, 1); }
+  .games-catalog > div:last-child > .group:hover svg { transform: translateY(-4px) scale(1.08); }
+  .games-catalog > div:last-child > .group > div:first-child svg { transition: transform .45s cubic-bezier(.16, 1, .3, 1); }
+  .games-catalog > div:last-child > .group > div:last-child > a:hover { transform: translateY(-1px); box-shadow: 0 9px 20px rgba(194, 255, 58, .16); }
+  .editorial-page .group:hover h3 { color: #719d12; }
+  .dark .editorial-page .group:hover h3 { color: #c2ff3a; }
+}
 
 @keyframes float-a { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(8px, -12px, 0); } }
 @keyframes float-b { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(-10px, 9px, 0); } }
