@@ -3,6 +3,8 @@ import './globals.css';
 import Navbar from '../components/Navbar';
 import AIChat from '../components/AIChat';
 import ClientWrapper from '../components/ClientWrapper';
+import InteractiveBackground from '../components/InteractiveBackground';
+import CustomCursor from '../components/CustomCursor';
 import { Analytics } from '@vercel/analytics/react'
 
 // Viewport configuration to unlock iOS safe-area insets
@@ -73,6 +75,8 @@ export default function RootLayout({
         
         {/* ClientWrapper kills the FOUC (Flash of Unstyled Content) on initial load */}
         <ClientWrapper>
+          <InteractiveBackground />
+          <CustomCursor />
           <Navbar />
           
           <div className="pt-[env(safe-area-inset-top)] min-h-screen">

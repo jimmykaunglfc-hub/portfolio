@@ -89,6 +89,18 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Bricolage Grotesque', 'Inter', sans-serif
 .dark .games-shell { color: #dfe2ee; }
 .games-shell h1, .games-shell h2, .games-shell h3 { letter-spacing: -0.025em; }
 
+@keyframes float-a { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(8px, -12px, 0); } }
+@keyframes float-b { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(-10px, 9px, 0); } }
+@keyframes pulse-ring { 0% { transform: scale(.82); opacity: .5; } 100% { transform: scale(1.42); opacity: 0; } }
+.animate-float-a { animation: float-a 9s ease-in-out infinite; }
+.animate-float-b { animation: float-b 12s ease-in-out infinite; }
+.custom-cursor-dot, .custom-cursor-ring { display: none; }
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .custom-cursor-dot { display:block; position:fixed; top:0; left:0; z-index:10000; width:6px; height:6px; border-radius:999px; background:#c2ff3a; pointer-events:none; }
+  .custom-cursor-ring { display:block; position:fixed; top:0; left:0; z-index:9998; width:32px; height:32px; border:1px solid rgba(194,255,58,.55); border-radius:999px; pointer-events:none; transition:width .2s,height .2s,margin .2s,border-color .2s; }
+  .custom-cursor-ring.cursor-hovering { width:48px; height:48px; margin:-8px; border-color:rgba(194,255,58,.9); }
+}
+
 .glow-flare {
   position: absolute;
   pointer-events: none;
