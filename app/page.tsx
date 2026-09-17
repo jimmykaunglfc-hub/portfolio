@@ -883,7 +883,7 @@ export default function HybridAppRouter() {
   // PARADIGM 2: PREMIUM LONG-SCROLL WEBSITE LAYOUT (DESKTOP & MOBILE WEB)
   // =========================================================================
   return (
-    <main className="portfolio-web w-full max-w-7xl mx-auto px-4 md:px-8 pb-4 relative z-20">
+    <main className="portfolio-web w-full max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-4 relative z-20">
       
       {/* 1. Hero Module Layer */}
       <div className="relative w-full min-h-[85vh] flex flex-col justify-center overflow-hidden mb-16 rounded-sm bg-[#f2f5ff]/65 dark:bg-[#070b16] border border-[#0d1020]/10 dark:border-white/10">
@@ -910,7 +910,7 @@ export default function HybridAppRouter() {
       <section id="experience" className="py-16 max-w-7xl mx-auto relative z-20 pointer-events-auto scroll-mt-20">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12 border-b border-zinc-300/80 dark:border-zinc-800 pb-8">
           <div>
-            <h2 className="text-sm font-mono uppercase tracking-widest text-[#4d8eff] dark:text-[#adc6ff] mb-2 flex items-center gap-2">
+            <h2 className="text-sm font-mono uppercase tracking-widest text-[#719d12] dark:text-[#c2ff3a] mb-2 flex items-center gap-2">
               <span className="material-symbols-outlined text-base">timeline</span> Track Record
             </h2>
             <h3 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Professional Trajectory</h3>
@@ -919,13 +919,13 @@ export default function HybridAppRouter() {
           <div className="flex items-center gap-3 self-start sm:self-center">
             <button 
               onClick={() => setActiveExperiencePage(1)} 
-              className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer ${activeExperiencePage === 1 ? 'bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] shadow-lg' : 'bg-zinc-200/60 dark:bg-white/5 text-zinc-600 dark:text-zinc-300 border border-zinc-300/40 dark:border-white/10 hover:bg-zinc-300/80 dark:hover:bg-white/10'}`}
+              className={`px-5 py-2.5 rounded-sm text-xs font-mono font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer ${activeExperiencePage === 1 ? 'bg-[#c2ff3a] text-[#10170a] shadow-[0_8px_22px_rgba(194,255,58,0.16)]' : 'bg-zinc-200/60 dark:bg-white/5 text-zinc-600 dark:text-zinc-300 border border-zinc-300/40 dark:border-white/10 hover:bg-zinc-300/80 dark:hover:bg-white/10'}`}
             >
               Page 1: Executive Operations
             </button>
             <button 
               onClick={() => setActiveExperiencePage(2)} 
-              className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer ${activeExperiencePage === 2 ? 'bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] shadow-lg' : 'bg-zinc-200/60 dark:bg-white/5 text-zinc-600 dark:text-zinc-300 border border-zinc-300/40 dark:border-white/10 hover:bg-zinc-300/80 dark:hover:bg-white/10'}`}
+              className={`px-5 py-2.5 rounded-sm text-xs font-mono font-semibold uppercase tracking-wider transition-all duration-300 cursor-pointer ${activeExperiencePage === 2 ? 'bg-[#c2ff3a] text-[#10170a] shadow-[0_8px_22px_rgba(194,255,58,0.16)]' : 'bg-zinc-200/60 dark:bg-white/5 text-zinc-600 dark:text-zinc-300 border border-zinc-300/40 dark:border-white/10 hover:bg-zinc-300/80 dark:hover:bg-white/10'}`}
             >
               Page 2: Strategic Advisory
             </button>
@@ -934,11 +934,11 @@ export default function HybridAppRouter() {
 
         <div className="space-y-12 transition-all duration-500">
           {paginatedExperience[activeExperiencePage].map((block: CompanyBlock, idx: number) => (
-            <div key={idx} className="glass-card p-6 md:p-10 rounded-2xl grid grid-cols-1 md:grid-cols-4 gap-8 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors duration-300">
+            <div key={idx} className="glass-card p-6 md:p-10 rounded-sm grid grid-cols-1 md:grid-cols-4 gap-8 hover:border-[#c2ff3a]/50 transition-colors duration-300">
               <div className="md:col-span-1 space-y-2">
                 <h4 className="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">{block.company}</h4>
                 <div className="space-y-1">
-                  <p className="text-xs font-mono text-[#4d8eff] dark:text-[#adc6ff]">{block.timeline}</p>
+                  <p className="text-xs font-mono text-[#719d12] dark:text-[#c2ff3a]">{block.timeline}</p>
                   <span className="inline-block bg-zinc-200/40 dark:bg-white/5 border border-zinc-300/40 dark:border-white/10 px-2 py-0.5 rounded text-[10px] font-mono uppercase text-zinc-600 dark:text-zinc-300">{block.type}</span>
                 </div>
               </div>
@@ -946,11 +946,11 @@ export default function HybridAppRouter() {
               <div className="md:col-span-3 space-y-12 border-l border-zinc-300 dark:border-zinc-800 pl-6 md:pl-10">
                 {block.roles.map((role: Role, rIdx: number) => (
                   <div key={rIdx} className="space-y-4 relative group/role">
-                    <div className="absolute -left-[31px] md:-left-[47px] top-2 w-2.5 h-2.5 rounded-full bg-zinc-300 dark:bg-zinc-800 border-2 border-[#4d8eff] dark:border-[#adc6ff] group-hover/role:bg-[#adc6ff] transition-colors duration-300" />
+                    <div className="absolute -left-[31px] md:-left-[47px] top-2 w-2.5 h-2.5 rounded-full bg-zinc-300 dark:bg-zinc-800 border-2 border-[#719d12] dark:border-[#c2ff3a] group-hover/role:bg-[#c2ff3a] transition-colors duration-300" />
                     
                     <div className="space-y-1">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <h5 className="text-xl font-semibold text-zinc-900 dark:text-white group-hover/role:text-[#4d8eff] dark:group-hover/role:text-[#adc6ff] transition-colors duration-300">{role.title}</h5>
+                        <h5 className="text-xl font-semibold text-zinc-900 dark:text-white group-hover/role:text-[#719d12] dark:group-hover/role:text-[#c2ff3a] transition-colors duration-300">{role.title}</h5>
                         <span className="text-xs text-zinc-500 dark:text-zinc-400 font-mono tracking-wide">{role.location}</span>
                       </div>
                       <p className="text-xs font-mono text-zinc-400 dark:text-zinc-500">{role.period}</p>
@@ -961,7 +961,7 @@ export default function HybridAppRouter() {
                     <ul className="space-y-2.5 pt-2">
                       {role.bullets.map((bullet: string, bIdx: number) => ( 
                         <li key={bIdx} className="text-sm text-zinc-600 dark:text-zinc-300 font-light flex items-start gap-2.5 leading-relaxed">
-                          <span className="text-[#4d8eff] dark:text-[#adc6ff] text-xs mt-1.5">•</span>
+                          <span className="text-[#719d12] dark:text-[#c2ff3a] text-xs mt-1.5">•</span>
                           <span>{bullet}</span>
                         </li>
                       ))}
@@ -987,20 +987,20 @@ export default function HybridAppRouter() {
       {/* 6. Website Deployment Ecosystem Metrics Container */}
       <div className="mt-12 space-y-8">
         <section id="download" className="py-8 relative z-20 pointer-events-auto scroll-mt-20">
-          <div className="glass-card rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-zinc-200/50 dark:border-white/5 bg-gradient-to-r from-[#4d8eff]/5 to-transparent dark:from-[#adc6ff]/5 dark:to-transparent hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors duration-300">
+          <div className="glass-card rounded-sm p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-zinc-200/50 dark:border-white/5 bg-gradient-to-r from-[#c2ff3a]/[0.07] to-transparent hover:border-[#c2ff3a]/50 transition-colors duration-300">
             <div className="max-w-xl space-y-4 text-center md:text-left">
-              <h2 className="text-sm font-mono uppercase tracking-widest text-[#4d8eff] dark:text-[#adc6ff] flex items-center justify-center md:justify-start gap-2">
+              <h2 className="text-sm font-mono uppercase tracking-widest text-[#719d12] dark:text-[#c2ff3a] flex items-center justify-center md:justify-start gap-2">
                 <span className="material-symbols-outlined text-base">system_update</span> Native Ecosystem
               </h2>
               <h3 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Access the Mobile App.</h3>
               <p className="text-zinc-600 dark:text-zinc-300 font-light text-sm leading-relaxed">Experience this portfolio as a fully native application. Android users can install the APK directly, while iOS users can access the beta build instantly via Apple TestFlight.</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto shrink-0">
-              <a href="/khnco.apk" download="KHNCO_App.apk" className="group flex items-center justify-center gap-3 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-8 py-4 rounded-full font-bold text-sm transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg">
+              <a href="/khnco.apk" download="KHNCO_App.apk" className="group flex items-center justify-center gap-3 bg-[#c2ff3a] text-[#10170a] px-8 py-4 rounded-sm font-mono font-bold text-xs uppercase tracking-[0.08em] transition-all duration-300 hover:-translate-y-1 active:scale-95 shadow-lg">
                 <span className="material-symbols-outlined text-xl text-[#3DDC84] group-hover:animate-bounce">android</span>
                 <span>Download APK</span>
               </a>
-              <a href="https://testflight.apple.com/join/BzAg9XQ2" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-center gap-3 bg-zinc-200/50 dark:bg-white/5 border border-zinc-300 dark:border-white/10 hover:bg-zinc-300/80 dark:hover:bg-white/10 text-zinc-900 dark:text-white px-8 py-4 rounded-full font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 shadow-sm">
+              <a href="https://testflight.apple.com/join/BzAg9XQ2" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-center gap-3 bg-zinc-200/50 dark:bg-white/5 border border-zinc-300 dark:border-white/10 hover:bg-zinc-300/80 dark:hover:bg-white/10 text-zinc-900 dark:text-white px-8 py-4 rounded-sm font-mono font-semibold text-xs uppercase tracking-[0.08em] transition-all duration-300 hover:-translate-y-1 shadow-sm">
                 <span className="material-symbols-outlined text-xl text-zinc-900 dark:text-white">phone_iphone</span>
                 <span>iOS TestFlight</span>
               </a>
@@ -1010,14 +1010,14 @@ export default function HybridAppRouter() {
 
         {/* 7. Strategic Contact Anchor */}
         <section id="contact" className="py-8 relative z-20 pointer-events-auto scroll-mt-20">
-          <div className="glass-card rounded-3xl p-12 md:p-20 text-center overflow-hidden bg-gradient-to-br from-zinc-50 to-transparent dark:from-white/[0.02] dark:to-transparent hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors duration-300">
+          <div className="glass-card rounded-sm p-12 md:p-20 text-center overflow-hidden bg-gradient-to-br from-zinc-50 to-transparent dark:from-white/[0.02] dark:to-transparent hover:border-[#c2ff3a]/50 transition-colors duration-300">
             <h4 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4 tracking-tight">Let's Orchestrate What's Next.</h4>
             <p className="text-zinc-600 dark:text-zinc-300 font-light text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">I am open to strategic technology partnerships, digital banking ecosystem consulting, and senior enterprise operations leadership roles.</p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-30">
-              <button onClick={() => setIsWebContactOpen(true)} className="cursor-pointer bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] font-bold px-8 py-4 rounded-full text-sm transition-all duration-300 hover:scale-105 active:scale-95 text-center flex items-center justify-center gap-2">
-                <span className="material-symbols-outlined text-lg text-white dark:text-[#002e6a]">rocket_launch</span> Initiate Consultation
+              <button onClick={() => setIsWebContactOpen(true)} className="cursor-pointer bg-[#c2ff3a] text-[#10170a] font-mono font-bold px-8 py-4 rounded-sm text-xs uppercase tracking-[0.08em] transition-all duration-300 hover:-translate-y-1 active:scale-95 text-center flex items-center justify-center gap-2">
+                <span className="material-symbols-outlined text-lg text-[#10170a]">rocket_launch</span> Initiate Consultation
               </button>
-              <button onClick={() => setIsWebMapOpen(true)} className="cursor-pointer bg-zinc-200/50 dark:bg-white/5 border border-zinc-300 dark:border-white/10 hover:bg-zinc-300/80 dark:hover:bg-white/10 text-zinc-900 dark:text-white px-8 py-4 rounded-full font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 text-center flex items-center justify-center gap-2">
+              <button onClick={() => setIsWebMapOpen(true)} className="cursor-pointer bg-zinc-200/50 dark:bg-white/5 border border-zinc-300 dark:border-white/10 hover:bg-zinc-300/80 dark:hover:bg-white/10 text-zinc-900 dark:text-white px-8 py-4 rounded-sm font-mono font-semibold text-xs uppercase tracking-[0.08em] transition-all duration-300 hover:-translate-y-1 text-center flex items-center justify-center gap-2">
                 <span className="material-symbols-outlined text-lg text-zinc-900 dark:text-white">route</span> Review Trajectory Map
               </button>
             </div>
