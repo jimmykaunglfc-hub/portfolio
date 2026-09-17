@@ -883,7 +883,7 @@ export default function HybridAppRouter() {
   // PARADIGM 2: PREMIUM LONG-SCROLL WEBSITE LAYOUT (DESKTOP & MOBILE WEB)
   // =========================================================================
   return (
-    <main className="w-full max-w-7xl mx-auto px-4 md:px-8 pb-4 relative z-20">
+    <main className="portfolio-web w-full max-w-7xl mx-auto px-4 md:px-8 pb-4 relative z-20">
       
       {/* 1. Hero Module Layer */}
       <div className="relative w-full min-h-[85vh] flex flex-col justify-center overflow-hidden mb-16 rounded-sm bg-[#f2f5ff]/65 dark:bg-[#070b16] border border-[#0d1020]/10 dark:border-white/10">
