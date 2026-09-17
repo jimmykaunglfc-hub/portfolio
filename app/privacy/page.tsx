@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function PrivacyPolicy() {
   return (
-    <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-4xl mx-auto relative z-10">
+    <main className="legal-page min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-4xl mx-auto relative z-10">
       
       {/* Return Navigation Anchor */}
       <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-[#4d8eff] dark:text-[#adc6ff] hover:underline mb-8">
@@ -12,7 +12,7 @@ export default function PrivacyPolicy() {
         Return to Executive Portfolio
       </Link>
 
-      <div className="glass-card rounded-3xl p-8 md:p-12 space-y-8 border border-zinc-200/60 dark:border-zinc-800/40">
+      <div className="glass-card rounded-sm p-8 md:p-12 space-y-8 border border-[#0d1020]/10 dark:border-white/10">
         <div className="space-y-2 border-b border-zinc-200 dark:border-white/5 pb-6">
           <h1 className="text-3xl md:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
             Privacy Policy

@@ -16,12 +16,13 @@ export default async function BlogIndex() {
   }
 
   return (
-    <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto relative z-10 font-sans">
+    <main className="editorial-page min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto relative z-10 font-sans">
       
       <div className="mb-16">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 flex items-center gap-4">
-          <BookOpen className="w-10 h-10 text-blue-500" />
-          Insights & <span className="text-blue-500">Articles</span>
+        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#719d12] dark:text-[#c2ff3a] mb-3">Notes and perspectives</p>
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0d1020] dark:text-[#dfe2ee] mb-4 flex items-center gap-4">
+          <BookOpen className="w-10 h-10 text-[#719d12] dark:text-[#c2ff3a]" />
+          Insights & <span className="text-[#719d12] dark:text-[#c2ff3a]">Articles</span>
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
           Thoughts, strategies, and deep dives into product management, software engineering, and creating exceptional user experiences.

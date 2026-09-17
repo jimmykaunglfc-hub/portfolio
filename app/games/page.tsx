@@ -3,12 +3,13 @@ import { Play, Brain, Bug, Target, Gamepad2, Keyboard, Type, Hexagon, Box, Finge
 
 export default function GamesIndex() {
   return (
-    <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto relative z-10 font-sans">
+    <main className="games-catalog min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-7xl mx-auto relative z-10 font-sans">
       
       {/* Header */}
       <div className="mb-12">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">
-          Digital <span className="text-blue-500">Arcade</span>
+        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#719d12] dark:text-[#c2ff3a] mb-3">Interactive systems</p>
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-[#0d1020] dark:text-[#dfe2ee] mb-4">
+          Digital <span className="text-[#719d12] dark:text-[#c2ff3a]">Arcade</span>
         </h1>
         <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
           Test your skills in product management, quality assurance, logic, and pure reflex with these interactive experiences.

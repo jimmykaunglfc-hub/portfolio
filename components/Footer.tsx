@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-zinc-200/60 dark:border-white/5 mt-20 bg-zinc-50/30 dark:bg-zinc-950/20 backdrop-blur-sm transition-colors duration-300">
+    <footer className="w-full border-t border-[#0d1020]/10 dark:border-white/10 mt-20 bg-[#f2f5ff]/40 dark:bg-[#070b16] backdrop-blur-sm transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-12 space-y-10">
         
         {/* Top Segment: Brand Credentials vs Social Matrices */}
@@ -15,7 +15,7 @@ export default function Footer() {
             <h5 className="text-xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
               Kaung Htet Nyein Chan Oo
             </h5>
-            <p className="text-xs font-mono font-semibold uppercase tracking-wider text-[#4d8eff] dark:text-[#adc6ff]">
+            <p className="text-[11px] font-mono font-semibold uppercase tracking-[0.12em] text-[#719d12] dark:text-[#c2ff3a]">
               Head of Digital Operations
             </p>
             <p className="text-sm font-light text-zinc-600 dark:text-zinc-400 max-w-sm">
@@ -29,7 +29,7 @@ export default function Footer() {
             {/* Email Icon */}
             <a 
               href="mailto:jimmykg.spacex@gmail.com"
-              className="w-10 h-10 rounded-full border border-zinc-300 dark:border-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-[#002e6a] dark:hover:bg-[#adc6ff] hover:text-white dark:hover:text-[#002e6a] hover:border-transparent transition-all duration-300 hover:scale-105"
+              className="w-10 h-10 rounded-sm border border-[#0d1020]/10 dark:border-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-[#c2ff3a] hover:text-[#10170a] hover:border-transparent transition-all duration-300 hover:scale-105"
               title="Secure Email Access"
             >
               <span className="material-symbols-outlined text-lg">mail</span>
@@ -78,7 +78,7 @@ export default function Footer() {
         </div>
 
         {/* Dynamic Separator Line Layout */}
-        <hr className="border-t border-zinc-200 dark:border-white/5" />
+        <hr className="border-t border-[#0d1020]/10 dark:border-white/10" />
 
         {/* Bottom Segment: Copyright Array and Legal Disclaimers */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-medium text-zinc-500 dark:text-zinc-400">

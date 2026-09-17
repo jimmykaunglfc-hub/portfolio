@@ -8,7 +8,7 @@ function GamesSharedLayoutContent({ children }: { children: React.ReactNode }) {
   const isAppView = searchParams?.get('app') === 'true';
 
   return (
-    <>
+    <div className="games-shell">
       {/* CENTRALIZED APP INJECTION: 
         If opened inside the App, this dynamically overrides CSS styles 
         for ALL 6 games instantly without touching their individual files.
@@ -33,7 +33,7 @@ function GamesSharedLayoutContent({ children }: { children: React.ReactNode }) {
         />
       )}
       {children}
-    </>
+    </div>
   );
 }
 

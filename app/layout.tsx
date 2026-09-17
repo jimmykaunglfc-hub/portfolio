@@ -65,11 +65,11 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:opsz,wght@14..32,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       {/* PERFECTED CONTRAST: Deep black for dark mode, crisp slate for light mode */}
-      <body className="bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white antialiased transition-colors duration-300">
+      <body className="bg-[#f2f5ff] dark:bg-[#070b16] text-[#0d1020] dark:text-[#dfe2ee] antialiased transition-colors duration-300">
         
         {/* ClientWrapper kills the FOUC (Flash of Unstyled Content) on initial load */}
         <ClientWrapper>

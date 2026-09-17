@@ -48,16 +48,16 @@ export default async function BlogPostPage({ params }: PageProps) {
   };
 
   return (
-    <main className="min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-4xl mx-auto relative z-10 font-sans text-gray-950 dark:text-white">
+    <main className="editorial-page min-h-screen pt-32 pb-24 px-6 md:px-12 max-w-4xl mx-auto relative z-10 font-sans text-gray-950 dark:text-white">
       
       <Link 
         href="/blog" 
-        className="inline-flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-400 transition-colors mb-8 group"
+        className="inline-flex items-center gap-2 text-sm font-mono font-medium text-[#719d12] dark:text-[#c2ff3a] hover:text-[#526327] transition-colors mb-8 group"
       >
         <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Back to Articles
       </Link>
 
-      <article className="bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-3xl overflow-hidden shadow-xl">
+      <article className="bg-white/75 dark:bg-[#0c1122] border border-[#0d1020]/10 dark:border-white/10 rounded-sm overflow-hidden shadow-xl">
         
         {/* NEW: DYNAMIC MAIN BANNER COVER IMAGE DISPLAY */}
         {post.cover_image && (
@@ -81,13 +81,13 @@ export default async function BlogPostPage({ params }: PageProps) {
           </div>
 
           {/* Primary Article Title */}
-          <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-tight mb-6 text-gray-900 dark:text-white">
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight mb-6 text-[#0d1020] dark:text-[#dfe2ee]">
             {post.title}
           </h1>
 
           {/* Excerpt Summary Blockquote Container */}
           {post.summary && (
-            <div className="p-5 border-l-4 border-blue-500 bg-zinc-50 dark:bg-zinc-900/40 rounded-r-2xl text-sm md:text-base text-gray-600 dark:text-gray-400 italic mb-10 leading-relaxed">
+            <div className="p-5 border-l-4 border-[#c2ff3a] bg-[#c2ff3a]/5 dark:bg-[#c2ff3a]/5 rounded-r-sm text-sm md:text-base text-gray-600 dark:text-[#8891ae] italic mb-10 leading-relaxed">
               {post.summary}
             </div>
           )}

@@ -55,10 +55,10 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="glow-flare w-[500px] h-[500px] bg-[#adc6ff] top-[-200px] left-[-100px]" />
-      <div className="glow-flare w-[400px] h-[400px] bg-[#3131c0] top-[30%] right-[5%]" />
+      <div className="glow-flare w-[500px] h-[500px] bg-[#c2ff3a] top-[-220px] left-[-100px]" />
+      <div className="glow-flare w-[400px] h-[400px] bg-[#819dff] top-[30%] right-[5%]" />
 
-      <nav className="font-sans fixed top-0 w-full z-50 transition-all duration-300 bg-white/70 dark:bg-zinc-950/50 backdrop-blur-xl border-b border-zinc-200/50 dark:border-white/5 h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] no-select">
+      <nav className="font-sans fixed top-0 w-full z-50 transition-all duration-300 bg-[#f2f5ff]/75 dark:bg-[#070b16]/80 backdrop-blur-xl border-b border-[#0d1020]/10 dark:border-white/10 h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] no-select">
         <div className="flex justify-between items-center px-4 md:px-12 max-w-7xl mx-auto h-full w-full">
           
           <Link href="/" className="flex items-center gap-2 md:gap-3 text-xl font-bold tracking-tighter text-zinc-900 dark:text-white pointer-events-auto group">
@@ -77,12 +77,12 @@ export default function Navbar() {
               <path d="M24 5L14 15" stroke="url(#pillarGrad)" strokeWidth="3.5" strokeLinecap="round" />
               <path d="M15 15l10 12" stroke="url(#vectorGrad)" strokeWidth="3.5" strokeLinecap="round" />
             </svg>
-            <span className="font-extrabold tracking-tight text-lg md:text-xl">KHNCO<span className="text-[#4d8eff] dark:text-[#adc6ff]">.</span></span>
+            <span className="font-extrabold tracking-tight text-lg md:text-xl">KHNCO<span className="text-[#719d12] dark:text-[#c2ff3a]">.</span></span>
           </Link>
           
           <div className="hidden md:flex items-center gap-8 pointer-events-auto">
             <div className="relative group py-6">
-              <button className="flex items-center gap-1 text-zinc-900 dark:text-white font-semibold text-sm group-hover:text-[#4d8eff] dark:group-hover:text-[#adc6ff] transition-colors duration-300">
+              <button className="flex items-center gap-1 text-zinc-900 dark:text-white font-semibold text-sm group-hover:text-[#719d12] dark:group-hover:text-[#c2ff3a] transition-colors duration-300">
                 <span className="material-symbols-outlined text-base">account_circle</span>
                 Profile
                 <span className="material-symbols-outlined text-base transition-transform duration-300 group-hover:rotate-180">expand_more</span>
@@ -93,12 +93,12 @@ export default function Navbar() {
                 <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#contact"><span className="material-symbols-outlined text-lg">alternate_email</span> Contact</Link>
               </div>
             </div>
-            <Link href="/blog" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">article</span> Blog</Link>
-            <Link href="/games" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">sports_esports</span> Games</Link>
+            <Link href="/blog" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#719d12] dark:hover:text-[#c2ff3a] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">article</span> Blog</Link>
+            <Link href="/games" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#719d12] dark:hover:text-[#c2ff3a] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">sports_esports</span> Games</Link>
             
-            <button onClick={toggleTheme} className="flex items-center justify-center p-2.5 rounded-xl bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-200 dark:hover:bg-white/10 transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95"><span className="material-symbols-outlined text-lg block text-inherit">{isDark ? 'light_mode' : 'dark_mode'}</span></button>
+            <button onClick={toggleTheme} className="flex items-center justify-center p-2.5 rounded-sm bg-white/50 dark:bg-white/5 border border-[#0d1020]/10 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-white dark:hover:bg-white/10 transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95"><span className="material-symbols-outlined text-lg block text-inherit">{isDark ? 'light_mode' : 'dark_mode'}</span></button>
 
-            <Link href="/#contact" className="bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] px-5 py-2.5 rounded-full text-xs font-bold tracking-wider uppercase transition-all duration-300 hover:scale-105 shadow-sm flex items-center gap-1.5"><span className="material-symbols-outlined text-sm font-bold text-white dark:text-[#002e6a]">mail</span> Get in Touch</Link>
+            <Link href="/#contact" className="bg-[#c2ff3a] text-[#10170a] px-5 py-2.5 rounded-sm text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5 shadow-sm flex items-center gap-1.5"><span className="material-symbols-outlined text-sm font-bold text-[#10170a]">mail</span> Get in Touch</Link>
           </div>
 
           <div className="flex items-center gap-3 md:hidden pointer-events-auto">
@@ -114,7 +114,7 @@ export default function Navbar() {
       </nav>
 
       {isMenuOpen && (
-        <div className="font-sans fixed inset-0 z-50 bg-white/95 dark:bg-[#131315]/95 backdrop-blur-2xl flex flex-col px-8 overflow-y-auto transition-all duration-300 pt-[calc(6rem+env(safe-area-inset-top))]">
+        <div className="font-sans fixed inset-0 z-50 bg-[#f2f5ff]/95 dark:bg-[#070b16]/95 backdrop-blur-2xl flex flex-col px-8 overflow-y-auto transition-all duration-300 pt-[calc(6rem+env(safe-area-inset-top))]">
           <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
             
             <div className="border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-2">

@@ -39,13 +39,14 @@ export default function StrategicNetwork() {
   const [activeNode, setActiveNode] = useState(0);
 
   return (
-    <section className="w-full py-24 bg-gray-50 dark:bg-[#09090b] relative overflow-hidden">
+    <section className="w-full py-24 bg-[#f2f5ff]/60 dark:bg-[#070b16] relative overflow-hidden border-y border-[#0d1020]/10 dark:border-white/5">
       <div className="absolute inset-0 z-0 bg-[radial-gradient(#d1d5db_1px,transparent_1px)] dark:bg-[radial-gradient(#27272a_1px,transparent_1px)] [background-size:24px_24px] opacity-30"></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
         
         <div className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#719d12] dark:text-[#c2ff3a] mb-3">Operating model</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#0d1020] dark:text-[#dfe2ee] mb-4 tracking-tight">
             Operational Architecture
           </h2>
           <p className="text-gray-600 dark:text-gray-400 max-w-2xl">
@@ -58,7 +59,7 @@ export default function StrategicNetwork() {
           <div className="lg:col-span-5 relative">
             
             {/* THE FIX: Pixel-perfect timeline line. Center of icon is 40px. 39px left centers the 2px line. */}
-            <div className="absolute left-[39px] top-[40px] bottom-[40px] w-[2px] bg-gray-200 dark:bg-white/10 hidden md:block z-0"></div>
+            <div className="absolute left-[39px] top-[40px] bottom-[40px] w-px bg-[#0d1020]/10 dark:bg-white/10 hidden md:block z-0"></div>
 
             <div className="space-y-4 relative z-10">
               {networkData.map((node, index) => {
@@ -71,8 +72,8 @@ export default function StrategicNetwork() {
                     onClick={() => setActiveNode(index)}
                     className={`w-full text-left relative flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 overflow-hidden ${
                       isActive 
-                        ? "bg-white dark:bg-[#121214] shadow-lg border border-blue-500/30" 
-                        : "hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent"
+                        ? "bg-white dark:bg-[#0c1122] shadow-lg border border-[#c2ff3a]/50"
+                        : "hover:bg-white/70 dark:hover:bg-white/5 border border-transparent"
                     }`}
                   >
                     {isActive && (
@@ -80,21 +81,21 @@ export default function StrategicNetwork() {
                         initial={{ left: "-100%" }}
                         animate={{ left: "200%" }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="absolute top-0 bottom-0 w-full bg-gradient-to-r from-transparent via-blue-400/20 dark:via-blue-400/10 to-transparent -skew-x-12 pointer-events-none"
+                        className="absolute top-0 bottom-0 w-full bg-gradient-to-r from-transparent via-[#c2ff3a]/20 to-transparent -skew-x-12 pointer-events-none"
                       />
                     )}
 
                     {/* THE FIX: Solid backgrounds on icons so the line seamlessly runs behind them */}
                     <div className={`relative z-10 w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${
                       isActive 
-                        ? "bg-blue-500 text-white shadow-md shadow-blue-500/20" 
-                        : "bg-white dark:bg-[#18181b] border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400"
+                        ? "bg-[#c2ff3a] text-[#10170a] shadow-md shadow-[#c2ff3a]/20"
+                        : "bg-white dark:bg-[#0c1122] border border-[#0d1020]/10 dark:border-white/10 text-gray-500 dark:text-[#8891ae]"
                     }`}>
                       <Icon className="w-6 h-6" />
                     </div>
                     
                     <span className={`relative z-10 font-bold text-lg md:text-xl transition-colors duration-300 ${
-                      isActive ? "text-blue-500" : "text-gray-700 dark:text-gray-300"
+                      isActive ? "text-[#719d12] dark:text-[#c2ff3a]" : "text-gray-700 dark:text-[#dfe2ee]"
                     }`}>
                       {node.title}
                     </span>
@@ -105,7 +106,7 @@ export default function StrategicNetwork() {
                         animate={{ opacity: 1, x: 0 }}
                         className="relative z-10 ml-auto"
                       >
-                        <ArrowRight className="w-5 h-5 text-blue-500" />
+                        <ArrowRight className="w-5 h-5 text-[#719d12] dark:text-[#c2ff3a]" />
                       </motion.div>
                     )}
                   </button>
@@ -115,9 +116,9 @@ export default function StrategicNetwork() {
           </div>
 
           <div className="lg:col-span-7 flex items-center">
-            <div className="w-full bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl min-h-[400px] flex flex-col justify-center relative overflow-hidden">
+            <div className="w-full bg-white/75 dark:bg-[#0c1122] border border-[#0d1020]/10 dark:border-white/10 rounded-sm p-8 md:p-12 shadow-2xl min-h-[400px] flex flex-col justify-center relative overflow-hidden">
               
-              <div className="absolute -top-24 -right-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+              <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#c2ff3a]/10 rounded-full blur-3xl"></div>
 
               <AnimatePresence mode="wait">
                 <motion.div
@@ -129,17 +130,17 @@ export default function StrategicNetwork() {
                   className="relative z-10"
                 >
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-8 h-1 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm font-bold tracking-widest text-blue-500 uppercase">
+                    <div className="w-8 h-1 bg-[#c2ff3a]"></div>
+                    <span className="text-[11px] font-mono font-medium tracking-[0.14em] text-[#719d12] dark:text-[#c2ff3a] uppercase">
                       Phase 0{activeNode + 1}
                     </span>
                   </div>
 
-                  <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
+                  <h3 className="text-3xl font-bold text-[#0d1020] dark:text-[#dfe2ee] mb-6">
                     {networkData[activeNode].title}
                   </h3>
                   
-                  <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-10">
+                  <p className="text-lg text-gray-600 dark:text-[#8891ae] leading-relaxed mb-10">
                     {networkData[activeNode].description}
                   </p>
 
