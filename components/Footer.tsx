@@ -15,7 +15,7 @@ export default function Footer() {
             <h5 className="text-xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
               Kaung Htet Nyein Chan Oo
             </h5>
-            <p className="text-[11px] font-mono font-semibold uppercase tracking-[0.12em] text-[#719d12] dark:text-[#c2ff3a]">
+            <p className="text-[11px] font-mono font-semibold uppercase tracking-[0.12em] text-[#315fc4] dark:text-[#8ebaff]">
               Head of Digital Operations
             </p>
             <p className="text-sm font-light text-zinc-600 dark:text-zinc-400 max-w-sm">
@@ -29,7 +29,7 @@ export default function Footer() {
             {/* Email Icon */}
             <a 
               href="mailto:jimmykg.spacex@gmail.com"
-              className="w-10 h-10 rounded-sm border border-[#0d1020]/10 dark:border-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-[#c2ff3a] hover:text-[#10170a] hover:border-transparent transition-all duration-300 hover:scale-105"
+              className="w-10 h-10 rounded-sm border border-[#0d1020]/10 dark:border-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-[#8ebaff] hover:text-[#10170a] hover:border-transparent transition-all duration-300 hover:scale-105"
               title="Secure Email Access"
             >
               <span className="material-symbols-outlined text-lg">mail</span>

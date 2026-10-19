@@ -60,7 +60,7 @@ export default function InteractiveBackground() {
       }
       for (const particle of particles) {
         context.beginPath(); context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-        context.fillStyle = particle.accent ? (dark ? 'rgba(194,255,58,0.25)' : 'rgba(113,157,18,0.16)') : dark ? 'rgba(223,226,238,0.18)' : 'rgba(13,16,32,0.12)';
+        context.fillStyle = particle.accent ? (dark ? 'rgba(104, 153, 255,0.25)' : 'rgba(49, 95, 196,0.16)') : dark ? 'rgba(223,226,238,0.18)' : 'rgba(13,16,32,0.12)';
         context.fill();
       }
       frame = requestAnimationFrame(draw);

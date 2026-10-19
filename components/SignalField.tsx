@@ -2,30 +2,97 @@
 
 import { useEffect, useRef } from 'react';
 
-type Point = { x: number; y: number; vx: number; vy: number; size: number };
-
-/** A small WebGL signal field. It intentionally falls back to the CSS atmosphere if WebGL or motion is unavailable. */
+/** Shader-rendered silk ribbons: a single full-screen triangle pair, no dependencies. */
 export default function SignalField() {
   const ref = useRef<HTMLCanvasElement>(null);
-
   useEffect(() => {
     const canvas = ref.current;
-    if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!canvas) return;
     const gl = canvas.getContext('webgl', { alpha: true, antialias: false, powerPreference: 'low-power' });
     if (!gl) return;
-    const vertex = `attribute vec2 a_position; attribute float a_size; uniform vec2 u_resolution; void main(){ vec2 clip=(a_position/u_resolution)*2.0-1.0; gl_Position=vec4(clip.x,-clip.y,0,1); gl_PointSize=a_size; }`;
-    const fragment = `precision mediump float; void main(){ vec2 p=gl_PointCoord-vec2(.5); float d=dot(p,p); if(d>.25) discard; gl_FragColor=vec4(.76,1.,.23,(.25-d)*3.4); }`;
-    const makeShader = (type: number, source: string) => { const shader = gl.createShader(type)!; gl.shaderSource(shader, source); gl.compileShader(shader); return shader; };
-    const program = gl.createProgram()!;
-    gl.attachShader(program, makeShader(gl.VERTEX_SHADER, vertex)); gl.attachShader(program, makeShader(gl.FRAGMENT_SHADER, fragment)); gl.linkProgram(program);
-    const position = gl.getAttribLocation(program, 'a_position'); const size = gl.getAttribLocation(program, 'a_size'); const resolution = gl.getUniformLocation(program, 'u_resolution');
+    const shaders: WebGLShader[] = [];
+    const shader = (type: number, source: string) => {
+      const result = gl.createShader(type);
+      if (!result) return null;
+      gl.shaderSource(result, source); gl.compileShader(result);
+      if (!gl.getShaderParameter(result, gl.COMPILE_STATUS)) { gl.deleteShader(result); return null; }
+      shaders.push(result); return result;
+    };
+    const vertex = shader(gl.VERTEX_SHADER, 'attribute vec2 a_position; void main(){gl_Position=vec4(a_position,0.,1.);}');
+    const fragment = shader(gl.FRAGMENT_SHADER, `
+      precision mediump float;
+      uniform vec2 u_resolution;
+      uniform vec2 u_pointer;
+      uniform float u_time;
+      void main() {
+        vec2 uv = gl_FragCoord.xy/u_resolution;
+        vec2 p = (uv-.5)*vec2(u_resolution.x/u_resolution.y,1.);
+        p += (u_pointer-.5)*.065;
+        float t = u_time*.14;
+        vec3 color = vec3(0.);
+        float intensity = 0.;
+        for(int i=0;i<18;i++) {
+          float f=float(i)/18.;
+          float wave=sin(p.x*2.4+t+f*3.1)*.20+sin(p.x*4.1-t*.75+f*2.)*.06;
+          float y=wave+(f-.5)*.47;
+          float d=abs(p.y-y);
+          float line=.0015/max(d,.0015);
+          float halo=exp(-d*18.)*.045;
+          float fade=smoothstep(-.85,-.1,p.x)*(1.-smoothstep(.7,1.5,p.x));
+          vec3 ink=mix(vec3(.20,.40,1.),vec3(.26,.79,.86),f);
+          ink=mix(ink,vec3(.64,.49,.92),smoothstep(.7,1.,f)*.6);
+          color+=ink*(line*.33+halo)*fade;
+          intensity+=(line*.33+halo)*fade;
+        }
+        float glow=exp(-length(p-vec2(.45,.0))*2.5)*.14;
+        color+=vec3(.13,.3,.65)*glow;
+        gl_FragColor=vec4(color, min(intensity*.36+glow,.85));
+      }
+    `);
+    const program = gl.createProgram();
+    if (!vertex || !fragment || !program) { shaders.forEach((item) => gl.deleteShader(item)); return; }
+    gl.attachShader(program, vertex); gl.attachShader(program, fragment); gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) { shaders.forEach((item) => gl.deleteShader(item)); gl.deleteProgram(program); return; }
+    gl.useProgram(program);
     const buffer = gl.createBuffer();
-    const points: Point[] = Array.from({ length: 60 }, () => ({ x: Math.random(), y: Math.random(), vx: (Math.random() - .5) * .00022, vy: (Math.random() - .5) * .00022, size: 1.5 + Math.random() * 3.2 }));
-    let frame = 0;
-    const resize = () => { const ratio = Math.min(window.devicePixelRatio, 1.5); canvas.width = canvas.clientWidth * ratio; canvas.height = canvas.clientHeight * ratio; gl.viewport(0, 0, canvas.width, canvas.height); };
-    const draw = () => { const data = new Float32Array(points.flatMap((point) => { point.x += point.vx; point.y += point.vy; if (point.x < 0 || point.x > 1) point.vx *= -1; if (point.y < 0 || point.y > 1) point.vy *= -1; return [point.x * canvas.width, point.y * canvas.height, point.size * Math.min(window.devicePixelRatio, 1.5)]; })); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.useProgram(program); gl.bindBuffer(gl.ARRAY_BUFFER, buffer); gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW); gl.enableVertexAttribArray(position); gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 12, 0); gl.enableVertexAttribArray(size); gl.vertexAttribPointer(size, 1, gl.FLOAT, false, 12, 8); gl.uniform2f(resolution, canvas.width, canvas.height); gl.drawArrays(gl.POINTS, 0, points.length); frame = requestAnimationFrame(draw); };
-    resize(); draw(); window.addEventListener('resize', resize);
-    return () => { cancelAnimationFrame(frame); window.removeEventListener('resize', resize); gl.deleteBuffer(buffer); gl.deleteProgram(program); };
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]), gl.STATIC_DRAW);
+    const position = gl.getAttribLocation(program, 'a_position');
+    gl.enableVertexAttribArray(position); gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+    const resolution = gl.getUniformLocation(program, 'u_resolution');
+    const time = gl.getUniformLocation(program, 'u_time');
+    const pointer = gl.getUniformLocation(program, 'u_pointer');
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const target = { x: .5, y: .5 }, current = { x: .5, y: .5 };
+    let frame = 0, visible = true, elapsed = 0, previous = 0, lastDraw = 0;
+    const resize = () => {
+      const density = Math.min(window.devicePixelRatio || 1, 1.25);
+      canvas.width = Math.round(canvas.clientWidth * density); canvas.height = Math.round(canvas.clientHeight * density);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    };
+    const render = (stamp: number) => {
+      frame = 0;
+      if (!visible || document.hidden) { previous = 0; return; }
+      const interval = canvas.clientWidth < 768 ? 1000 / 24 : 1000 / 40;
+      if (stamp - lastDraw >= interval || motion.matches) {
+        elapsed += previous && !motion.matches ? Math.min(stamp - previous, 60) / 1000 : 0;
+        previous = stamp; lastDraw = stamp;
+        current.x += (target.x-current.x)*.05; current.y += (target.y-current.y)*.05;
+        gl.uniform2f(resolution, canvas.width, canvas.height);
+        gl.uniform2f(pointer, current.x, current.y); gl.uniform1f(time, elapsed);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+      }
+      if (!motion.matches) frame = requestAnimationFrame(render);
+    };
+    const resume = () => { if (!frame) frame = requestAnimationFrame(render); };
+    const move = (event: PointerEvent) => { const bounds = canvas.getBoundingClientRect(); target.x=(event.clientX-bounds.left)/bounds.width; target.y=1-(event.clientY-bounds.top)/bounds.height; };
+    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; if (visible) resume(); });
+    observer.observe(canvas);
+    const resized = () => { resize(); resume(); };
+    resize(); resume();
+    window.addEventListener('resize', resized); window.addEventListener('pointermove', move, { passive:true });
+    document.addEventListener('visibilitychange', resume); motion.addEventListener('change', resume);
+    return () => { cancelAnimationFrame(frame); observer.disconnect(); window.removeEventListener('resize', resized); window.removeEventListener('pointermove', move); document.removeEventListener('visibilitychange', resume); motion.removeEventListener('change', resume); gl.deleteBuffer(buffer); gl.deleteProgram(program); shaders.forEach((item) => gl.deleteShader(item)); };
   }, []);
   return <canvas ref={ref} className="signal-field" aria-hidden="true" />;
 }

@@ -142,7 +142,7 @@ export default function AIChat() {
                 }).catch(() => {});
               }
             }}
-            className="fixed bottom-[6.5rem] right-4 md:bottom-6 md:right-6 p-3.5 md:p-4 rounded-sm z-[9999] transition-colors transition-shadow duration-300 bg-[#c2ff3a] text-[#10170a] shadow-[0_0_20px_rgba(194,255,58,0.24)] hover:shadow-[0_0_30px_rgba(194,255,58,0.42)] group cursor-grab active:cursor-grabbing"
+            className="fixed bottom-[6.5rem] right-4 md:bottom-6 md:right-6 p-3.5 md:p-4 rounded-sm z-[9999] transition-colors transition-shadow duration-300 bg-[#8ebaff] text-[#10170a] shadow-[0_0_20px_rgba(104, 153, 255,0.24)] hover:shadow-[0_0_30px_rgba(104, 153, 255,0.42)] group cursor-grab active:cursor-grabbing"
           >
             <div className="relative">
               <MessageSquare className="w-6 h-6 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300 pointer-events-none" />
@@ -170,8 +170,8 @@ export default function AIChat() {
           >
             <div className="px-5 py-4 border-b border-[#0d1020]/10 dark:border-white/10 bg-[#f2f5ff]/80 dark:bg-[#101828]/80 backdrop-blur-md flex justify-between items-center relative z-10">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-sm bg-[#c2ff3a]/15 flex items-center justify-center border border-[#c2ff3a]/30">
-                  <Sparkles className="w-4 h-4 text-[#719d12] dark:text-[#c2ff3a]" />
+                <div className="w-8 h-8 rounded-sm bg-[#8ebaff]/15 flex items-center justify-center border border-[#8ebaff]/30">
+                  <Sparkles className="w-4 h-4 text-[#315fc4] dark:text-[#8ebaff]" />
                 </div>
                 <div>
                   <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-none">Portfolio AI</h3>
@@ -191,8 +191,8 @@ export default function AIChat() {
             <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-[#f2f5ff]/70 dark:bg-[#070b16] scroll-smooth">
               {messages.length === 0 && (
                 <div className="flex flex-col items-center justify-center h-full text-center px-4 opacity-70">
-                  <div className="w-12 h-12 rounded-sm bg-[#c2ff3a]/15 flex items-center justify-center mb-4">
-                    <MessageSquare className="w-6 h-6 text-[#719d12] dark:text-[#c2ff3a]" />
+                  <div className="w-12 h-12 rounded-sm bg-[#8ebaff]/15 flex items-center justify-center mb-4">
+                    <MessageSquare className="w-6 h-6 text-[#315fc4] dark:text-[#8ebaff]" />
                   </div>
                   <p className="text-sm font-medium text-gray-900 dark:text-white mb-2">Welcome to my portfolio!</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -210,11 +210,11 @@ export default function AIChat() {
                     key={m.id} 
                     className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
                   >
-                    <div className={`w-8 h-8 rounded-sm flex-shrink-0 flex items-center justify-center ${isUser ? 'bg-[#c2ff3a] text-[#10170a]' : 'bg-gray-200 dark:bg-[#101828] border border-gray-300 dark:border-white/10 text-gray-600 dark:text-gray-400'}`}>
+                    <div className={`w-8 h-8 rounded-sm flex-shrink-0 flex items-center justify-center ${isUser ? 'bg-[#8ebaff] text-[#10170a]' : 'bg-gray-200 dark:bg-[#101828] border border-gray-300 dark:border-white/10 text-gray-600 dark:text-gray-400'}`}>
                       {isUser ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
                     </div>
                     
-                    <div className={`max-w-[75%] p-3.5 text-sm leading-relaxed break-words ${isUser ? 'bg-[#c2ff3a] text-[#10170a] rounded-sm shadow-md' : 'bg-white dark:bg-[#101828] border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 rounded-sm shadow-sm'}`}>
+                    <div className={`max-w-[75%] p-3.5 text-sm leading-relaxed break-words ${isUser ? 'bg-[#8ebaff] text-[#10170a] rounded-sm shadow-md' : 'bg-white dark:bg-[#101828] border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 rounded-sm shadow-sm'}`}>
                       {m.parts && m.parts.length > 0 
                         ? m.parts.map((part: any, i: number) => part.type === 'text' ? <span key={i}>{part.text}</span> : null)
                         : m.content
@@ -250,7 +250,7 @@ export default function AIChat() {
             </div>
 
             <form onSubmit={onSubmit} className="p-4 bg-white dark:bg-[#0c1122] border-t border-gray-200 dark:border-white/10">
-              <div className="relative flex items-center bg-gray-100 dark:bg-[#101828] border border-gray-200 dark:border-white/10 rounded-sm overflow-hidden focus-within:ring-2 focus-within:ring-[#c2ff3a]/50 focus-within:border-[#c2ff3a] transition-all">
+              <div className="relative flex items-center bg-gray-100 dark:bg-[#101828] border border-gray-200 dark:border-white/10 rounded-sm overflow-hidden focus-within:ring-2 focus-within:ring-[#8ebaff]/50 focus-within:border-[#8ebaff] transition-all">
                 <input
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
@@ -261,7 +261,7 @@ export default function AIChat() {
                 <button 
                   type="submit" 
                   disabled={isLoading || !inputValue.trim()}
-                  className="mr-2 p-2 rounded-sm bg-[#c2ff3a] text-[#10170a] disabled:bg-gray-300 dark:disabled:bg-white/10 disabled:text-gray-500 transition-all hover:bg-[#d5ff76] active:scale-95 flex items-center justify-center"
+                  className="mr-2 p-2 rounded-sm bg-[#8ebaff] text-[#10170a] disabled:bg-gray-300 dark:disabled:bg-white/10 disabled:text-gray-500 transition-all hover:bg-[#b9d5ff] active:scale-95 flex items-center justify-center"
                 >
                   <Send className="w-4 h-4" />
                 </button>

@@ -1,148 +1,90 @@
 'use client';
-import { useState, useEffect } from 'react';
+
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { ArrowUpRight, Menu, Moon, Sun, X } from 'lucide-react';
+
+const links = [
+  { href: '/#selected-work', label: 'Selected work', id: 'selected-work' },
+  { href: '/#operating-model', label: 'Expertise', id: 'operating-model' },
+  { href: '/#trajectory', label: 'Experience', id: 'trajectory' },
+  { href: '/blog', label: 'Insights', id: 'blog' },
+  { href: '/games', label: 'Lab', id: 'games' },
+];
 
 export default function Navbar() {
-  const [isDark, setIsDark] = useState(true);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isApp, setIsApp] = useState(false);
   const pathname = usePathname();
+  const [isDark, setIsDark] = useState(true);
+  const [isApp, setIsApp] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState('');
+  const header = useRef<HTMLElement>(null);
+  const toggle = useRef<HTMLButtonElement>(null);
+  const menu = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Theme logic
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-      setIsDark(false);
-      document.documentElement.classList.remove('dark');
-      document.body.classList.remove('dark');
-    } else {
-      document.documentElement.classList.add('dark');
-      document.body.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setIsDark(true);
-    }
-
-    // NATIVE APP DETECTION ENGINE
-    const isCapacitor = (window as any).Capacitor?.isNativePlatform?.();
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
-    const ua = window.navigator.userAgent.toLowerCase();
-    const isIosWebview = /(iphone|ipod|ipad).*applewebkit(?!.*safari)/.test(ua);
-    const isAndroidWebview = /android.*wv/.test(ua);
-
-    if (isCapacitor || isStandalone || isIosWebview || isAndroidWebview) {
-      setIsApp(true);
-    }
+    const dark = localStorage.getItem('theme') !== 'light';
+    document.documentElement.classList.toggle('dark', dark);
+    document.body.classList.toggle('dark', dark);
+    const nativeWindow = window as Window & { Capacitor?: { isNativePlatform?: () => boolean } };
+    const nativeNavigator = navigator as Navigator & { standalone?: boolean };
+    const ua = navigator.userAgent.toLowerCase();
+    const native = Boolean(nativeWindow.Capacitor?.isNativePlatform?.() || window.matchMedia('(display-mode: standalone)').matches || nativeNavigator.standalone || /(iphone|ipod|ipad).*applewebkit(?!.*safari)|android.*wv/.test(ua));
+    // Synchronize browser-only preferences after hydration.
+    const hydrate = requestAnimationFrame(() => { setIsDark(dark); setIsApp(native); });
+    const scroll = () => header.current?.classList.toggle('is-scrolled', window.scrollY > 24);
+    scroll(); window.addEventListener('scroll', scroll, { passive: true });
+    return () => { cancelAnimationFrame(hydrate); window.removeEventListener('scroll', scroll); };
   }, []);
 
-  const toggleTheme = () => {
-    if (isDark) {
-      document.documentElement.classList.remove('dark');
-      document.body.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      setIsDark(false);
-    } else {
-      document.documentElement.classList.add('dark');
-      document.body.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setIsDark(true);
-    }
+  useEffect(() => {
+    if (pathname !== '/') return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => { if (entry.isIntersecting) setActive(entry.target.id); });
+    }, { rootMargin: '-15% 0px -50% 0px' });
+    links.forEach(({ id }) => { const section = document.getElementById(id); if (section) observer.observe(section); });
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    menu.current?.querySelector<HTMLAnchorElement>('a')?.focus();
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { setOpen(false); toggle.current?.focus(); }
+      if (event.key === 'Tab') {
+        const items = [toggle.current, ...Array.from(menu.current?.querySelectorAll<HTMLAnchorElement>('a') || [])].filter(Boolean) as HTMLElement[];
+        const first = items[0], last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+    };
+    document.addEventListener('keydown', keyboard);
+    return () => { document.body.style.overflow = previous; document.removeEventListener('keydown', keyboard); };
+  }, [open]);
+
+  const theme = () => {
+    const dark = !isDark;
+    setIsDark(dark); document.documentElement.classList.toggle('dark', dark); document.body.classList.toggle('dark', dark);
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
   };
-
-  // CRITICAL FIX: Hide the global web Navbar completely if running inside the Native App.
-  if (isApp || pathname?.startsWith('/studio') || pathname?.startsWith('/admin')) return null;
-
-  return (
-    <>
-      <div className="glow-flare w-[500px] h-[500px] bg-[#c2ff3a] top-[-220px] left-[-100px]" />
-      <div className="glow-flare w-[400px] h-[400px] bg-[#819dff] top-[30%] right-[5%]" />
-
-      <nav className="font-sans fixed top-0 w-full z-50 transition-all duration-300 bg-[#f2f5ff]/75 dark:bg-[#070b16]/80 backdrop-blur-xl border-b border-[#0d1020]/10 dark:border-white/10 h-[calc(4.5rem+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] no-select">
-        <div className="flex justify-between items-center px-4 md:px-12 max-w-7xl mx-auto h-full w-full">
-          
-          <Link href="/" className="flex items-center gap-2 md:gap-3 text-xl font-bold tracking-tighter text-zinc-900 dark:text-white pointer-events-auto group">
-            <svg className="w-6 h-6 md:w-7 md:h-7 flex-shrink-0 transition-transform group-hover:scale-105" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-              <defs>
-                <linearGradient id="pillarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor={isDark ? "#FFFFFF" : "#0f172a"} />
-                  <stop offset="100%" stopColor={isDark ? "#94A3B8" : "#64748b"} />
-                </linearGradient>
-                <linearGradient id="vectorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#adc6ff" />
-                  <stop offset="100%" stopColor="#4d8eff" />
-                </linearGradient>
-              </defs>
-              <path d="M9 5v22" stroke="url(#pillarGrad)" strokeWidth="3.5" strokeLinecap="round" />
-              <path d="M24 5L14 15" stroke="url(#pillarGrad)" strokeWidth="3.5" strokeLinecap="round" />
-              <path d="M15 15l10 12" stroke="url(#vectorGrad)" strokeWidth="3.5" strokeLinecap="round" />
-            </svg>
-            <span className="font-extrabold tracking-tight text-lg md:text-xl">KHNCO<span className="text-[#719d12] dark:text-[#c2ff3a]">.</span></span>
-          </Link>
-          
-          <div className="hidden md:flex items-center gap-8 pointer-events-auto">
-            <div className="relative group py-6">
-              <button className="flex items-center gap-1 text-zinc-900 dark:text-white font-semibold text-sm group-hover:text-[#719d12] dark:group-hover:text-[#c2ff3a] transition-colors duration-300">
-                <span className="material-symbols-outlined text-base">account_circle</span>
-                Profile
-                <span className="material-symbols-outlined text-base transition-transform duration-300 group-hover:rotate-180">expand_more</span>
-              </button>
-              <div className="absolute top-[85%] left-[-10px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col bg-white dark:bg-[#131315] border border-zinc-200 dark:border-white/10 rounded-sm shadow-xl min-w-[200px] overflow-hidden py-2">
-                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#expertise"><span className="material-symbols-outlined text-lg">layers</span> Capabilities</Link>
-                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#experience"><span className="material-symbols-outlined text-lg">timeline</span> Trajectory</Link>
-                <Link className="flex items-center gap-3 px-4 py-3 text-zinc-900 dark:text-white font-medium text-sm hover:text-[#4d8eff] dark:hover:text-[#adc6ff] hover:bg-zinc-50 dark:hover:bg-white/5 transition-all duration-300" href="/#contact"><span className="material-symbols-outlined text-lg">alternate_email</span> Contact</Link>
-              </div>
-            </div>
-            <Link href="/blog" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#719d12] dark:hover:text-[#c2ff3a] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">article</span> Blog</Link>
-            <Link href="/games" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#719d12] dark:hover:text-[#c2ff3a] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">sports_esports</span> Lab</Link>
-            
-            <button onClick={toggleTheme} className="flex items-center justify-center p-2.5 rounded-sm bg-white/50 dark:bg-white/5 border border-[#0d1020]/10 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-white dark:hover:bg-white/10 transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95"><span className="material-symbols-outlined text-lg block text-inherit">{isDark ? 'light_mode' : 'dark_mode'}</span></button>
-
-            <Link href="/#contact" className="bg-[#c2ff3a] text-[#10170a] px-5 py-2.5 rounded-sm text-xs font-mono font-bold tracking-wider uppercase transition-all duration-300 hover:-translate-y-0.5 shadow-sm flex items-center gap-1.5"><span className="material-symbols-outlined text-sm font-bold text-[#10170a]">mail</span> Get in Touch</Link>
-          </div>
-
-          <div className="flex items-center gap-3 md:hidden pointer-events-auto">
-            <button onClick={toggleTheme} className="p-2 text-zinc-900 dark:text-white material-symbols-outlined text-xl cursor-pointer hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
-              {isDark ? 'light_mode' : 'dark_mode'}
-            </button>
-            <button onClick={() => setIsMenuOpen(true)} className="text-zinc-900 dark:text-white material-symbols-outlined text-2xl p-2 cursor-pointer hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
-              menu
-            </button>
-          </div>
-
-        </div>
-      </nav>
-
-      {isMenuOpen && (
-        <div className="font-sans fixed inset-0 z-50 bg-[#f2f5ff]/95 dark:bg-[#070b16]/95 backdrop-blur-2xl flex flex-col px-8 overflow-y-auto transition-all duration-300 pt-[calc(6rem+env(safe-area-inset-top))]">
-          <div className="flex flex-col gap-4 w-full max-w-sm mx-auto">
-            
-            <div className="border-b border-zinc-200 dark:border-zinc-800 pb-2 mb-2">
-              <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="flex justify-between items-center w-full text-2xl font-medium text-zinc-900 dark:text-white py-2 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300">
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined">account_circle</span> Profile
-                </div>
-                <span className={`material-symbols-outlined transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`}>expand_more</span>
-              </button>
-              
-              {isProfileOpen && (
-                <div className="flex flex-col gap-5 mt-4 ml-8 border-l-2 border-zinc-200 dark:border-zinc-800 pl-4 mb-4">
-                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#expertise"><span className="material-symbols-outlined text-base">layers</span> Capabilities</Link>
-                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#experience"><span className="material-symbols-outlined text-base">timeline</span> Trajectory</Link>
-                  <Link onClick={() => setIsMenuOpen(false)} className="text-lg text-zinc-600 dark:text-zinc-400 hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3" href="/#contact"><span className="material-symbols-outlined text-base">alternate_email</span> Contact</Link>
-                </div>
-              )}
-            </div>
-
-            <Link onClick={() => setIsMenuOpen(false)} href="/blog" className="text-2xl font-medium text-zinc-900 dark:text-white hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3 py-2 border-b border-zinc-200 dark:border-zinc-800"><span className="material-symbols-outlined">article</span> Blog</Link>
-            <Link onClick={() => setIsMenuOpen(false)} href="/games" className="text-2xl font-medium text-zinc-900 dark:text-white hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3 py-2 border-b border-zinc-200 dark:border-zinc-800"><span className="material-symbols-outlined">sports_esports</span> Product Lab</Link>
-
-            <button onClick={() => setIsMenuOpen(false)} className="bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] px-8 py-4 rounded-full font-bold text-sm w-full mt-10 tracking-wide uppercase shadow-lg cursor-pointer hover:scale-105 transition-all duration-300">
-              Close Menu
-            </button>
-          </div>
-        </div>
-      )}
-    </>
-  );
+  if (isApp || pathname.startsWith('/studio') || pathname.startsWith('/admin')) return null;
+  return <header ref={header} className={`executive-nav ${open ? 'menu-open' : ''}`}>
+    <a className="skip-navigation" href="#main-content">Skip to content</a>
+    <div className="executive-nav__inner">
+      <Link href="/" className="executive-nav__brand" aria-label="Jimmy Kaung — home" onClick={() => setOpen(false)}>
+        <svg viewBox="0 0 32 32" width="30" height="30" fill="none" aria-hidden="true"><path d="M7 5v22M25 5 14 16l11 11" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" /><path d="m14 16 11 11" stroke="#75b5ff" strokeWidth="2.8" strokeLinecap="round" /></svg>
+        <span>KHNCO<span className="brand-period">.</span><small>Digital leadership</small></span>
+      </Link>
+      <nav className="executive-nav__desktop" aria-label="Main navigation">{links.map((link) => <Link key={link.id} href={link.href} aria-current={(pathname === '/' ? active === link.id : pathname.startsWith(link.href)) ? 'location' : undefined}>{link.label}</Link>)}</nav>
+      <div className="executive-nav__actions">
+        <button className="executive-nav__theme" onClick={theme} aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}>{isDark ? <Sun size={17} /> : <Moon size={17} />}</button>
+        <Link className="executive-nav__contact" href="/#contact">Let’s talk <ArrowUpRight size={16} /></Link>
+        <button ref={toggle} className="executive-nav__toggle" onClick={() => setOpen(!open)} aria-label={open ? 'Close navigation' : 'Open navigation'} aria-expanded={open} aria-controls="mobile-navigation">{open ? <X size={23} /> : <Menu size={23} />}</button>
+      </div>
+    </div>
+    {open && <div ref={menu} id="mobile-navigation" className="executive-nav__mobile"><p>Explore the portfolio</p><nav aria-label="Mobile navigation">{links.map((link, i) => <Link key={link.id} href={link.href} onClick={() => setOpen(false)}><span>0{i + 1}</span>{link.label}<ArrowUpRight size={22} /></Link>)}<Link href="/#contact" onClick={() => setOpen(false)}><span>06</span>Get in touch<ArrowUpRight size={22} /></Link></nav><small>Kaung Htet Nyein Chan Oo<br />Operations · Product · Projects</small></div>}
+  </header>;
 }
