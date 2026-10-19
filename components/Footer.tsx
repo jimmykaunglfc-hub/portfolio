@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Mail } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -24,15 +25,16 @@ export default function Footer() {
           </div>
 
           {/* Connected Action Channels */}
-          <div className="flex items-center gap-3">
+          <nav className="footer-channels" aria-label="Contact channels">
             
             {/* Email Icon */}
             <a 
               href="mailto:jimmykg.spacex@gmail.com"
-              className="w-10 h-10 rounded-sm border border-[#0d1020]/10 dark:border-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-[#8ebaff] hover:text-[#10170a] hover:border-transparent transition-all duration-300 hover:scale-105"
+              className="footer-channel"
+              aria-label="Email Jimmy"
               title="Secure Email Access"
             >
-              <span className="material-symbols-outlined text-lg">mail</span>
+              <Mail size={18} aria-hidden="true" />
             </a>
 
             {/* LinkedIn Icon */}
@@ -40,7 +42,8 @@ export default function Footer() {
               href="https://www.linkedin.com/in/kaung-htet-nyein-chan-oo-593952167/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border border-zinc-300 dark:border-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-[#0077b5] hover:text-white dark:hover:bg-[#0077b5] hover:border-transparent transition-all duration-300 hover:scale-105"
+              className="footer-channel"
+              aria-label="LinkedIn profile (opens in a new tab)"
               title="LinkedIn Professional Network"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -53,7 +56,8 @@ export default function Footer() {
               href="https://t.me/jimmyooig1" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border border-zinc-300 dark:border-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-[#0088cc] hover:text-white dark:hover:bg-[#0088cc] hover:border-transparent transition-all duration-300 hover:scale-105"
+              className="footer-channel"
+              aria-label="Telegram profile (opens in a new tab)"
               title="Telegram Secure Channel"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -66,7 +70,8 @@ export default function Footer() {
               href="https://www.facebook.com/handsomekaunghtet" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full border border-zinc-300 dark:border-white/10 flex items-center justify-center text-zinc-700 dark:text-zinc-300 hover:bg-[#1877f2] hover:text-white dark:hover:bg-[#1877f2] hover:border-transparent transition-all duration-300 hover:scale-105"
+              className="footer-channel"
+              aria-label="Facebook profile (opens in a new tab)"
               title="Facebook Personal Channel"
             >
               <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -74,7 +79,7 @@ export default function Footer() {
               </svg>
             </a>
 
-          </div>
+          </nav>
         </div>
 
         {/* Dynamic Separator Line Layout */}

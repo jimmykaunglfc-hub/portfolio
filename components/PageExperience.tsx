@@ -75,6 +75,7 @@ export default function PageExperience({ children }: { children: React.ReactNode
         '.games-catalog > div:first-child', '.games-catalog > .grid > .group',
         '.legal-page > .glass-card > section', '.profile-page > section > div',
         '.projects-page > div > div', '.contact-page > div',
+        '.career-capability', '.career-company__summary', '.career-role',
       ];
       // Never transform both a parent and its descendants, or article reading bodies.
       container.querySelectorAll<HTMLElement>(selectors.join(',')).forEach((element) => {

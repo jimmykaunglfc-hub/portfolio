@@ -2,7 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Hero from '../../components/Hero';
+import { MotionConfig, motion } from 'framer-motion';
+import { ArrowDownRight, ArrowUpLeft, ArrowUpRight, Landmark, Layers3, Mail, MapPin, Workflow } from 'lucide-react';
+import SignalField from '../../components/SignalField';
+import Footer from '../../components/Footer';
 
 export default function Home() {
   // Pagination State for Experience Track
@@ -166,146 +169,95 @@ export default function Home() {
   };
 
   return (
-    <main className="profile-page relative min-h-screen bg-[#09090b] pb-24 select-text">
-      <Hero />
-
-      {/* Capabilities Section */}
-      <section id="expertise" className="py-24 px-6 max-w-7xl mx-auto relative z-20 pointer-events-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6 border-b border-white/5 pb-8">
-          <div className="max-w-xl">
-            <h2 className="text-sm font-mono uppercase tracking-widest text-[#adc6ff] mb-2">Capabilities</h2>
-            <h3 className="text-3xl font-bold text-white tracking-tight">Core Operational Matrix</h3>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-12 h-1 bg-white/10 rounded-full" />
-            <div className="w-24 h-1 bg-[#adc6ff] rounded-full" />
-          </div>
+    <MotionConfig reducedMotion="user">
+    <main id="main-content" tabIndex={-1} className="executive-portfolio career-profile">
+      <section className="exec-hero career-hero" aria-labelledby="career-title">
+        <SignalField />
+        <div className="exec-shell exec-hero__content">
+          <Link href="/" className="career-back"><ArrowUpLeft size={15} /> Back to the overview</Link>
+          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6 }} className="exec-eyebrow"><span /> Head of Digital Operations</motion.p>
+          <motion.h1 id="career-title" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8, delay: .08 }}>
+            Orchestrating high-impact<br /><em>digital platforms</em><br />&amp; FinTech channels.
+          </motion.h1>
+          <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .16 }} className="exec-hero__lede">
+            Driving end-to-end product lifecycles, optimizing operational infrastructure, and leading cross-functional teams to deliver secure, market-leading enterprise systems.
+          </motion.p>
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .24 }} className="exec-actions career-actions">
+            <a href="#expertise" className="exec-button exec-button--primary">Explore capabilities <ArrowDownRight size={18} /></a>
+            <a href="#experience" className="exec-button exec-button--quiet">View career record <ArrowDownRight size={18} /></a>
+          </motion.div>
         </div>
+        <div className="exec-hero__footer exec-shell"><span>Digital operations</span><span>Product leadership</span><span>FinTech ecosystems</span></div>
+      </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {coreCompetencies.map((item, index) => (
-            <div key={index} className="glass-card p-8 rounded-2xl flex flex-col justify-between gap-8 group">
-              <div className="space-y-6">
-                <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform duration-300">
-                  <span className={`material-symbols-outlined text-2xl ${item.color}`}>{item.icon}</span>
-                </div>
-                <div className="space-y-3">
-                  <h4 className="text-xl font-semibold text-white tracking-tight group-hover:text-[#adc6ff] transition-colors duration-300">{item.title}</h4>
-                  <p className="text-slate-400 font-light text-sm leading-relaxed">{item.desc}</p>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2 pt-2">
-                {item.badges.map((badge, bIdx) => (
-                  <span key={bIdx} className="bg-white/[0.03] px-3 py-1 rounded-full text-xs text-slate-400 border border-white/5 group-hover:border-[#adc6ff]/20 transition-colors duration-300">
-                    {badge}
-                  </span>
+      <section id="expertise" className="exec-section exec-shell" aria-labelledby="capabilities-title">
+        <div className="exec-section__heading">
+          <p className="exec-eyebrow"><span /> Capabilities</p>
+          <h2 id="capabilities-title">One perspective.<br />Connected disciplines.</h2>
+          <p>Product direction, operational delivery, and financial-channel experience, working as one.</p>
+        </div>
+        <div className="career-capabilities">
+          {coreCompetencies.map((item, index) => {
+            const Icon = [Workflow, Landmark, Layers3][index];
+            return <article key={item.title} className="career-capability">
+              <div className="career-capability__top"><span>0{index + 1}</span><Icon size={23} strokeWidth={1.4} /></div>
+              <h3>{item.title}</h3>
+              <p>{item.desc}</p>
+              <div className="exec-tags">{item.badges.map((badge) => <span key={badge}>{badge}</span>)}</div>
+            </article>;
+          })}
+        </div>
+      </section>
+
+      <section id="experience" className="exec-section exec-shell career-experience" aria-labelledby="experience-title">
+        <div className="exec-section__heading">
+          <p className="exec-eyebrow"><span /> Full career record</p>
+          <h2 id="experience-title">Built through<br />real delivery.</h2>
+          <p>Explore the leadership roles and earlier work behind the approach.</p>
+        </div>
+        <div className="career-filters" role="group" aria-label="Career chapters">
+          <button type="button" aria-pressed={activePage === 1} aria-controls="career-records" onClick={() => setActivePage(1)}><span>01</span> Executive operations</button>
+          <button type="button" aria-pressed={activePage === 2} aria-controls="career-records" onClick={() => setActivePage(2)}><span>02</span> Advisory &amp; early career</button>
+        </div>
+        <div id="career-records" key={activePage} className="career-records">
+          {paginatedExperience[activePage as 1 | 2].map((block) => (
+            <section key={block.company} className="career-company" aria-label={block.company}>
+              <header className="career-company__summary">
+                <p className="exec-eyebrow"><span /> Organization</p>
+                <h3>{block.company}</h3>
+                <p>{block.timeline}</p>
+                <span className="career-company__type">{block.type}</span>
+              </header>
+              <div className="career-roles">
+                {block.roles.map((role) => (
+                  <article key={role.title + role.period} className="career-role">
+                    <span className="career-role__marker" aria-hidden="true" />
+                    <div className="career-role__heading"><h4>{role.title}</h4><span><MapPin size={13} aria-hidden="true" />{role.location}</span></div>
+                    <p className="career-role__period">{role.period}</p>
+                    <p className="career-role__description">{role.desc}</p>
+                    <ul>{role.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>
+                    {'skills' in role && <div className="exec-tags">{role.skills?.map((skill) => <span key={skill}>{skill}</span>)}</div>}
+                  </article>
                 ))}
               </div>
-            </div>
+            </section>
           ))}
         </div>
       </section>
 
-      {/* STATEFUL PAGINATED EXPERIENCE TIMELINE */}
-      <section id="experience" className="py-16 px-6 max-w-7xl mx-auto relative z-20 pointer-events-auto">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12 border-b border-white/5 pb-8">
-          <div>
-            <h2 className="text-sm font-mono uppercase tracking-widest text-[#adc6ff] mb-2">Track Record</h2>
-            <h3 className="text-3xl font-bold text-white tracking-tight">Professional Trajectory</h3>
-          </div>
-
-          {/* Luxury Metric Pagination Navigation Elements */}
-          <div className="flex items-center gap-3 self-start sm:self-center">
-            <button 
-              onClick={() => setActivePage(1)} 
-              className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${activePage === 1 ? 'bg-[#adc6ff] text-[#002e6a] shadow-lg' : 'bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10'}`}
-            >
-              Page 1: Executive Operations
-            </button>
-            <button 
-              onClick={() => setActivePage(2)} 
-              className={`px-5 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${activePage === 2 ? 'bg-[#adc6ff] text-[#002e6a] shadow-lg' : 'bg-white/5 text-slate-400 border border-white/10 hover:bg-white/10'}`}
-            >
-              Page 2: Strategic Advisory
-            </button>
-          </div>
-        </div>
-
-        {/* Dynamic Slate Render View */}
-        <div className="space-y-12 transition-all duration-500 animate-fade-in">
-          {paginatedExperience[activePage as 1 | 2].map((block, idx) => (
-            <div key={idx} className="glass-card p-6 md:p-10 rounded-2xl grid grid-cols-1 md:grid-cols-4 gap-8 bg-gradient-to-br from-white/[0.01] to-transparent">
-              {/* Firm Information Blocks */}
-              <div className="md:col-span-1 space-y-2">
-                <h4 className="text-2xl font-bold text-white tracking-tight">{block.company}</h4>
-                <div className="space-y-1">
-                  <p className="text-xs font-mono text-[#adc6ff]">{block.timeline}</p>
-                  <span className="inline-block bg-white/5 border border-white/10 px-2 py-0.5 rounded text-[10px] font-mono uppercase text-slate-400">{block.type}</span>
-                </div>
-              </div>
-
-              {/* Roles Ledger Frame */}
-              <div className="md:col-span-3 space-y-12 border-l border-white/5 pl-6 md:pl-10">
-                {block.roles.map((role, rIdx) => (
-                  <div key={rIdx} className="space-y-4 relative group/role">
-                    {/* Glowing Architectural Timeline Anchor Dot */}
-                    <div className="absolute -left-[31px] md:-left-[47px] top-2 w-2.5 h-2.5 rounded-full bg-zinc-800 border-2 border-[#adc6ff] group-hover/role:bg-[#adc6ff] transition-colors duration-300 shadow-[0_0_8px_rgba(173,198,255,0.5)]" />
-                    
-                    <div className="space-y-1">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                        <h5 className="text-xl font-semibold text-zinc-100 group-hover/role:text-[#adc6ff] transition-colors duration-300">{role.title}</h5>
-                        <span className="text-xs text-slate-500 font-mono tracking-wide">{role.location}</span>
-                      </div>
-                      <p className="text-xs font-mono text-slate-500">{role.period}</p>
-                    </div>
-
-                    <p className="text-sm font-light text-slate-300 leading-relaxed">{role.desc}</p>
-                    
-                    {/* High-Density Responsibility Bullet Arrays */}
-                    <ul className="space-y-2.5 pt-2">
-                      {role.bullets.map((bullet, bIdx) => (
-                        <li key={bIdx} className="text-sm text-slate-400 font-light flex items-start gap-2.5 leading-relaxed">
-                          <span className="text-[#adc6ff] text-xs mt-1.5">•</span>
-                          <span>{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* Skill Tag Aggregates if defined */}
-                    {'skills' in role && (
-                      <div className="flex flex-wrap gap-2 pt-3">
-                        {role.skills?.map((skill, sIdx) => (
-                          <span key={sIdx} className="bg-blue-500/5 text-[#adc6ff] border border-[#adc6ff]/10 px-2.5 py-1 rounded text-xs font-mono">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* High-Impact Partnership Conversion Section */}
-      <section id="contact" className="px-6 max-w-7xl mx-auto mb-16 relative z-20 pointer-events-auto">
-        <div className="glass-card rounded-3xl p-12 md:p-20 text-center overflow-hidden bg-gradient-to-br from-white/[0.02] to-transparent group">
-          <h4 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">Let's Orchestrate What's Next.</h4>
-          <p className="text-slate-400 font-light text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-            I am open to strategic technology partnerships, digital banking ecosystem consulting, and senior enterprise operations leadership roles.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-30">
-            <a href="mailto:your-email@example.com" className="bg-[#adc6ff] hover:bg-[#94b3f8] text-[#002e6a] font-semibold px-8 py-4 rounded-full text-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_0_25px_rgba(173,198,255,0.4)] active:scale-95 text-center">
-              Initiate Consultation
-            </a>
-            <Link href="#experience" className="bg-white/5 border border-white/10 hover:bg-white/10 text-white px-8 py-4 rounded-full font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 text-center">
-              Review Trajectory Map
-            </Link>
+      <section id="contact" className="exec-contact">
+        <div className="exec-shell">
+          <p className="exec-eyebrow"><span /> Let’s work together</p>
+          <h2>Let’s orchestrate<br />what’s next.</h2>
+          <p>I am open to strategic technology partnerships, digital banking ecosystem consulting, and senior enterprise operations leadership roles.</p>
+          <div className="exec-actions career-actions">
+            <a href="mailto:jimmykg.spacex@gmail.com" className="exec-button exec-button--primary"><Mail size={17} /> Email Jimmy</a>
+            <a href="#experience" className="exec-button exec-button--quiet">Review career record <ArrowUpRight size={17} /></a>
           </div>
         </div>
       </section>
+      <Footer />
     </main>
+    </MotionConfig>
   );
 }
