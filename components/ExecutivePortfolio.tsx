@@ -94,7 +94,7 @@ export default function ExecutivePortfolio() {
           ['01', 'Digital operations', 'Build the operating rhythm.', 'Align product, engineering, QA, and business around reliable releases and continuous improvement.'],
           ['02', 'Product management', 'Make the right things matter.', 'Translate customer needs and business goals into roadmaps, clear priorities, and usable experiences.'],
           ['03', 'Project management', 'Bring the plan to life.', 'Coordinate stakeholders, dependencies, risks, and execution from discovery through delivery.'],
-        ].map(([number, role, title, description]) => <motion.article key={number} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .2 }}><span>{number} / {role}</span><h3>{title}</h3><p>{description}</p></motion.article>)}</div>
+        ].map(([number, role, title, description]) => <article key={number}><span>{number} / {role}</span><h3>{title}</h3><p>{description}</p></article>)}</div>
       </section>
 
       <section className="exec-proof exec-shell" aria-label="Professional profile">
@@ -111,7 +111,7 @@ export default function ExecutivePortfolio() {
         </div>
         <div className="exec-case-grid">
           {caseStudies.map((study, index) => (
-            <motion.article key={study.number} className="exec-case" initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .2 }} transition={{ duration: .45, delay: index * .07 }}>
+            <article key={study.number} className="exec-case">
               <div className="exec-case__top"><span>{study.number}</span><Target size={19} /></div>
               <div className={`exec-case__visual exec-case__visual--${index}`} aria-hidden="true"><span /><span /><span /><i /><i /><i /></div>
               <p className="exec-case__label">{study.label}</p>
@@ -119,7 +119,7 @@ export default function ExecutivePortfolio() {
               <p className="exec-case__org">{study.organization}</p>
               <p className="exec-case__summary">{study.summary}</p>
               <div className="exec-tags">{study.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
-            </motion.article>
+            </article>
           ))}
         </div>
       </section>
@@ -130,9 +130,8 @@ export default function ExecutivePortfolio() {
           <div className="exec-model__header"><p className="exec-eyebrow"><span /> Operating model</p><h2>From ambiguity<br />to momentum.</h2></div>
           <ol className="exec-model__steps">
             {operatingModel.map(([number, title, description], index) => <li key={number}>
-              <div className="exec-model__number">{number}</div>
-              <div><h3>{title}</h3><p>{description}</p></div>
-              {index < operatingModel.length - 1 && <ChevronRight className="exec-model__arrow" size={18} />}
+              <div className="exec-model__step-head"><span className="exec-model__number">{number}</span><span className="exec-model__step-label">Step {number}</span>{index < operatingModel.length - 1 && <ChevronRight className="exec-model__arrow" size={18} aria-hidden="true" />}</div>
+              <div className="exec-model__step-body"><h3>{title}</h3><p>{description}</p></div>
             </li>)}
           </ol>
         </div>

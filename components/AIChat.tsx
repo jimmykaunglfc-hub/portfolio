@@ -3,10 +3,11 @@
 import { useChat } from "@ai-sdk/react";
 import { type UIMessage, DefaultChatTransport } from "ai";
 import { useState, useRef, useEffect } from "react";
-import { MessageSquare, X, Send, Sparkles, User, AlertCircle } from "lucide-react";
+import { X, Send, User, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
+import ScouseMascot from './ScouseMascot';
 
 // Initialize Supabase for Realtime Listening
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -26,7 +27,6 @@ export default function AIChat() {
   const isOpenRef = useRef(isOpen);
   useEffect(() => {
     isOpenRef.current = isOpen;
-    if (isOpen) setHasUnread(false); // Clear unread badge when opened
   }, [isOpen]);
   
   // 1. GENERATE A STABLE SESSION ID
@@ -76,7 +76,7 @@ export default function AIChat() {
             }
 
             // Append the message to the UI
-            setMessages((prevMessages: any[]) => [
+            setMessages((prevMessages: UIMessage[]) => [
               ...prevMessages,
               {
                 id: newRow.id || Date.now().toString(),
@@ -134,6 +134,7 @@ export default function AIChat() {
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => {
               setIsOpen(true);
+              setHasUnread(false);
               // 🔓 THE HACK: Silently unlock audio when user first opens the chat
               if (audioRef.current) {
                 audioRef.current.play().then(() => {
@@ -142,10 +143,13 @@ export default function AIChat() {
                 }).catch(() => {});
               }
             }}
-            className="fixed bottom-[6.5rem] right-4 md:bottom-6 md:right-6 p-3.5 md:p-4 rounded-sm z-[9999] transition-colors transition-shadow duration-300 bg-[#8ebaff] text-[#10170a] shadow-[0_0_20px_rgba(104, 153, 255,0.24)] hover:shadow-[0_0_30px_rgba(104, 153, 255,0.42)] group cursor-grab active:cursor-grabbing"
+            className="scouse-launcher"
+            aria-label={hasUnread ? 'Open Scouse chat — unread reply' : 'Chat with Scouse, Jimmy’s AI portfolio guide'}
+            title="Chat with Scouse"
           >
+            <ScouseMascot size={56} />
+            <span className="scouse-launcher__label"><b>Scouse</b><small>Portfolio guide</small></span>
             <div className="relative">
-              <MessageSquare className="w-6 h-6 md:w-6 md:h-6 group-hover:scale-110 transition-transform duration-300 pointer-events-none" />
               
               {/* Pulsing Red Unread Badge */}
               {hasUnread && (
@@ -166,22 +170,21 @@ export default function AIChat() {
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: 20, scale: 0.95, filter: "blur(10px)" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed bottom-[6rem] right-4 md:bottom-6 md:right-6 w-[calc(100vw-2rem)] md:w-[360px] h-[70vh] md:h-[550px] max-h-[85vh] bg-white dark:bg-[#0c1122] border border-[#0d1020]/10 dark:border-white/10 rounded-sm shadow-2xl z-[9999] flex flex-col overflow-hidden font-sans"
+            className="scouse-panel fixed bottom-4 right-4 md:bottom-6 md:right-6 w-[calc(100vw-2rem)] md:w-[380px] h-[70vh] md:h-[570px] max-h-[85vh] bg-white dark:bg-[#0c1122] border border-[#0d1020]/10 dark:border-white/10 shadow-2xl z-[9999] flex flex-col overflow-hidden font-sans"
+            role="dialog"
+            aria-label="Chat with Scouse"
           >
-            <div className="px-5 py-4 border-b border-[#0d1020]/10 dark:border-white/10 bg-[#f2f5ff]/80 dark:bg-[#101828]/80 backdrop-blur-md flex justify-between items-center relative z-10">
+            <div className="scouse-header">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-sm bg-[#8ebaff]/15 flex items-center justify-center border border-[#8ebaff]/30">
-                  <Sparkles className="w-4 h-4 text-[#315fc4] dark:text-[#8ebaff]" />
-                </div>
+                <ScouseMascot size={44} />
                 <div>
-                  <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-none">Portfolio AI</h3>
-                  <p className="text-[11px] text-green-500 font-medium mt-1 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Online
-                  </p>
+                  <h3>Scouse</h3>
+                  <p>Jimmy’s AI portfolio guide</p>
                 </div>
               </div>
               <button 
                 onClick={() => setIsOpen(false)} 
+                aria-label="Close Scouse chat"
                 className="text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-white/10 p-1.5 rounded-lg transition-colors"
               >
                 <X className="w-5 h-5" />
@@ -190,18 +193,16 @@ export default function AIChat() {
 
             <div className="flex-1 overflow-y-auto p-5 space-y-5 bg-[#f2f5ff]/70 dark:bg-[#070b16] scroll-smooth">
               {messages.length === 0 && (
-                <div className="flex flex-col items-center justify-center h-full text-center px-4 opacity-70">
-                  <div className="w-12 h-12 rounded-sm bg-[#8ebaff]/15 flex items-center justify-center mb-4">
-                    <MessageSquare className="w-6 h-6 text-[#315fc4] dark:text-[#8ebaff]" />
-                  </div>
-                  <p className="text-sm font-medium text-gray-900 dark:text-white mb-2">Welcome to my portfolio!</p>
+                <div className="scouse-introduction flex flex-col items-center justify-center h-full text-center px-4">
+                  <ScouseMascot size={100} />
+                  <p className="text-lg font-medium text-gray-900 dark:text-white mb-2">Hi, I’m Scouse.</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                    I'm a custom AI assistant. Ask me about my creator's background, get a summary of a blog post, or ask for hints on the arcade games!
+                    I’m Jimmy’s AI portfolio guide. Ask me about his experience, explore his articles, or get a hint for a Lab game.
                   </p>
                 </div>
               )}
               
-              {messages.map((m: any) => {
+              {messages.map((m) => {
                 const isUser = m.role === 'user';
                 return (
                   <motion.div 
@@ -211,13 +212,13 @@ export default function AIChat() {
                     className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
                   >
                     <div className={`w-8 h-8 rounded-sm flex-shrink-0 flex items-center justify-center ${isUser ? 'bg-[#8ebaff] text-[#10170a]' : 'bg-gray-200 dark:bg-[#101828] border border-gray-300 dark:border-white/10 text-gray-600 dark:text-gray-400'}`}>
-                      {isUser ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
+                      {isUser ? <User className="w-4 h-4" /> : <ScouseMascot size={32} />}
                     </div>
                     
-                    <div className={`max-w-[75%] p-3.5 text-sm leading-relaxed break-words ${isUser ? 'bg-[#8ebaff] text-[#10170a] rounded-sm shadow-md' : 'bg-white dark:bg-[#101828] border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 rounded-sm shadow-sm'}`}>
+                    <div className={`scouse-message max-w-[75%] p-3.5 text-sm leading-relaxed break-words ${isUser ? 'bg-[#8ebaff] text-[#10170a] rounded-xl shadow-md' : 'bg-white dark:bg-[#101828] border border-gray-200 dark:border-white/10 text-gray-800 dark:text-gray-200 rounded-xl shadow-sm'}`}>
                       {m.parts && m.parts.length > 0 
-                        ? m.parts.map((part: any, i: number) => part.type === 'text' ? <span key={i}>{part.text}</span> : null)
-                        : m.content
+                        ? m.parts.map((part, i: number) => part.type === 'text' ? <span key={i}>{part.text}</span> : null)
+                        : null
                       }
                     </div>
                   </motion.div>
@@ -227,7 +228,7 @@ export default function AIChat() {
               {isLoading && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-3">
                   <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center bg-gray-200 dark:bg-[#121214] border border-gray-300 dark:border-white/10">
-                     <Sparkles className="w-4 h-4 text-blue-500" />
+                     <ScouseMascot size={32} />
                   </div>
                   <div className="bg-white dark:bg-[#121214] border border-gray-200 dark:border-white/10 p-4 rounded-2xl rounded-tl-sm flex gap-1.5 items-center shadow-sm">
                     <span className="w-1.5 h-1.5 bg-gray-400 dark:bg-gray-500 rounded-full animate-bounce"></span>
@@ -241,7 +242,7 @@ export default function AIChat() {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-center mt-4">
                   <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-xs px-4 py-3 rounded-xl flex items-center gap-2 max-w-[90%] font-mono break-all">
                     <AlertCircle className="w-4 h-4 flex-shrink-0" />
-                    <span>Engine Error: {error.message || "Unknown dynamic network crash"}</span>
+                    <span>Scouse couldn’t connect. Please try again in a moment.</span>
                   </div>
                 </motion.div>
               )}
@@ -254,12 +255,14 @@ export default function AIChat() {
                 <input
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Type a message..."
+                  placeholder="Ask Scouse…"
+                  aria-label="Message Scouse"
                   disabled={isLoading}
                   className="flex-1 bg-transparent border-none px-4 py-3 text-sm focus:outline-none text-gray-900 dark:text-white placeholder-gray-500 disabled:opacity-50"
                 />
                 <button 
                   type="submit" 
+                  aria-label="Send message to Scouse"
                   disabled={isLoading || !inputValue.trim()}
                   className="mr-2 p-2 rounded-sm bg-[#8ebaff] text-[#10170a] disabled:bg-gray-300 dark:disabled:bg-white/10 disabled:text-gray-500 transition-all hover:bg-[#b9d5ff] active:scale-95 flex items-center justify-center"
                 >

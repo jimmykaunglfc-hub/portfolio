@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 
 /** A damped wave simulation. Pointer strokes disturb the surface; clicks launch larger waves. */
 export default function CustomCursor() {
+  const pathname = usePathname();
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = ref.current;
@@ -105,5 +107,5 @@ export default function CustomCursor() {
       document.removeEventListener('visibilitychange', clear); motion.removeEventListener('change', clear);
     };
   }, []);
-  return <canvas ref={ref} className="water-surface" aria-hidden="true" />;
+  return <canvas ref={ref} className={`water-surface ${pathname.startsWith('/blog') ? 'water-surface--reading' : ''}`} aria-hidden="true" />;
 }
