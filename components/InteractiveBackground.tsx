@@ -44,6 +44,8 @@ export default function InteractiveBackground() {
           particle.vy += (dy / distance) * 0.015;
         }
         particle.vx *= 0.985; particle.vy *= 0.985;
+        // Keep the background gently moving after the pointer comes to rest.
+        if (Math.hypot(particle.vx, particle.vy) < .07) { particle.vx = particle.accent ? .055 : -.045; particle.vy = .035; }
         particle.x += particle.vx; particle.y += particle.vy;
         if (particle.x < -8) particle.x = window.innerWidth + 8;
         if (particle.x > window.innerWidth + 8) particle.x = -8;
@@ -54,13 +56,13 @@ export default function InteractiveBackground() {
         const distance = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
         if (distance < 115) {
           context.beginPath(); context.moveTo(particles[i].x, particles[i].y); context.lineTo(particles[j].x, particles[j].y);
-          context.strokeStyle = dark ? `rgba(223,226,238,${(1 - distance / 115) * 0.06})` : `rgba(13,16,32,${(1 - distance / 115) * 0.045})`;
+          context.strokeStyle = dark ? `rgba(145,181,235,${(1 - distance / 115) * 0.1})` : `rgba(49,95,170,${(1 - distance / 115) * 0.18})`;
           context.lineWidth = 0.7; context.stroke();
         }
       }
       for (const particle of particles) {
         context.beginPath(); context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-        context.fillStyle = particle.accent ? (dark ? 'rgba(104, 153, 255,0.25)' : 'rgba(49, 95, 196,0.16)') : dark ? 'rgba(223,226,238,0.18)' : 'rgba(13,16,32,0.12)';
+        context.fillStyle = particle.accent ? (dark ? 'rgba(142,186,255,0.38)' : 'rgba(49,95,196,0.44)') : dark ? 'rgba(164,192,236,0.22)' : 'rgba(49,95,170,0.25)';
         context.fill();
       }
       frame = requestAnimationFrame(draw);

@@ -50,7 +50,7 @@ export default function TrajectoryHubs() {
         
         {/* Header */}
         <div className="mb-16 md:text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#719d12] dark:text-[#c2ff3a] mb-3">Career journey</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#315fc4] dark:text-[#8ebaff] mb-3">Career journey</p>
           <h2 className="text-3xl md:text-4xl font-bold text-[#0d1020] dark:text-[#dfe2ee] mb-4 tracking-tight">
             Career Trajectory
           </h2>
@@ -62,7 +62,7 @@ export default function TrajectoryHubs() {
         {/* Pipeline Container */}
         <div className="relative">
           {/* The glowing vertical data stream line */}
-          <div className="absolute left-6 md:left-8 top-0 bottom-0 w-px bg-gradient-to-b from-[#c2ff3a] via-[#8891ae]/40 to-transparent"></div>
+          <div className="absolute left-6 md:left-8 top-0 bottom-0 w-px bg-gradient-to-b from-[#8ebaff] via-[#8891ae]/40 to-transparent"></div>
 
           <motion.div
             variants={containerVariants}
@@ -77,14 +77,14 @@ export default function TrajectoryHubs() {
                 <motion.div key={index} variants={nodeVariants} className="relative pl-16 md:pl-20">
                   
                   {/* The Hub Icon on the timeline */}
-                  <div className="absolute left-2 md:left-4 top-1 w-8 h-8 md:w-9 md:h-9 bg-[#c2ff3a] rounded-full border-4 border-white dark:border-[#070b16] flex items-center justify-center shadow-lg shadow-[#c2ff3a]/20">
+                  <div className="absolute left-2 md:left-4 top-1 w-8 h-8 md:w-9 md:h-9 bg-[#8ebaff] rounded-full border-4 border-white dark:border-[#070b16] flex items-center justify-center shadow-lg shadow-[#8ebaff]/20">
                     <Icon className="w-4 h-4 text-[#10170a]" />
                   </div>
 
                   {/* The Content Card */}
-                  <div className="group block p-6 md:p-8 rounded-sm bg-white/70 dark:bg-[#0c1122] border border-[#0d1020]/10 dark:border-white/10 hover:border-[#c2ff3a]/50 transition-colors duration-300">
+                  <div className="group block p-6 md:p-8 rounded-sm bg-white/70 dark:bg-[#0c1122] border border-[#0d1020]/10 dark:border-white/10 hover:border-[#8ebaff]/50 transition-colors duration-300">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-4">
-                      <span className="text-[11px] font-mono font-medium tracking-[0.12em] text-[#719d12] dark:text-[#c2ff3a] uppercase">
+                      <span className="text-[11px] font-mono font-medium tracking-[0.12em] text-[#315fc4] dark:text-[#8ebaff] uppercase">
                         {node.era}
                       </span>
                       <span className="text-xs font-mono text-gray-500 dark:text-[#8891ae] bg-[#0d1020]/5 dark:bg-white/5 px-3 py-1 rounded-sm w-fit">

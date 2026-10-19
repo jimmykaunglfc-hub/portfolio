@@ -1,7 +1,7 @@
 export default function Contact() {
   return (
-    <main className="min-h-screen max-w-3xl mx-auto pt-32 pb-24 px-6 text-center">
-      <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#719d12] dark:text-[#c2ff3a] mb-3">Open channel</p>
+    <main className="contact-page min-h-screen max-w-3xl mx-auto pt-32 pb-24 px-6 text-center">
+      <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#315fc4] dark:text-[#8ebaff] mb-3">Open channel</p>
       <h1 className="text-4xl md:text-5xl font-bold text-[#0d1020] dark:text-[#dfe2ee] mb-6 tracking-tight">Get In Touch</h1>
       <p className="text-lg text-gray-600 dark:text-[#8891ae] mb-12">
         I am currently open to discussions regarding project management, channel strategy, 
@@ -12,7 +12,7 @@ export default function Contact() {
         <div className="space-y-8">
           <div>
             <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-1">Email</h3>
-            <a href="mailto:cohortexplorers@gmail.com" className="text-xl text-[#719d12] dark:text-[#c2ff3a] font-medium hover:underline">
+            <a href="mailto:cohortexplorers@gmail.com" className="text-xl text-[#315fc4] dark:text-[#8ebaff] font-medium hover:underline">
               cohortexplorers@gmail.com {/*[cite: 1] */}
             </a>
           </div>

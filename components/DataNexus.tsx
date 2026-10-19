@@ -67,7 +67,7 @@ export default function DataNexus() {
         if (!ctx) return;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-        ctx.fillStyle = '#c2ff3a';
+        ctx.fillStyle = '#8ebaff';
         ctx.fill();
       }
 
@@ -108,7 +108,7 @@ export default function DataNexus() {
         let y = (Math.random() * ((window.innerHeight - size * 2) - (size * 2)) + size * 2);
         let directionX = (Math.random() * 2) - 1;
         let directionY = (Math.random() * 2) - 1;
-        const color = '#c2ff3a';
+        const color = '#8ebaff';
         
         particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
       }
@@ -124,7 +124,7 @@ export default function DataNexus() {
             
           if (distance < (canvas!.width / 7) * (canvas!.height / 7)) {
             opacityValue = 1 - (distance / 20000);
-            ctx.strokeStyle = `rgba(194, 255, 58, ${opacityValue * 0.18})`;
+            ctx.strokeStyle = `rgba(104,153,255, ${opacityValue * 0.18})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(particlesArray[a].x, particlesArray[a].y);

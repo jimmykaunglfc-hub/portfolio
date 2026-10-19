@@ -108,7 +108,7 @@ export default function CapabilitiesMatrix() {
         {/* Header Section */}
         <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <p className="text-[11px] font-mono font-medium tracking-[0.14em] text-[#719d12] dark:text-[#c2ff3a] uppercase mb-3">
+            <p className="text-[11px] font-mono font-medium tracking-[0.14em] text-[#315fc4] dark:text-[#8ebaff] uppercase mb-3">
               Execution Frameworks
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-[#0d1020] dark:text-[#dfe2ee] tracking-tight">
@@ -129,7 +129,7 @@ export default function CapabilitiesMatrix() {
                   onClick={() => setActivePhaseIndex(index)}
                   className={`snap-start whitespace-nowrap shrink-0 px-6 py-3 rounded-sm text-xs font-bold tracking-wider uppercase transition-all duration-300 ${
                     isActive 
-                      ? "bg-[#c2ff3a] text-[#10170a] shadow-[0_8px_24px_rgba(194,255,58,0.16)]"
+                      ? "bg-[#8ebaff] text-[#10170a] shadow-[0_8px_24px_rgba(104,153,255,0.16)]"
                       : "bg-transparent text-zinc-500 dark:text-[#8891ae] border border-[#0d1020]/10 dark:border-white/10 hover:bg-white/70 dark:hover:bg-white/5"
                   }`}
                 >
@@ -162,7 +162,7 @@ export default function CapabilitiesMatrix() {
                 {activePhase.leadCard.tags.map((tag, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1.5 text-xs font-mono font-medium rounded-sm bg-[#c2ff3a]/10 dark:bg-[#c2ff3a]/10 text-[#526327] dark:text-[#c2ff3a] border border-[#c2ff3a]/25"
+                    className="px-3 py-1.5 text-xs font-mono font-medium rounded-sm bg-[#8ebaff]/10 dark:bg-[#8ebaff]/10 text-[#315fc4] dark:text-[#8ebaff] border border-[#8ebaff]/25"
                   >
                     {tag}
                   </span>
@@ -177,10 +177,10 @@ export default function CapabilitiesMatrix() {
                 return (
                   <div 
                     key={idx} 
-                    className="p-6 rounded-sm bg-white/70 dark:bg-[#0c1122] border border-[#0d1020]/10 dark:border-white/10 shadow-sm flex flex-col sm:flex-row gap-5 transition-colors group hover:border-[#c2ff3a]/50"
+                    className="p-6 rounded-sm bg-white/70 dark:bg-[#0c1122] border border-[#0d1020]/10 dark:border-white/10 shadow-sm flex flex-col sm:flex-row gap-5 transition-colors group hover:border-[#8ebaff]/50"
                   >
-                    <div className="w-12 h-12 shrink-0 rounded-sm bg-[#c2ff3a]/10 flex items-center justify-center border border-[#c2ff3a]/25">
-                      <Icon className="w-6 h-6 text-[#719d12] dark:text-[#c2ff3a] group-hover:scale-110 transition-transform duration-300" />
+                    <div className="w-12 h-12 shrink-0 rounded-sm bg-[#8ebaff]/10 flex items-center justify-center border border-[#8ebaff]/25">
+                      <Icon className="w-6 h-6 text-[#315fc4] dark:text-[#8ebaff] group-hover:scale-110 transition-transform duration-300" />
                     </div>
                     <div>
                       <h4 className="text-base font-bold text-[#0d1020] dark:text-[#dfe2ee] mb-2">

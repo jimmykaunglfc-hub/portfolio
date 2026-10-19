@@ -166,7 +166,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative min-h-screen bg-[#09090b] pb-24 select-text">
+    <main className="profile-page relative min-h-screen bg-[#09090b] pb-24 select-text">
       <Hero />
 
       {/* Capabilities Section */}

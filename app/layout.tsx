@@ -5,6 +5,7 @@ import AIChat from '../components/AIChat';
 import ClientWrapper from '../components/ClientWrapper';
 import InteractiveBackground from '../components/InteractiveBackground';
 import CustomCursor from '../components/CustomCursor';
+import PageExperience from '../components/PageExperience';
 import { Analytics } from '@vercel/analytics/react'
 
 // Viewport configuration to unlock iOS safe-area insets
@@ -80,7 +81,7 @@ export default function RootLayout({
           <Navbar />
           
           <div className="pt-[env(safe-area-inset-top)] min-h-screen">
-            {children}
+            <PageExperience>{children}</PageExperience>
           </div>
           
           <Analytics />

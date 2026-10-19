@@ -355,3 +355,84 @@ html:not(.dark) .executive-nav { color:#1b3153; background:rgba(247,250,255,.85)
 @media (max-width:400px) { .executive-nav__contact { display:none; }.exec-hero__signature { flex-wrap:wrap; gap:7px; }.exec-hero h1 { font-size:2.8rem; }.exec-actions { gap:10px; }.exec-actions .exec-button { padding-inline:15px; }.exec-hero__footer span { font-size:7px; } }
 @keyframes mobile-reveal { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:none; } }
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; }.executive-portfolio *, .executive-nav * { animation:none !important; transition:none !important; }.exec-hero__orb > div { animation:none; }.reading-progress,.liquid-cursor { display:none; }.signal-field { display:block; }.exec-case:hover { transform:none; } }
+
+/* Shared palette for every public page, including game shells and article detail. */
+:root {
+  --site-bg:#f4f7fc;
+  --site-surface:#ffffff;
+  --site-surface-soft:#eaf1fb;
+  --site-ink:#132542;
+  --site-muted:#526580;
+  --site-accent:#315fc4;
+  --site-line:rgba(36,70,119,.15);
+}
+html.dark {
+  --site-bg:#080e1c;
+  --site-surface:#101c30;
+  --site-surface-soft:#14233b;
+  --site-ink:#eaf0fa;
+  --site-muted:#a0aec4;
+  --site-accent:#96bfff;
+  --site-line:rgba(155,180,222,.15);
+}
+body,body.dark { background-color:var(--site-bg); color:var(--site-ink); }
+.site-content { min-height:100vh; }
+.public-experience { isolation:isolate; color:var(--site-ink); }
+.page-atmosphere { position:fixed; inset:0; overflow:hidden; pointer-events:none; z-index:-1; }
+.page-atmosphere:before,.page-atmosphere:after { content:''; position:absolute; width:70vw; height:70vh; border-radius:50%; filter:blur(85px); opacity:.55; animation:atmosphere-drift 24s ease-in-out infinite alternate; }
+.page-atmosphere:before { top:-20%; right:-20%; background:radial-gradient(ellipse,rgba(84,135,224,.24),transparent 70%); }
+.page-atmosphere:after { bottom:-35%; left:-20%; background:radial-gradient(ellipse,rgba(65,151,180,.18),transparent 70%); animation-delay:-12s; }
+.dark .page-atmosphere:before,.dark .page-atmosphere:after { opacity:.3; }
+@keyframes atmosphere-drift { to { transform:translate3d(-8%,15%,0) scale(1.15); } }
+.public-experience :is(.editorial-page,.legal-page,.projects-page,.contact-page,.profile-page,.games-shell) {
+  --color-blue-500:#477ce5;
+  --color-blue-600:#376cde;
+  --color-blue-400:#8ebaff;
+  --color-slate-50:#f4f7fc;
+  --color-zinc-50:#f4f7fc;
+  --color-gray-50:#f4f7fc;
+  color:var(--site-ink);
+}
+.public-experience :is(.editorial-page,.legal-page,.projects-page,.contact-page,.profile-page) h1 { letter-spacing:-.045em; line-height:1.1; }
+.public-experience :is(.editorial-page,.legal-page,.projects-page,.contact-page,.profile-page) :is(.glass-card,article,.group.bg-white,.group[class*="bg-white"],div[class*="bg-white/70"]) {
+  background:var(--site-surface);
+  border-color:var(--site-line);
+  border-radius:12px;
+  box-shadow:0 12px 40px rgba(20,45,90,.035);
+}
+.public-experience .profile-page { background:transparent; }
+.public-experience :is(.projects-page,.contact-page) :is(.text-gray-900,.text-gray-700) { color:var(--site-ink); }
+.public-experience :is(.editorial-page,.legal-page,.projects-page,.contact-page,.profile-page) :is(.text-gray-400,.text-gray-500,.text-gray-600,.text-slate-400,.text-slate-500) { color:var(--site-muted); }
+html:not(.dark) .public-experience .profile-page :is(.text-white,.text-slate-300) { color:var(--site-ink); }
+html:not(.dark) .public-experience .profile-page :is(.border-white\/5,.border-white\/10) { border-color:var(--site-line); }
+.public-experience .editorial-page > article { background:var(--site-surface); border:1px solid var(--site-line); border-radius:12px; }
+.public-experience .editorial-page :is(.text-orange-600,.text-orange-400,.text-indigo-600,.text-indigo-400,.text-cyan-600,.text-cyan-400,.text-blue-600,.text-blue-400) { color:var(--site-accent); }
+.public-experience .editorial-page :is(.bg-orange-500\/10,.bg-indigo-500\/10,.bg-cyan-500\/10,.bg-blue-500\/10) { background:var(--site-surface-soft); }
+.public-experience .games-catalog > .grid > .group { background:var(--site-surface); border-color:var(--site-line); border-radius:12px; box-shadow:none; }
+.public-experience .games-catalog > .grid > .group > div:first-child { background:linear-gradient(140deg,#142b50,#0d1a30); }
+.public-experience .games-catalog > .grid > .group > div:first-child > div { opacity:.12; }
+.public-experience .games-catalog > .grid > .group > div:first-child svg { color:#96bfff; filter:drop-shadow(0 0 16px rgba(96,159,240,.24)); }
+.public-experience .games-catalog > .grid > .group:hover { border-color:var(--site-accent); box-shadow:0 15px 35px rgba(45,92,170,.1); }
+.public-experience .games-catalog > .grid > .group:hover h3 { color:var(--site-accent); }
+.public-experience .games-catalog > .grid > .group a { color:#fff; background:#376cde; border:1px solid #5788f0; border-radius:6px; font:500 12px Inter,sans-serif; text-transform:none; letter-spacing:0; }
+.public-experience .games-catalog > .grid > .group a:hover { background:#497ce7; color:#fff; }
+.public-experience .games-shell main { background-color:var(--site-bg); }
+.public-experience .games-shell main > :is(.bg-white,div[class*="bg-white"],div[class*="bg-[#18181B]"],div[class*="bg-[#121214]"]) { background-color:var(--site-surface); border-color:var(--site-line); }
+/* Render the light shader in saturated blue, rather than a pale glow on white. */
+html:not(.dark) .exec-hero .signal-field { opacity:1; mask-image:linear-gradient(90deg,transparent 5%,rgba(0,0,0,.3) 28%,black 55%); }
+html:not(.dark) .exec-hero__orb { opacity:1; }
+html:not(.dark) .exec-hero__orb > div { border-color:rgba(48,101,186,.3); }
+html:not(.dark) .exec-hero__orb > div:nth-child(2) { border-color:rgba(37,133,155,.38); }
+/* Opacity is only withheld after JS successfully registers an observed target. */
+[data-reveal="pending"] { opacity:0; }
+.water-surface { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:10000; filter:blur(.65px); }
+@media (max-width:800px) {
+  html:not(.dark) .exec-hero .signal-field { opacity:.85; mask-image:linear-gradient(90deg,rgba(0,0,0,.2),black); }
+  html:not(.dark) .exec-hero__orb { opacity:.45; }
+  .page-atmosphere:before,.page-atmosphere:after { filter:blur(55px); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .water-surface { display:none; }
+  [data-reveal="pending"] { opacity:1; }
+  .page-atmosphere:before,.page-atmosphere:after { animation:none; }
+}

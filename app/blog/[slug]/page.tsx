@@ -52,7 +52,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       
       <Link 
         href="/blog" 
-        className="inline-flex items-center gap-2 text-sm font-mono font-medium text-[#719d12] dark:text-[#c2ff3a] hover:text-[#526327] transition-colors mb-8 group"
+        className="inline-flex items-center gap-2 text-sm font-mono font-medium text-[#315fc4] dark:text-[#8ebaff] hover:text-[#315fc4] transition-colors mb-8 group"
       >
         <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Back to Articles
       </Link>
@@ -87,7 +87,7 @@ export default async function BlogPostPage({ params }: PageProps) {
 
           {/* Excerpt Summary Blockquote Container */}
           {post.summary && (
-            <div className="p-5 border-l-4 border-[#c2ff3a] bg-[#c2ff3a]/5 dark:bg-[#c2ff3a]/5 rounded-r-sm text-sm md:text-base text-gray-600 dark:text-[#8891ae] italic mb-10 leading-relaxed">
+            <div className="p-5 border-l-4 border-[#8ebaff] bg-[#8ebaff]/5 dark:bg-[#8ebaff]/5 rounded-r-sm text-sm md:text-base text-gray-600 dark:text-[#8891ae] italic mb-10 leading-relaxed">
               {post.summary}
             </div>
           )}

@@ -45,7 +45,7 @@ export default function StrategicNetwork() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
         
         <div className="mb-16">
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#719d12] dark:text-[#c2ff3a] mb-3">Operating model</p>
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#315fc4] dark:text-[#8ebaff] mb-3">Operating model</p>
           <h2 className="text-3xl md:text-4xl font-bold text-[#0d1020] dark:text-[#dfe2ee] mb-4 tracking-tight">
             Operational Architecture
           </h2>
@@ -72,7 +72,7 @@ export default function StrategicNetwork() {
                     onClick={() => setActiveNode(index)}
                     className={`w-full text-left relative flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 overflow-hidden ${
                       isActive 
-                        ? "bg-white dark:bg-[#0c1122] shadow-lg border border-[#c2ff3a]/50"
+                        ? "bg-white dark:bg-[#0c1122] shadow-lg border border-[#8ebaff]/50"
                         : "hover:bg-white/70 dark:hover:bg-white/5 border border-transparent"
                     }`}
                   >
@@ -81,21 +81,21 @@ export default function StrategicNetwork() {
                         initial={{ left: "-100%" }}
                         animate={{ left: "200%" }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="absolute top-0 bottom-0 w-full bg-gradient-to-r from-transparent via-[#c2ff3a]/20 to-transparent -skew-x-12 pointer-events-none"
+                        className="absolute top-0 bottom-0 w-full bg-gradient-to-r from-transparent via-[#8ebaff]/20 to-transparent -skew-x-12 pointer-events-none"
                       />
                     )}
 
                     {/* THE FIX: Solid backgrounds on icons so the line seamlessly runs behind them */}
                     <div className={`relative z-10 w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${
                       isActive 
-                        ? "bg-[#c2ff3a] text-[#10170a] shadow-md shadow-[#c2ff3a]/20"
+                        ? "bg-[#8ebaff] text-[#10170a] shadow-md shadow-[#8ebaff]/20"
                         : "bg-white dark:bg-[#0c1122] border border-[#0d1020]/10 dark:border-white/10 text-gray-500 dark:text-[#8891ae]"
                     }`}>
                       <Icon className="w-6 h-6" />
                     </div>
                     
                     <span className={`relative z-10 font-bold text-lg md:text-xl transition-colors duration-300 ${
-                      isActive ? "text-[#719d12] dark:text-[#c2ff3a]" : "text-gray-700 dark:text-[#dfe2ee]"
+                      isActive ? "text-[#315fc4] dark:text-[#8ebaff]" : "text-gray-700 dark:text-[#dfe2ee]"
                     }`}>
                       {node.title}
                     </span>
@@ -106,7 +106,7 @@ export default function StrategicNetwork() {
                         animate={{ opacity: 1, x: 0 }}
                         className="relative z-10 ml-auto"
                       >
-                        <ArrowRight className="w-5 h-5 text-[#719d12] dark:text-[#c2ff3a]" />
+                        <ArrowRight className="w-5 h-5 text-[#315fc4] dark:text-[#8ebaff]" />
                       </motion.div>
                     )}
                   </button>
@@ -118,7 +118,7 @@ export default function StrategicNetwork() {
           <div className="lg:col-span-7 flex items-center">
             <div className="w-full bg-white/75 dark:bg-[#0c1122] border border-[#0d1020]/10 dark:border-white/10 rounded-sm p-8 md:p-12 shadow-2xl min-h-[400px] flex flex-col justify-center relative overflow-hidden">
               
-              <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#c2ff3a]/10 rounded-full blur-3xl"></div>
+              <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#8ebaff]/10 rounded-full blur-3xl"></div>
 
               <AnimatePresence mode="wait">
                 <motion.div
@@ -130,8 +130,8 @@ export default function StrategicNetwork() {
                   className="relative z-10"
                 >
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="w-8 h-1 bg-[#c2ff3a]"></div>
-                    <span className="text-[11px] font-mono font-medium tracking-[0.14em] text-[#719d12] dark:text-[#c2ff3a] uppercase">
+                    <div className="w-8 h-1 bg-[#8ebaff]"></div>
+                    <span className="text-[11px] font-mono font-medium tracking-[0.14em] text-[#315fc4] dark:text-[#8ebaff] uppercase">
                       Phase 0{activeNode + 1}
                     </span>
                   </div>

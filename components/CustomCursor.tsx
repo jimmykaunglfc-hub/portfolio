@@ -2,73 +2,108 @@
 
 import { useEffect, useRef } from 'react';
 
-/** A velocity-responsive droplet with a soft sapphire, cyan, and lavender wake. */
+/** A damped wave simulation. Pointer strokes disturb the surface; clicks launch larger waves. */
 export default function CustomCursor() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const followerRef = useRef<HTMLDivElement>(null);
-
+  const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    const media = window.matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)');
-    const canvas = canvasRef.current;
-    const follower = followerRef.current;
-    if (!canvas || !follower) return;
-    const context = canvas.getContext('2d');
+    const canvas = ref.current;
+    if (!canvas) return;
+    const context = canvas.getContext('2d', { alpha: true });
     if (!context) return;
-    let frame = 0, lastTime = 0;
-    let visible = false, interactive = false, down = false;
-    const target = { x: -100, y: -100 };
-    const droplets = Array.from({ length: 9 }, () => ({ x: -100, y: -100 }));
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const fine = window.matchMedia('(pointer: fine)');
+    let width = 0, height = 0, frame = 0, lastFrame = 0, activeUntil = 0;
+    let current = new Float32Array(0), previous = new Float32Array(0);
+    let pixels: ImageData;
+    let dark = document.documentElement.classList.contains('dark');
+    let lastPointer: { x: number; y: number } | null = null;
     const resize = () => {
-      const density = Math.min(window.devicePixelRatio || 1, 1.5);
-      canvas.width = window.innerWidth * density; canvas.height = window.innerHeight * density;
-      context.setTransform(density, 0, 0, density, 0, 0);
+      width = Math.max(2, Math.ceil(window.innerWidth / 6));
+      height = Math.max(2, Math.ceil(window.innerHeight / 6));
+      // Limit work on large monitors without changing the screen-space interaction.
+      const scale = Math.min(1, 300 / width);
+      width = Math.ceil(width * scale); height = Math.ceil(height * scale);
+      canvas.width = width; canvas.height = height;
+      current = new Float32Array(width * height); previous = new Float32Array(width * height);
+      pixels = context.createImageData(width, height);
+      lastPointer = null;
+    };
+    const draw = (stamp: number) => {
+      frame = 0;
+      if (motion.matches || document.hidden) { context.clearRect(0, 0, width, height); return; }
+      if (stamp - lastFrame < 1000 / 40) { frame = requestAnimationFrame(draw); return; }
+      lastFrame = stamp;
+      const rgba = pixels.data;
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          const i = y * width + x;
+          previous[i] = ((current[i - 1] + current[i + 1] + current[i - width] + current[i + width]) * .5 - previous[i]) * .978;
+          const gx = current[i - 1] - current[i + 1];
+          const gy = current[i - width] - current[i + width];
+          const light = gx * .7 + gy * .55;
+          const strength = Math.min(Math.abs(light) * (dark ? 2.4 : 2.8), dark ? 105 : 88);
+          const offset = i * 4;
+          // Adjacent highlights and shaded troughs give the waves a refracted, watery edge.
+          rgba[offset] = light > 0 ? (dark ? 136 : 43) : (dark ? 63 : 71);
+          rgba[offset + 1] = light > 0 ? (dark ? 202 : 107) : (dark ? 106 : 88);
+          rgba[offset + 2] = light > 0 ? (dark ? 246 : 187) : (dark ? 187 : 154);
+          rgba[offset + 3] = strength;
+        }
+      }
+      const swap = current; current = previous; previous = swap;
+      context.putImageData(pixels, 0, 0);
+      if (stamp < activeUntil) frame = requestAnimationFrame(draw);
+      else context.clearRect(0, 0, width, height);
+    };
+    const disturb = (screenX: number, screenY: number, strength: number, radius: number) => {
+      if (motion.matches) return;
+      const cx = screenX / window.innerWidth * width;
+      const cy = screenY / window.innerHeight * height;
+      for (let y = Math.max(1, Math.floor(cy - radius)); y <= Math.min(height - 2, Math.ceil(cy + radius)); y++) {
+        for (let x = Math.max(1, Math.floor(cx - radius)); x <= Math.min(width - 2, Math.ceil(cx + radius)); x++) {
+          const distance = Math.hypot(x - cx, y - cy) / radius;
+          if (distance < 1) current[y * width + x] += Math.cos(distance * Math.PI * .5) * strength;
+        }
+      }
+      activeUntil = performance.now() + 2800;
+      if (!frame) frame = requestAnimationFrame(draw);
     };
     const move = (event: PointerEvent) => {
-      visible = event.pointerType === 'mouse';
-      if (target.x === -100) droplets.forEach((drop) => { drop.x = event.clientX; drop.y = event.clientY; });
-      target.x = event.clientX; target.y = event.clientY;
-      interactive = Boolean(event.target instanceof Element && event.target.closest('a,button,summary,[role="tab"]'));
-    };
-    const hide = () => { visible = false; };
-    const press = () => { down = true; };
-    const release = () => { down = false; };
-    const draw = (time: number) => {
-      const dt = Math.min((time - lastTime) / 16.67 || 1, 2); lastTime = time;
-      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      const active = visible && media.matches && !document.hidden;
-      follower.style.opacity = active ? '1' : '0';
-      if (active) {
-        let anchor = target;
-        droplets.forEach((drop, index) => {
-          const dx = anchor.x - drop.x, dy = anchor.y - drop.y;
-          const ease = 1 - Math.pow(1 - (index === 0 ? .24 : .32), dt);
-          drop.x += dx * ease; drop.y += dy * ease;
-          if (index === 0) {
-            const stretch = Math.min(Math.hypot(dx, dy) / 120, .65);
-            const scale = down ? .7 : interactive ? 1.5 : 1;
-            follower.style.transform = `translate3d(${drop.x}px,${drop.y}px,0) rotate(${Math.atan2(dy, dx)}rad) scale(${scale * (1 + stretch)},${scale * (1 - stretch * .35)})`;
-            follower.dataset.interactive = String(interactive);
-          }
-          const radius = (29 - index * 2) * (interactive ? 1.2 : 1);
-          const glow = context.createRadialGradient(drop.x, drop.y, 0, drop.x, drop.y, radius);
-          const color = index < 3 ? '78,130,255' : index < 6 ? '78,202,225' : '151,134,239';
-          glow.addColorStop(0, `rgba(${color},${.09 - index * .007})`);
-          glow.addColorStop(1, `rgba(${color},0)`);
-          context.fillStyle = glow; context.beginPath(); context.arc(drop.x, drop.y, radius, 0, Math.PI * 2); context.fill();
-          anchor = drop;
-        });
+      if (!fine.matches || event.pointerType !== 'mouse' || motion.matches) return;
+      const point = { x: event.clientX, y: event.clientY };
+      if (lastPointer) {
+        const distance = Math.hypot(point.x - lastPointer.x, point.y - lastPointer.y);
+        if (distance < 3) return;
+        // Interpolate the stroke, producing a continuous wake rather than a following object.
+        const count = Math.min(12, Math.ceil(distance / 9));
+        for (let i = 1; i <= count; i++) {
+          const t = i / count;
+          disturb(lastPointer.x + (point.x - lastPointer.x) * t, lastPointer.y + (point.y - lastPointer.y) * t, 14, 2.3);
+        }
       }
-      frame = requestAnimationFrame(draw);
+      lastPointer = point;
     };
-    resize(); frame = requestAnimationFrame(draw);
-    window.addEventListener('resize', resize); window.addEventListener('pointermove', move, { passive: true });
-    window.addEventListener('pointerdown', press); window.addEventListener('pointerup', release);
-    document.addEventListener('pointerleave', hide); window.addEventListener('blur', hide);
+    const click = (event: PointerEvent) => { disturb(event.clientX, event.clientY, 125, 5); };
+    const reset = () => { lastPointer = null; };
+    const clear = () => {
+      if (motion.matches || document.hidden) {
+        cancelAnimationFrame(frame); frame = 0; current.fill(0); previous.fill(0);
+        context.clearRect(0, 0, width, height); reset();
+      }
+    };
+    const theme = new MutationObserver(() => { dark = document.documentElement.classList.contains('dark'); });
+    theme.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    resize(); window.addEventListener('resize', resize);
+    window.addEventListener('pointermove', move, { passive: true });
+    window.addEventListener('pointerdown', click, { passive: true });
+    window.addEventListener('blur', reset); document.addEventListener('pointerleave', reset);
+    document.addEventListener('visibilitychange', clear); motion.addEventListener('change', clear);
     return () => {
-      cancelAnimationFrame(frame); window.removeEventListener('resize', resize); window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerdown', press); window.removeEventListener('pointerup', release);
-      document.removeEventListener('pointerleave', hide); window.removeEventListener('blur', hide);
+      cancelAnimationFrame(frame); theme.disconnect(); window.removeEventListener('resize', resize);
+      window.removeEventListener('pointermove', move); window.removeEventListener('pointerdown', click);
+      window.removeEventListener('blur', reset); document.removeEventListener('pointerleave', reset);
+      document.removeEventListener('visibilitychange', clear); motion.removeEventListener('change', clear);
     };
   }, []);
-  return <div aria-hidden="true" className="liquid-cursor"><canvas ref={canvasRef} /><div ref={followerRef} className="liquid-cursor__drop" /></div>;
+  return <canvas ref={ref} className="water-surface" aria-hidden="true" />;
 }
