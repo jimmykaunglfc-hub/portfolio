@@ -94,7 +94,7 @@ export default function Navbar() {
               </div>
             </div>
             <Link href="/blog" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#719d12] dark:hover:text-[#c2ff3a] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">article</span> Blog</Link>
-            <Link href="/games" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#719d12] dark:hover:text-[#c2ff3a] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">sports_esports</span> Games</Link>
+            <Link href="/games" className="flex items-center gap-2 text-zinc-900 dark:text-white font-semibold text-sm hover:text-[#719d12] dark:hover:text-[#c2ff3a] transition-colors duration-300"><span className="material-symbols-outlined text-base text-inherit">sports_esports</span> Lab</Link>
             
             <button onClick={toggleTheme} className="flex items-center justify-center p-2.5 rounded-sm bg-white/50 dark:bg-white/5 border border-[#0d1020]/10 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-white dark:hover:bg-white/10 transition-all duration-300 cursor-pointer hover:scale-105 active:scale-95"><span className="material-symbols-outlined text-lg block text-inherit">{isDark ? 'light_mode' : 'dark_mode'}</span></button>
 
@@ -135,7 +135,7 @@ export default function Navbar() {
             </div>
 
             <Link onClick={() => setIsMenuOpen(false)} href="/blog" className="text-2xl font-medium text-zinc-900 dark:text-white hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3 py-2 border-b border-zinc-200 dark:border-zinc-800"><span className="material-symbols-outlined">article</span> Blog</Link>
-            <Link onClick={() => setIsMenuOpen(false)} href="/games" className="text-2xl font-medium text-zinc-900 dark:text-white hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3 py-2 border-b border-zinc-200 dark:border-zinc-800"><span className="material-symbols-outlined">sports_esports</span> Games</Link>
+            <Link onClick={() => setIsMenuOpen(false)} href="/games" className="text-2xl font-medium text-zinc-900 dark:text-white hover:text-[#4d8eff] dark:hover:text-[#adc6ff] transition-colors duration-300 flex items-center gap-3 py-2 border-b border-zinc-200 dark:border-zinc-800"><span className="material-symbols-outlined">sports_esports</span> Product Lab</Link>
 
             <button onClick={() => setIsMenuOpen(false)} className="bg-[#002e6a] dark:bg-[#adc6ff] text-white dark:text-[#002e6a] px-8 py-4 rounded-full font-bold text-sm w-full mt-10 tracking-wide uppercase shadow-lg cursor-pointer hover:scale-105 transition-all duration-300">
               Close Menu

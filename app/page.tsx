@@ -13,6 +13,7 @@ import CapabilitiesMatrix from '../components/Capabilities';
 import TrajectoryHubs from '../components/TrajectoryHubs';
 import StrategicNetwork from '../components/StrategicNetwork';
 import DataNexus from '../components/DataNexus';
+import ExecutivePortfolio from '../components/ExecutivePortfolio';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -882,6 +883,8 @@ export default function HybridAppRouter() {
   // =========================================================================
   // PARADIGM 2: PREMIUM LONG-SCROLL WEBSITE LAYOUT (DESKTOP & MOBILE WEB)
   // =========================================================================
+  return <ExecutivePortfolio />;
+
   return (
     <main className="portfolio-web w-full max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-4 relative z-20">
       
