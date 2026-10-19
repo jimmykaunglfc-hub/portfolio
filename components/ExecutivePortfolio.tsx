@@ -4,11 +4,12 @@ import { MotionConfig, motion, useReducedMotion, useScroll, useSpring } from 'fr
 import { useRef } from 'react';
 import Link from 'next/link';
 import {
-  ArrowDownRight, ArrowUpRight, ChevronRight, Cpu, Download, ExternalLink,
+  ArrowDownRight, ArrowUpRight, Cpu, Download, ExternalLink,
   Layers3, Mail, Sparkles, Target,
 } from 'lucide-react';
 import SignalField from './SignalField';
 import Footer from './Footer';
+import OperatingModel from './OperatingModel';
 
 const caseStudies = [
   {
@@ -35,13 +36,6 @@ const caseStudies = [
     summary: 'Leading product management, QA, and product operations across planning, testing strategy, release execution, and cross-functional collaboration.',
     tags: ['QA strategy', 'Product operations', 'Leadership'],
   },
-];
-
-const operatingModel = [
-  ['01', 'Discover', 'Shape the opportunity, align stakeholders, and build a decision-ready roadmap.'],
-  ['02', 'Design the system', 'Translate strategy into a practical operating model, delivery rhythm, and team cadence.'],
-  ['03', 'Assure quality', 'Build in testing, compliance, and release confidence before the customer ever sees the product.'],
-  ['04', 'Scale responsibly', 'Monitor performance, improve the ecosystem, and keep the platform ready for what comes next.'],
 ];
 
 const career = [
@@ -124,18 +118,7 @@ export default function ExecutivePortfolio() {
         </div>
       </section>
 
-      <section id="operating-model" className="exec-model">
-        <span id="expertise" className="legacy-anchor" aria-hidden="true" />
-        <div className="exec-shell">
-          <div className="exec-model__header"><p className="exec-eyebrow"><span /> Operating model</p><h2>From ambiguity<br />to momentum.</h2></div>
-          <ol className="exec-model__steps">
-            {operatingModel.map(([number, title, description], index) => <li key={number}>
-              <div className="exec-model__step-head"><span className="exec-model__number">{number}</span><span className="exec-model__step-label">Step {number}</span>{index < operatingModel.length - 1 && <ChevronRight className="exec-model__arrow" size={18} aria-hidden="true" />}</div>
-              <div className="exec-model__step-body"><h3>{title}</h3><p>{description}</p></div>
-            </li>)}
-          </ol>
-        </div>
-      </section>
+      <OperatingModel />
 
       <section id="trajectory" className="exec-section exec-shell exec-trajectory">
         <span id="experience" className="legacy-anchor" aria-hidden="true" />
