@@ -1,5 +1,38 @@
 @import "tailwindcss";
 
+/* Brief brand entrance: decorative, dismissible, and never a scroll lock. */
+.client-boot-surface { min-height:100svh; background:var(--site-bg, #070b16); }
+.site-entrance {
+  position:fixed; inset:0; z-index:10020; display:grid; place-items:center;
+  overflow:hidden; pointer-events:none;
+  background:var(--site-bg, #070b16); color:var(--site-ink, #dfe2ee);
+}
+.site-entrance::before {
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(ellipse at 50% 45%, rgba(104,153,255,.14), transparent 60%);
+}
+.site-entrance__signature { position:relative; display:flex; flex-direction:column; align-items:center; padding:24px; }
+.site-entrance__mark { width:76px; height:76px; margin-bottom:16px; }
+.site-entrance__mark path { stroke-dasharray:120; stroke-dashoffset:0; animation:site-signature .65s ease-out both; }
+.site-entrance__name { font-family:'Bricolage Grotesque',sans-serif; font-size:32px; font-weight:700; letter-spacing:-1.5px; }
+.site-entrance__name > span { color:var(--site-accent, #8ebaff); }
+.site-entrance__caption { margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.22em; text-transform:uppercase; }
+.site-entrance__line { display:flex; justify-content:space-between; position:relative; width:100px; margin:30px 0 18px; }
+.site-entrance__line::before { content:""; position:absolute; top:2px; left:0; right:0; height:1px; background:rgba(104,153,255,.3); }
+.site-entrance__line i { width:5px; height:5px; border-radius:50%; background:var(--site-accent, #8ebaff); animation:site-node .6s ease-out both; }
+.site-entrance__line i:nth-child(2) { animation-delay:.1s; }
+.site-entrance__line i:nth-child(3) { animation-delay:.2s; }
+.site-entrance__principles { font-size:11px; letter-spacing:.06em; opacity:.65; }
+.site-entrance--ready { animation:site-unveil .65s cubic-bezier(.76,0,.24,1) .25s both; }
+@keyframes site-signature { from { stroke-dashoffset:120; opacity:0; } to { stroke-dashoffset:0; opacity:1; } }
+@keyframes site-node { from { transform:scale(.3); opacity:0; } to { transform:scale(1); opacity:1; } }
+@keyframes site-unveil { from { clip-path:inset(0); } to { clip-path:inset(0 0 100% 0); } }
+@media (prefers-reduced-motion:reduce) {
+  .site-entrance { display:none; }
+  .site-entrance, .site-entrance * { animation:none !important; }
+}
+@media print { .site-entrance { display:none; } }
+
 /* Forces Tailwind to listen to manual theme selector toggles */
 @variant dark (&:where(.dark, .dark *));
 
@@ -466,20 +499,22 @@ html:not(.dark) .exec-hero__orb > div:nth-child(2) { border-color:rgba(37,133,15
 }
 
 /* Scouse: transparent 3D artwork with lightweight, composited motion. */
-.scouse-mascot { position:relative; display:block; flex-shrink:0; width:var(--scouse-size,56px); height:var(--scouse-size,56px); overflow:visible; }
+.scouse-mascot { position:relative; display:block; flex-shrink:0; width:var(--scouse-size,56px); height:var(--scouse-size,56px); overflow:visible; perspective:650px; }
 .scouse-mascot__float { display:block; position:relative; width:100%; height:100%; }
+.scouse-mascot__attention { display:block; position:relative; width:100%; height:100%; transform-origin:50% 65%; }
 .scouse-mascot__render { display:block; width:100%; height:100%; object-fit:contain; user-select:none; pointer-events:none; transform-origin:50% 80%; }
 .scouse-mascot--portrait { overflow:hidden; }
 .scouse-mascot--portrait .scouse-mascot__render { position:absolute; width:300%; height:300%; max-width:none; left:-100%; top:0; }
 .scouse-launcher { position:fixed; bottom:calc(22px + env(safe-area-inset-bottom)); right:calc(20px + env(safe-area-inset-right)); z-index:9999; display:grid; place-items:center; width:128px; height:140px; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; cursor:pointer; -webkit-tap-highlight-color:transparent; }
 .scouse-launcher:focus-visible { outline:2px solid var(--site-accent); outline-offset:4px; border-radius:18px; }
 .scouse-launcher__unread { position:absolute; top:18px; right:24px; width:9px; height:9px; border-radius:50%; background:#70dae6; box-shadow:0 0 9px rgba(112,218,230,.6); pointer-events:none; }
-.scouse-mascot--animated .scouse-mascot__float { animation:scouse-hover 5.6s ease-in-out infinite; }
-.scouse-mascot--animated .scouse-mascot__render { animation:scouse-presence 7s ease-in-out infinite; }
+.scouse-mascot--animated .scouse-mascot__float { animation:scouse-breathe 5.2s ease-in-out infinite; transform-origin:50% 95%; }
+.scouse-mascot--animated .scouse-mascot__render { animation:scouse-presence 11s ease-in-out infinite; }
 .scouse-launcher:is(:hover,:focus-visible) .scouse-mascot__render { animation:scouse-welcome 1.3s ease-in-out both; }
-@keyframes scouse-hover { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-7px); } }
-@keyframes scouse-presence { 0%,100% { transform:rotate(0) scale(1); } 35% { transform:rotate(-2deg) scale(1.015); } 70% { transform:rotate(1deg) scale(1); } }
-@keyframes scouse-welcome { 0% { transform:rotate(0) scale(1); } 40% { transform:rotate(-5deg) scale(1.07); } 70% { transform:rotate(2deg) scale(1.04); } 100% { transform:rotate(-2deg) scale(1.04); } }
+@keyframes scouse-breathe { 0%,100% { transform:translateY(0) scaleY(1); } 45% { transform:translateY(-1.5px) scaleY(1.008); } }
+@keyframes scouse-presence { 0%,25%,65%,100% { transform:rotate(0); } 38%,48% { transform:rotate(-1deg); } 80%,88% { transform:rotate(.6deg); } }
+@keyframes scouse-welcome { 0% { transform:rotate(0) scale(1); } 40% { transform:rotate(-2.5deg) scale(1.035); } 70% { transform:rotate(.8deg) scale(1.02); } 100% { transform:rotate(-.5deg) scale(1.015); } }
+.scouse-mascot[data-paused="true"] * { animation-play-state:paused !important; }
 .scouse-panel { border-radius:18px !important; border-color:var(--site-line) !important; background:var(--site-surface) !important; }
 .scouse-header { padding:13px 18px; background:var(--site-surface-soft); border-bottom:1px solid var(--site-line); display:flex; align-items:center; justify-content:space-between; }
 .scouse-header h3 { color:var(--site-ink); font-size:15px; font-weight:650; }.scouse-header p { color:var(--site-muted); font-size:10px; margin-top:3px; }
