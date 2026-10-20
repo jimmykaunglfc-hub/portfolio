@@ -144,21 +144,13 @@ export default function AIChat() {
               }
             }}
             className="scouse-launcher"
+            type="button"
+            aria-haspopup="dialog"
             aria-label={hasUnread ? 'Open Scouse chat — unread reply' : 'Chat with Scouse, Jimmy’s AI portfolio guide'}
             title="Chat with Scouse"
           >
-            <ScouseMascot size={56} />
-            <span className="scouse-launcher__label"><b>Scouse</b><small>Portfolio guide</small></span>
-            <div className="relative">
-              
-              {/* Pulsing Red Unread Badge */}
-              {hasUnread && (
-                <span className="absolute -top-2 -right-2 flex h-4 w-4">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-red-500 border-2 border-white dark:border-[#09090b]"></span>
-                </span>
-              )}
-            </div>
+            <ScouseMascot size={104} animated />
+            {hasUnread && <span className="scouse-launcher__unread" aria-hidden="true" />}
           </motion.button>
         )}
       </AnimatePresence>
