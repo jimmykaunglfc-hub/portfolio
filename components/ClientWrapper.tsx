@@ -26,8 +26,8 @@ export default function ClientWrapper({ children }: { children: React.ReactNode 
     const events = ['pointerdown', 'wheel', 'keydown', 'touchstart'] as const;
     events.forEach((name) => window.addEventListener(name, dismiss, { passive: true, once: true }));
     reduced.addEventListener('change', dismiss, { once: true });
-    // Allow the 2.5s CSS entrance to finish before the safety dismissal.
-    const fallback = window.setTimeout(dismiss, 3200);
+    // Allow the 4.3s wave-progress entrance to finish before safety dismissal.
+    const fallback = window.setTimeout(dismiss, 5000);
     return () => {
       clearTimeout(fallback);
       events.forEach((name) => window.removeEventListener(name, dismiss));

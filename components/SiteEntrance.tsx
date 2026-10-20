@@ -1,6 +1,6 @@
 'use client';
 
-/** A decorative reveal, not a network-loading gate or simulated progress meter. */
+/** Decorative entrance progress, independent of network-loading status. */
 export default function SiteEntrance({ ready, onComplete }: { ready: boolean; onComplete: () => void }) {
   return <div
     className={`site-entrance ${ready ? 'site-entrance--ready' : ''}`}
@@ -16,7 +16,15 @@ export default function SiteEntrance({ ready, onComplete }: { ready: boolean; on
       </svg>
       <span className="site-entrance__name">KHNCO<span>.</span></span>
       <span className="site-entrance__caption">Digital leadership</span>
-      <div className="site-entrance__line"><i /><i /><i /></div>
+      <div className="site-entrance__progress">
+        <div className="site-entrance__track" />
+        <div className="site-entrance__fill">
+          <svg className="site-entrance__wave" viewBox="0 0 480 32" preserveAspectRatio="none" fill="none">
+            <path d="M0 16Q30 0 60 16T120 16T180 16T240 16T300 16T360 16T420 16T480 16" stroke="currentColor" strokeWidth="2" />
+          </svg>
+          <div className="site-entrance__bar" />
+        </div>
+      </div>
       <span className="site-entrance__principles">Strategy. Delivery. Impact.</span>
     </div>
   </div>;
