@@ -149,7 +149,7 @@ export default function AIChat() {
             aria-label={hasUnread ? 'Open Scouse chat — unread reply' : 'Chat with Scouse, Jimmy’s AI portfolio guide'}
             title="Chat with Scouse"
           >
-            <ScouseMascot size={104} animated />
+            <ScouseMascot size={128} animated />
             {hasUnread && <span className="scouse-launcher__unread" aria-hidden="true" />}
           </motion.button>
         )}
