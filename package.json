@@ -28,7 +28,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "sanity": "^5.30.0",
-    "styled-components": "^6.4.2"
+    "styled-components": "^6.4.2",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
@@ -38,6 +39,7 @@
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.186.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",

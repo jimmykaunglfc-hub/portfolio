@@ -2,21 +2,24 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { Volume2, Square, X } from 'lucide-react';
+import { Play, Square, X, Sparkles, ArrowUpRight } from 'lucide-react';
 import intro from '../lib/scouse-intro.json';
 
 const { transcript: INTRO, audioSrc } = intro as { transcript: string; audioSrc: string | null };
+const timeLabel = (seconds: number) => `${Math.floor(seconds / 60)}:${Math.floor(seconds % 60).toString().padStart(2, '0')}`;
 
 /** Speech is opt-in; the transcript remains available if a voice cannot play. */
-export default function ScouseWelcome({ enabled, children }: {
+export default function ScouseWelcome({ enabled, onChat, children }: {
   enabled: boolean;
-  children: (speaking: boolean, mouth: number) => ReactNode;
+  onChat: () => void;
+  children: (speaking: boolean, mouth: number, welcomeVisible: boolean) => ReactNode;
 }) {
   const [visible, setVisible] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [starting, setStarting] = useState(false);
   const [mouth, setMouth] = useState(0);
   const [error, setError] = useState('');
+  const [playback, setPlayback] = useState({ elapsed: 0, duration: 0 });
   const player = useRef<HTMLAudioElement | null>(null);
   const context = useRef<AudioContext | null>(null);
   const frame = useRef(0);
@@ -31,6 +34,7 @@ export default function ScouseWelcome({ enabled, children }: {
     clearTimers();
     if (player.current) {
       player.current.onplaying = player.current.onwaiting = player.current.onended = player.current.onerror = null;
+      player.current.ontimeupdate = player.current.onloadedmetadata = null;
       player.current.pause();
       player.current.removeAttribute('src');
       player.current.load();
@@ -39,7 +43,7 @@ export default function ScouseWelcome({ enabled, children }: {
     if (context.current) { void context.current.close().catch(() => {}); context.current = null; }
   }
   function stop(close = false) {
-    releaseVoice(); setSpeaking(false); setStarting(false); setMouth(0);
+    releaseVoice(); setSpeaking(false); setStarting(false); setMouth(0); setPlayback({ elapsed: 0, duration: 0 });
     if (close) setVisible(false);
   }
 
@@ -73,6 +77,9 @@ export default function ScouseWelcome({ enabled, children }: {
     const audio = new Audio(audioSrc);
     audio.preload = 'auto'; audio.volume = .9;
     player.current = audio;
+    const updatePlayback = () => setPlayback({ elapsed: audio.currentTime, duration: Number.isFinite(audio.duration) ? audio.duration : 0 });
+    audio.ontimeupdate = updatePlayback;
+    audio.onloadedmetadata = updatePlayback;
     const fail = () => {
       if (player.current !== audio) return;
       stop(); setError('Audio is unavailable right now. You can read my introduction above or try again.');
@@ -120,22 +127,31 @@ export default function ScouseWelcome({ enabled, children }: {
 
   return <>
     <AnimatePresence>
-      {visible && <motion.aside className="scouse-welcome" aria-label="An introduction from Scouse"
+      {visible && <motion.aside className={`scouse-welcome ${speaking ? 'scouse-welcome--speaking' : ''}`} aria-label="An introduction from Scouse"
         initial={{ opacity: 0, y: reduced ? 0 : 12, scale: reduced ? 1 : .96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: reduced ? 0 : 8 }}>
-        <div className="scouse-welcome__heading"><span><i /> Scouse · Your portfolio guide</span>
-          <button onClick={() => stop(true)} aria-label="Dismiss Scouse introduction"><X size={16} /></button></div>
-        <p>{INTRO}</p>
-        <div className="scouse-welcome__controls">
-          {audioSrc && <button onClick={() => speaking || starting ? stop() : speak()}>
-            {speaking || starting ? <Square size={13} /> : <Volume2 size={16} />}
-            {speaking ? 'Stop introduction' : starting ? 'Cancel audio' : 'Listen to Scouse'}
-          </button>}
-          <span role="status">{speaking ? 'Speaking · AI-generated voice' : starting ? 'Loading voice…' : audioSrc ? 'AI-generated voice · Optional audio' : 'Your AI portfolio guide · Ask me anything'}</span>
+        <header className="scouse-welcome__heading">
+          <span className="scouse-welcome__identity" aria-hidden="true"><Sparkles size={21} /></span>
+          <div className="scouse-welcome__name"><span>YOUR AI PORTFOLIO GUIDE</span><strong>Scouse<i aria-hidden="true" /></strong></div>
+          <button className="scouse-welcome__dismiss" onClick={() => stop(true)} aria-label="Dismiss Scouse introduction"><X size={17} /></button>
+        </header>
+        <div className="scouse-welcome__body"><h2>Let’s connect the dots.</h2><p>{INTRO}</p></div>
+        {audioSrc && <div className="scouse-welcome__audio">
+          <button className="scouse-welcome__play" onClick={() => speaking || starting ? stop() : speak()} aria-label={speaking ? 'Stop introduction' : starting ? 'Cancel audio' : 'Listen to Scouse introduction'}>
+            <span className="scouse-welcome__play-icon">{speaking || starting ? <Square size={14} fill="currentColor" /> : <Play size={17} fill="currentColor" />}</span>
+            <span className="scouse-welcome__play-label"><strong>{speaking ? 'Scouse is speaking' : starting ? 'Preparing your welcome' : 'Hear a personal welcome'}</strong><span>{speaking ? 'Tap to stop' : starting ? 'Tap to cancel' : 'A short introduction, in my own voice'}</span></span>
+            <span className="scouse-welcome__waveform" aria-hidden="true">{[.5,.85,1,.7,.4].map((height, i) => <i key={i} style={{ height: `${4 + (speaking && !reduced ? mouth : .15) * height * 23}px` }} />)}</span>
+          </button>
+          <div className="scouse-welcome__progress" aria-hidden="true"><span style={{ transform: `scaleX(${playback.duration ? playback.elapsed / playback.duration : 0})` }} /></div>
+          <div className="scouse-welcome__audio-meta"><span>AI-generated voice · Optional audio</span><span aria-hidden="true">{playback.duration ? `${timeLabel(playback.elapsed)} / ${timeLabel(playback.duration)}` : 'SOUND OFF'}</span></div>
+        </div>}
+        <div className="scouse-welcome__footer">
+          <span role="status">{speaking ? 'Introducing myself…' : starting ? 'Loading audio…' : 'What would you like to explore?'}</span>
+          <button onClick={() => { stop(true); onChat(); }}>Ask Scouse <ArrowUpRight size={15} /></button>
         </div>
         {error && <p className="scouse-welcome__error" role="status">{error}</p>}
       </motion.aside>}
     </AnimatePresence>
-    {children(speaking, mouth)}
+    {children(speaking, mouth, visible)}
   </>;
 }

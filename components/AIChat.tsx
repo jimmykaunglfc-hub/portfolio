@@ -126,9 +126,9 @@ export default function AIChat() {
 
       <AnimatePresence>
         {!isOpen && (
-          <ScouseWelcome key={pathname} enabled={pathname === '/'}>{(speaking, mouth) => (
+          <ScouseWelcome key={pathname} enabled={pathname === '/'} onChat={() => { setIsOpen(true); setHasUnread(false); }}>{(speaking, mouth, welcomeVisible) => (
           <motion.button 
-            drag
+            drag={!welcomeVisible}
             dragMomentum={false}
             style={{ touchAction: "none" }} 
             initial={{ scale: 0, opacity: 0 }}
