@@ -5,7 +5,7 @@ import { useEffect, useRef, type CSSProperties } from 'react';
 import { motion, useMotionValue, useSpring, useReducedMotion } from 'framer-motion';
 
 /** Scouse's 3D-rendered identity, shared by the launcher and chat portraits. */
-export default function ScouseMascot({ size = 56, className = '', animated = false }: { size?: number; className?: string; animated?: boolean }) {
+export default function ScouseMascot({ size = 56, className = '', animated = false, speaking = false, mouth = 0 }: { size?: number; className?: string; animated?: boolean; speaking?: boolean; mouth?: number }) {
   const portrait = size <= 48;
   const root = useRef<HTMLSpanElement>(null);
   const reduced = useReducedMotion();
@@ -62,12 +62,13 @@ export default function ScouseMascot({ size = 56, className = '', animated = fal
 
   return <span
     ref={root}
-    className={`scouse-mascot ${animated ? 'scouse-mascot--animated' : ''} ${portrait ? 'scouse-mascot--portrait' : ''} ${className}`}
+    className={`scouse-mascot ${animated ? 'scouse-mascot--animated' : ''} ${speaking ? 'scouse-mascot--speaking' : ''} ${portrait ? 'scouse-mascot--portrait' : ''} ${className}`}
     style={{ '--scouse-size': `${size}px` } as CSSProperties}
     aria-hidden="true"
   >
     <span className="scouse-mascot__float">
       <motion.span className="scouse-mascot__attention" style={{ rotateX: reduced ? 0 : leanX, rotateY: reduced ? 0 : leanY }}>
+      <span className="scouse-mascot__actor">
       <Image
         src="/mascots/scouse-project-master.webp"
         alt=""
@@ -78,6 +79,21 @@ export default function ScouseMascot({ size = 56, className = '', animated = fal
         draggable={false}
         className="scouse-mascot__render"
       />
+      {animated && !portrait && <svg className="scouse-mascot__face" viewBox="0 0 640 640" fill="none">
+        <g className="scouse-mascot__blink">
+          <ellipse cx="292" cy="125" rx="25" ry="21" fill="#03141f" />
+          <path d="M273 125Q292 132 310 122" stroke="#7cecff" strokeWidth="2" />
+        </g>
+        <g className="scouse-mascot__blink">
+          <ellipse cx="373" cy="103" rx="21" ry="22" fill="#03141f" />
+          <path d="M359 104Q373 109 389 100" stroke="#7cecff" strokeWidth="2" />
+        </g>
+        {speaking && <g transform="rotate(-12 342 145)">
+          <ellipse cx="342" cy="145" rx="23" ry="11" fill="#03141f" />
+          <ellipse className="scouse-mascot__mouth" cx="342" cy="145" rx={16 - mouth * 5} ry={reduced ? 2 : 2 + mouth * 7} fill="#052e40" stroke="#6deaff" strokeWidth="2.5" />
+        </g>}
+      </svg>}
+      </span>
       </motion.span>
     </span>
   </span>;

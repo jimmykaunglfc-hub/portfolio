@@ -10,6 +10,7 @@ import {
 import SignalField from './SignalField';
 import Footer from './Footer';
 import OperatingModel from './OperatingModel';
+import LeadershipFlow from './LeadershipFlow';
 
 const caseStudies = [
   {
@@ -60,7 +61,6 @@ export default function ExecutivePortfolio() {
       <motion.div className="reading-progress" style={{ scaleX: progress }} aria-hidden="true" />
       <section className="exec-hero" aria-labelledby="portfolio-title">
         <SignalField />
-        <div className="exec-hero__orb" aria-hidden="true"><div /><div /><div /><span>Strategy<br /><b>in motion.</b></span></div>
         <div className="exec-shell exec-hero__content">
           <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55 }} className="exec-eyebrow">
             <span /> Kaung Htet Nyein Chan Oo · Digital operations & product
@@ -76,6 +76,7 @@ export default function ExecutivePortfolio() {
             <a href="mailto:jimmykg.spacex@gmail.com?subject=Portfolio%20enquiry" className="exec-button exec-button--quiet">Start a conversation <ArrowUpRight size={18} /></a>
           </motion.div>
           <div className="exec-hero__signature"><span className="status-pulse" /> Bangkok, Thailand <i /> Head of Digital Operations</div>
+          <LeadershipFlow />
         </div>
         <div className="exec-hero__footer exec-shell" aria-label="Core practice areas">
           {['Product strategy', 'Digital operations', 'Fintech channels', 'QA & compliance'].map((item) => <span key={item}>{item}</span>)}

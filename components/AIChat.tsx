@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import ScouseMascot from './ScouseMascot';
+import ScouseWelcome from './ScouseWelcome';
 
 // Initialize Supabase for Realtime Listening
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -125,6 +126,7 @@ export default function AIChat() {
 
       <AnimatePresence>
         {!isOpen && (
+          <ScouseWelcome key={pathname} enabled={pathname === '/'}>{(speaking, mouth) => (
           <motion.button 
             drag
             dragMomentum={false}
@@ -149,9 +151,10 @@ export default function AIChat() {
             aria-label={hasUnread ? 'Open Scouse chat — unread reply' : 'Chat with Scouse, Jimmy’s AI portfolio guide'}
             title="Chat with Scouse"
           >
-            <ScouseMascot size={128} animated />
+            <ScouseMascot size={128} animated speaking={speaking} mouth={mouth} />
             {hasUnread && <span className="scouse-launcher__unread" aria-hidden="true" />}
           </motion.button>
+          )}</ScouseWelcome>
         )}
       </AnimatePresence>
 
