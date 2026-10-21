@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Volume2, Square, X } from 'lucide-react';
+import intro from '../lib/scouse-intro.json';
 
-const INTRO = "Welcome to Jimmy’s portfolio. I’m Scouse, your AI portfolio guide. I can help you explore Jimmy’s experience in product leadership, project delivery, and digital operations. How can I help you today?";
+const { transcript: INTRO, audioSrc } = intro as { transcript: string; audioSrc: string | null };
 
 /** Speech is opt-in; the transcript remains available if a voice cannot play. */
 export default function ScouseWelcome({ enabled, children }: {
@@ -12,29 +13,30 @@ export default function ScouseWelcome({ enabled, children }: {
   children: (speaking: boolean, mouth: number) => ReactNode;
 }) {
   const [visible, setVisible] = useState(false);
-  const [supported, setSupported] = useState(false);
   const [speaking, setSpeaking] = useState(false);
   const [starting, setStarting] = useState(false);
   const [mouth, setMouth] = useState(0);
   const [error, setError] = useState('');
-  const utterance = useRef<SpeechSynthesisUtterance | null>(null);
-  const cadence = useRef<ReturnType<typeof setInterval> | null>(null);
+  const player = useRef<HTMLAudioElement | null>(null);
+  const context = useRef<AudioContext | null>(null);
+  const frame = useRef(0);
   const watchdog = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const pulse = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reduced = useReducedMotion();
 
   function clearTimers() {
-    if (cadence.current) clearInterval(cadence.current);
+    cancelAnimationFrame(frame.current);
     if (watchdog.current) clearTimeout(watchdog.current);
-    if (pulse.current) clearTimeout(pulse.current);
   }
   function releaseVoice() {
     clearTimers();
-    if (utterance.current) {
-      utterance.current.onstart = utterance.current.onend = utterance.current.onerror = utterance.current.onboundary = null;
-      utterance.current = null;
-      window.speechSynthesis.cancel();
+    if (player.current) {
+      player.current.onplaying = player.current.onwaiting = player.current.onended = player.current.onerror = null;
+      player.current.pause();
+      player.current.removeAttribute('src');
+      player.current.load();
+      player.current = null;
     }
+    if (context.current) { void context.current.close().catch(() => {}); context.current = null; }
   }
   function stop(close = false) {
     releaseVoice(); setSpeaking(false); setStarting(false); setMouth(0);
@@ -45,7 +47,6 @@ export default function ScouseWelcome({ enabled, children }: {
     if (!enabled) return;
     try { if (sessionStorage.getItem('scouse-welcome-seen')) return; } catch { /* Optional persistence. */ }
     const show = window.setTimeout(() => {
-      setSupported('speechSynthesis' in window && 'SpeechSynthesisUtterance' in window);
       setVisible(true);
       try { sessionStorage.setItem('scouse-welcome-seen', '1'); } catch { /* Optional persistence. */ }
     }, 4700);
@@ -62,42 +63,59 @@ export default function ScouseWelcome({ enabled, children }: {
       window.removeEventListener('keydown', escape);
       releaseVoice();
     };
-    // Refs own the active utterance and timers, independent of render state.
+    // Refs own the active player and audio graph, independent of render state.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function speak() {
-    if (!supported || starting || speaking) return;
+    if (!audioSrc || starting || speaking) return;
     releaseVoice(); setError(''); setStarting(true);
-    const speech = new SpeechSynthesisUtterance(INTRO);
-    const voices = window.speechSynthesis.getVoices();
-    speech.voice = voices.find(v => v.lang === 'en-GB' && v.localService)
-      ?? voices.find(v => v.lang.startsWith('en') && v.localService)
-      ?? voices.find(v => v.lang.startsWith('en')) ?? null;
-    speech.lang = speech.voice?.lang ?? 'en-GB';
-    speech.rate = .96; speech.pitch = 1; speech.volume = .85;
-    utterance.current = speech;
-    const fail = () => { stop(); setError('Audio is unavailable right now. You can read my introduction above or try again.'); };
-    watchdog.current = setTimeout(fail, 6000);
-    speech.onstart = () => {
+    const audio = new Audio(audioSrc);
+    audio.preload = 'auto'; audio.volume = .9;
+    player.current = audio;
+    const fail = () => {
+      if (player.current !== audio) return;
+      stop(); setError('Audio is unavailable right now. You can read my introduction above or try again.');
+    };
+    let analyser: AnalyserNode | null = null;
+    // Follow the real waveform, including pauses, instead of a fabricated mouth loop.
+    if ('AudioContext' in window && !reduced) {
+      try {
+        const graph = new AudioContext();
+        context.current = graph;
+        const source = graph.createMediaElementSource(audio);
+        analyser = graph.createAnalyser(); analyser.fftSize = 256;
+        source.connect(analyser); analyser.connect(graph.destination);
+        void graph.resume().catch(fail);
+      } catch { /* Audio playback can still work without facial analysis. */ }
+    }
+    const samples = new Uint8Array(256);
+    let lastUpdate = 0;
+    const animateMouth = (now: number) => {
+      if (player.current !== audio || audio.paused || audio.ended) return;
+      if (analyser && now - lastUpdate > 70) {
+        analyser.getByteTimeDomainData(samples);
+        const rms = Math.sqrt(samples.reduce((sum, value) => sum + ((value - 128) / 128) ** 2, 0) / samples.length);
+        setMouth(Math.min(1, Math.max(0, (rms - .012) * 7)));
+        lastUpdate = now;
+      }
+      frame.current = requestAnimationFrame(animateMouth);
+    };
+    watchdog.current = setTimeout(fail, 12000);
+    audio.onplaying = () => {
       if (watchdog.current) clearTimeout(watchdog.current);
       setStarting(false); setSpeaking(true);
-      // A modest cadence fallback for engines without word-boundary events.
-      let step = 0;
-      cadence.current = setInterval(() => setMouth([.25, .8, .15, .55, 0][step++ % 5]), 140);
-      watchdog.current = setTimeout(fail, 45000);
+      cancelAnimationFrame(frame.current);
+      if (analyser) frame.current = requestAnimationFrame(animateMouth);
     };
-    speech.onboundary = (event) => {
-      if (event.name !== 'word') return;
-      if (cadence.current) { clearInterval(cadence.current); cadence.current = null; }
-      if (pulse.current) clearTimeout(pulse.current);
-      const word = INTRO.slice(event.charIndex).split(/\s/)[0];
-      setMouth(/[ou]/i.test(word) ? .9 : .5);
-      pulse.current = setTimeout(() => setMouth(0), Math.min(260, 80 + word.length * 22));
+    audio.onwaiting = () => {
+      cancelAnimationFrame(frame.current); setMouth(0); setSpeaking(false); setStarting(true);
+      if (watchdog.current) clearTimeout(watchdog.current);
+      watchdog.current = setTimeout(fail, 12000);
     };
-    speech.onend = () => { stop(true); };
-    speech.onerror = fail;
-    try { window.speechSynthesis.speak(speech); } catch { fail(); }
+    audio.onended = () => stop(true);
+    audio.onerror = fail;
+    void audio.play().catch(() => { if (player.current === audio) fail(); });
   }
 
   return <>
@@ -109,11 +127,11 @@ export default function ScouseWelcome({ enabled, children }: {
           <button onClick={() => stop(true)} aria-label="Dismiss Scouse introduction"><X size={16} /></button></div>
         <p>{INTRO}</p>
         <div className="scouse-welcome__controls">
-          {supported && <button onClick={() => speaking || starting ? stop() : speak()}>
+          {audioSrc && <button onClick={() => speaking || starting ? stop() : speak()}>
             {speaking || starting ? <Square size={13} /> : <Volume2 size={16} />}
             {speaking ? 'Stop introduction' : starting ? 'Cancel audio' : 'Listen to Scouse'}
           </button>}
-          <span role="status">{speaking ? 'Speaking…' : starting ? 'Starting voice…' : 'Sound is optional'}</span>
+          <span role="status">{speaking ? 'Speaking · AI-generated voice' : starting ? 'Loading voice…' : audioSrc ? 'AI-generated voice · Optional audio' : 'Your AI portfolio guide · Ask me anything'}</span>
         </div>
         {error && <p className="scouse-welcome__error" role="status">{error}</p>}
       </motion.aside>}
