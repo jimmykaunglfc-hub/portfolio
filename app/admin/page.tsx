@@ -2,7 +2,7 @@
 
 import { FormEvent, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  AlertCircle, ArrowUpRight, BookOpen, Check, CheckCircle2, ChevronRight,
+  AlertCircle, ArrowUpRight, BookOpen, Check, CheckCircle2, ChevronLeft, ChevronRight,
   Code2, Copy, FileText, Gamepad2, Heading2, ImagePlus, LayoutDashboard,
   List, Loader2, LockKeyhole, LogOut, Menu, MessageSquare, MonitorCog,
   PencilLine, Plus, Quote, RefreshCw, Search, Send, Settings, ShieldCheck, Sparkles,
@@ -18,6 +18,7 @@ type Game = { id: string; name: string; description: string; hint?: string; crea
 type Payload = {
   metrics: { queries: number; openRth: number; resolvedRth: number; sessions: number; articles: number; gameRecords: number };
   chatLogs: ChatRow[];
+  chatPagination: { page: number; pageSize: number; total: number; totalPages: number };
   tickets: { open: Ticket[]; resolved: Ticket[] };
   blogs: Blog[];
   games: Game[];
@@ -67,6 +68,7 @@ export default function AdminControlCenter() {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [reply, setReply] = useState('');
   const [selectedSession, setSelectedSession] = useState('');
+  const [chatPage, setChatPage] = useState(1);
   const [blog, setBlog] = useState<Blog>(EMPTY_BLOG);
   const [editorView, setEditorView] = useState<'write' | 'preview'>('write');
   const [gameForm, setGameForm] = useState({ name: '', description: '', hint: '' });
@@ -89,14 +91,15 @@ export default function AdminControlCenter() {
     return json;
   };
 
-  const load = async () => {
+  const load = async (page = chatPage) => {
     setBusy(true);
     try {
-      const response = await fetch('/api/admin', { cache: 'no-store' });
+      const response = await fetch(`/api/admin?chatPage=${page}&chatPageSize=24`, { cache: 'no-store' });
       if (response.status === 401) { setAuthorized(false); return; }
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error);
       setData(payload);
+      setChatPage(payload.chatPagination?.page || 1);
       setAuthorized(true);
       setAbout(payload.about || '');
       setSettings(payload.settings || {});
@@ -108,14 +111,14 @@ export default function AdminControlCenter() {
 
   useEffect(() => {
     document.body.classList.add('admin-route');
-    const timer = window.setTimeout(() => void load(), 0);
+    const timer = window.setTimeout(() => void load(1), 0);
     return () => { window.clearTimeout(timer); document.body.classList.remove('admin-route'); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const login = async (event: FormEvent) => {
     event.preventDefault(); setBusy(true);
-    try { await request({ action: 'login', ...credentials }); setCredentials({ username: '', password: '' }); await load(); }
+    try { await request({ action: 'login', ...credentials }); setCredentials({ username: '', password: '' }); await load(1); }
     catch (error) { alert(error instanceof Error ? error.message : 'Sign in failed.', 'error'); }
     finally { setBusy(false); }
   };
@@ -127,7 +130,7 @@ export default function AdminControlCenter() {
 
   const mutate = async (body: Record<string, unknown>, success: string) => {
     setBusy(true);
-    try { await request(body); alert(success); await load(); return true; }
+    try { await request(body); alert(success); await load(chatPage); return true; }
     catch (error) { alert(error instanceof Error ? error.message : 'Operation failed.', 'error'); return false; }
     finally { setBusy(false); }
   };
@@ -183,11 +186,11 @@ export default function AdminControlCenter() {
       <button className="logout" onClick={logout}><LogOut /> End session</button>
     </aside>
     <section className="admin-workspace">
-      <header className="admin-topbar"><button className="icon-button mobile-menu" onClick={() => setMobileNav(true)}><Menu /></button><div><span className="eyebrow">Portfolio intelligence</span><h1>{NAV.find(([id]) => id === active)?.[1]}</h1></div><div className="top-actions"><span className="live-pill"><i /> Systems online</span><button className="icon-button" title="Refresh data" onClick={load}><RefreshCw className={busy ? 'spin' : ''} /></button><div className="admin-avatar">JO</div></div></header>
+      <header className="admin-topbar"><button className="icon-button mobile-menu" onClick={() => setMobileNav(true)}><Menu /></button><div><span className="eyebrow">Portfolio intelligence</span><h1>{NAV.find(([id]) => id === active)?.[1]}</h1></div><div className="top-actions"><span className="live-pill"><i /> Systems online</span><button className="icon-button" title="Refresh data" onClick={() => void load(chatPage)}><RefreshCw className={busy ? 'spin' : ''} /></button><div className="admin-avatar">JO</div></div></header>
       <div className="admin-content">
         {active === 'overview' && <Overview data={data} setActive={setActive} />}
         {active === 'rth' && <section>
-          <SectionHead kicker="Human support operations" title="Route-to-human inbox" copy="Review escalated conversations, answer visitors, and maintain a clear resolution trail." action={<button className="secondary-button" onClick={load}><RefreshCw /> Refresh inbox</button>} />
+          <SectionHead kicker="Human support operations" title="Route-to-human inbox" copy="Review escalated conversations, answer visitors, and maintain a clear resolution trail." action={<button className="secondary-button" onClick={() => void load(chatPage)}><RefreshCw /> Refresh inbox</button>} />
           <div className="segmented"><button className={ticketMode === 'open' ? 'active' : ''} onClick={() => { setTicketMode('open'); setSelectedTicket(data?.tickets.open[0] || null); }}>Open <b>{data?.metrics.openRth || 0}</b></button><button className={ticketMode === 'resolved' ? 'active' : ''} onClick={() => { setTicketMode('resolved'); setSelectedTicket(data?.tickets.resolved[0] || null); }}>Resolved <b>{data?.metrics.resolvedRth || 0}</b></button></div>
           <div className="inbox-layout">
             <div className="ticket-list">{tickets.length ? tickets.map((ticket) => <button key={`${ticket.id}-${ticket.resolved_at || ''}`} className={selectedTicket?.id === ticket.id ? 'selected' : ''} onClick={() => setSelectedTicket(ticket)}><div className="ticket-row"><span className={`status-dot ${ticket.status}`} /> <code>#{shortSession(ticket.session_id)}</code><time>{timeLabel(ticket.created_at)}</time></div><strong>{ticket.user_message}</strong><span>{ticket.ai_response}</span></button>) : <Empty icon={<CheckCircle2 />} title="Inbox clear" copy="No conversations are waiting for human action." />}</div>
@@ -201,7 +204,8 @@ export default function AdminControlCenter() {
         </section>}
         {active === 'chats' && <section>
           <SectionHead kicker="Global AI record" title="Conversation intelligence" copy="A session-based record of every Scouse interaction and human handoff." />
-          <div className="chat-layout"><div className="session-panel"><div className="search-field"><Search /><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search conversations" /></div><div className="session-list">{sessions.map((session) => <button key={session.id} className={effectiveSession === session.id ? 'selected' : ''} onClick={() => setSelectedSession(session.id)}><div><strong>#{shortSession(session.id)}</strong><time>{timeLabel(session.latest.created_at)}</time></div><p>{session.rows.find((row) => !row.user_message.startsWith('SYSTEM_'))?.user_message || 'Administrative update'}</p><span>{session.rows.length} interaction{session.rows.length === 1 ? '' : 's'}{session.rows.some((row) => row.requires_human) && <b>RTH</b>}</span></button>)}</div></div><div className="transcript-panel">{selectedChat ? <><div className="transcript-head"><div><h3>Session #{shortSession(selectedChat.id)}</h3><span>{selectedChat.id}</span></div><span>{selectedChat.rows.length} records</span></div><div className="transcript">{selectedChat.rows.map((row) => row.user_message.startsWith('SYSTEM_ADMIN_') ? <div className="bubble admin" key={row.id}><span>Human operator · {timeLabel(row.created_at)}</span><p>{row.ai_response}</p></div> : <div className="exchange" key={row.id}><div className="bubble visitor"><span>Visitor · {timeLabel(row.created_at)}</span><p>{row.user_message}</p></div><div className="bubble scouse"><span>Scouse</span><p>{row.ai_response}</p></div></div>)}</div></> : <Empty icon={<MessageSquare />} title="No conversation selected" copy="Choose a session to see its transcript." />}</div></div>
+          <div className="chat-layout"><div className="session-panel"><div className="search-field"><Search /><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search this page" /></div><div className="session-list">{sessions.map((session) => <button key={session.id} className={effectiveSession === session.id ? 'selected' : ''} onClick={() => setSelectedSession(session.id)}><div><strong>#{shortSession(session.id)}</strong><time>{timeLabel(session.latest.created_at)}</time></div><p>{session.rows.find((row) => !row.user_message.startsWith('SYSTEM_'))?.user_message || 'Administrative update'}</p><span>{session.rows.length} interaction{session.rows.length === 1 ? '' : 's'}{session.rows.some((row) => row.requires_human) && <b>RTH</b>}</span></button>)}</div></div><div className="transcript-panel">{selectedChat ? <><div className="transcript-head"><div><h3>Session #{shortSession(selectedChat.id)}</h3><span>{selectedChat.id}</span></div><span>{selectedChat.rows.length} records on this page</span></div><div className="transcript">{selectedChat.rows.map((row) => row.user_message.startsWith('SYSTEM_ADMIN_') ? <div className="bubble admin" key={row.id}><span>Human operator · {timeLabel(row.created_at)}</span><p>{row.ai_response}</p></div> : <div className="exchange" key={row.id}><div className="bubble visitor"><span>Visitor · {timeLabel(row.created_at)}</span><p>{row.user_message}</p></div><div className="bubble scouse"><span>Scouse</span><p>{row.ai_response}</p></div></div>)}</div></> : <Empty icon={<MessageSquare />} title="No conversation selected" copy="Choose a session to see its transcript." />}</div></div>
+          <div className="pagination-bar"><span>Showing {data?.chatLogs.length || 0} of {data?.chatPagination.total || 0} records</span><div><button className="secondary-button" disabled={chatPage <= 1 || busy} onClick={() => { setSelectedSession(''); setSearch(''); void load(chatPage - 1); }}><ChevronLeft /> Previous</button><strong>Page {chatPage} of {data?.chatPagination.totalPages || 1}</strong><button className="secondary-button" disabled={chatPage >= (data?.chatPagination.totalPages || 1) || busy} onClick={() => { setSelectedSession(''); setSearch(''); void load(chatPage + 1); }}>Next <ChevronRight /></button></div></div>
         </section>}
         {active === 'blog' && <section>
           <SectionHead kicker="Publishing workspace" title="Blog Engine" copy="Draft, format, preview, and publish long-form thinking from one focused workspace." action={<button className="secondary-button" onClick={() => { setBlog(EMPTY_BLOG); setEditorView('write'); }}><Plus /> New article</button>} />

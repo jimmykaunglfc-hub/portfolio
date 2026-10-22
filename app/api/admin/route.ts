@@ -77,29 +77,43 @@ function makeTickets(rows: ChatRow[]) {
   return { open, resolved };
 }
 
-async function dashboardPayload() {
-  const [chat, blogs, games, about, settings] = await Promise.all([
-    supabaseAdmin.from('chat_history').select('*').order('created_at', { ascending: false }).limit(1000),
+async function dashboardPayload(chatPage: number, chatPageSize: number) {
+  const from = (chatPage - 1) * chatPageSize;
+  const to = from + chatPageSize - 1;
+  const [chatPageResult, operationalChat, allChatCount, visitorQueryCount, blogs, games, about, settings] = await Promise.all([
+    supabaseAdmin.from('chat_history').select('*').order('created_at', { ascending: false }).range(from, to),
+    // Operational rows stay server-side for RTH resolution and unique-session metrics.
+    // They are never sent wholesale to the browser.
+    supabaseAdmin.from('chat_history').select('*').order('created_at', { ascending: false }).limit(2000),
+    supabaseAdmin.from('chat_history').select('id', { count: 'exact', head: true }),
+    supabaseAdmin.from('chat_history').select('id', { count: 'exact', head: true }).not('user_message', 'like', 'SYSTEM_ADMIN_%'),
     supabaseAdmin.from('blog_posts').select('*').order('created_at', { ascending: false }),
     supabaseAdmin.from('games_data').select('*').order('created_at', { ascending: false }),
     supabaseAdmin.from('about_me').select('*').order('updated_at', { ascending: false }),
     supabaseAdmin.from('app_settings').select('*').limit(1),
   ]);
-  const firstError = [chat.error, blogs.error, games.error, about.error, settings.error].find(Boolean);
+  const firstError = [chatPageResult.error, operationalChat.error, allChatCount.error, visitorQueryCount.error, blogs.error, games.error, about.error, settings.error].find(Boolean);
   if (firstError) throw firstError;
-  const rows = (chat.data || []) as ChatRow[];
-  const tickets = makeTickets(rows);
-  const queries = rows.filter((row) => !row.user_message.startsWith('SYSTEM_ADMIN_'));
+  const operationalRows = (operationalChat.data || []) as ChatRow[];
+  const tickets = makeTickets(operationalRows);
+  const visitorRows = operationalRows.filter((row) => !row.user_message.startsWith('SYSTEM_ADMIN_'));
+  const totalChatRecords = allChatCount.count || 0;
   return {
     metrics: {
-      queries: queries.length,
+      queries: visitorQueryCount.count || 0,
       openRth: tickets.open.length,
       resolvedRth: tickets.resolved.length,
-      sessions: new Set(queries.map((row) => row.session_id)).size,
+      sessions: new Set(visitorRows.map((row) => row.session_id)).size,
       articles: blogs.data?.length || 0,
       gameRecords: games.data?.length || 0,
     },
-    chatLogs: rows,
+    chatLogs: (chatPageResult.data || []) as ChatRow[],
+    chatPagination: {
+      page: chatPage,
+      pageSize: chatPageSize,
+      total: totalChatRecords,
+      totalPages: Math.max(1, Math.ceil(totalChatRecords / chatPageSize)),
+    },
     tickets,
     blogs: blogs.data || [],
     games: games.data || [],
@@ -111,7 +125,11 @@ async function dashboardPayload() {
 export async function GET(req: NextRequest) {
   if (!hasValidSession(req)) return unauthorized();
   try {
-    return NextResponse.json(await dashboardPayload());
+    const requestedPage = Number.parseInt(req.nextUrl.searchParams.get('chatPage') || '1', 10);
+    const requestedSize = Number.parseInt(req.nextUrl.searchParams.get('chatPageSize') || '24', 10);
+    const chatPage = Number.isFinite(requestedPage) ? Math.max(1, requestedPage) : 1;
+    const chatPageSize = Number.isFinite(requestedSize) ? Math.min(50, Math.max(12, requestedSize)) : 24;
+    return NextResponse.json(await dashboardPayload(chatPage, chatPageSize));
   } catch (error) {
     console.error('Admin dashboard load failed:', error);
     return NextResponse.json({ error: 'The control center could not load its data.' }, { status: 500 });
