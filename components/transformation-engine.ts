@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { advanceEngineTime } from '../lib/engine-timing';
 
 export type EngineController = { dispose: () => void; setPaused: (paused: boolean) => void; selectStage: (stage: number) => void };
 
@@ -89,7 +90,9 @@ export function createTransformationEngine(host: HTMLElement, onStage: (stage: n
   function draw(stamp: number) {
     if (disposed || lost) return;
     const running = !paused && !motion.matches;
-    if (running && lastStamp) elapsed += Math.min((stamp - lastStamp) / 1000, .08);
+    // A RAF timestamp can precede performance.now() from the same frame.
+    // Never let a resume draw produce a negative phase / invalid caption index.
+    if (running && lastStamp) elapsed = advanceEngineTime(elapsed, stamp, lastStamp);
     lastStamp = stamp;
     if (running && stamp - lastDraw < 1000 / 30) return;
     lastDraw = stamp;
