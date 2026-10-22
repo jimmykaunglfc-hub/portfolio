@@ -1,0 +1,16 @@
+export const GAME_CATALOG = [
+  { name: 'Neural Decrypt', path: '/games/puzzle', description: 'Decode layered logic sequences under pressure.', hint: 'Look for the relationship between adjacent signals.' },
+  { name: 'QA Bug Hunt', path: '/games/qa-test', description: 'Find product defects before they reach production.', hint: 'Test the edge cases before the happy path.' },
+  { name: 'Sprint Optimizer', path: '/games/sprint-planner', description: 'Balance scope, capacity, and delivery risk.', hint: 'Protect capacity for the highest-value outcome.' },
+  { name: 'Bug Blaster', path: '/games/bug-blaster', description: 'Prioritize and eliminate critical defects.', hint: 'Handle the highest-impact defects first.' },
+  { name: 'Nexus Breach', path: '/games/nexus-breach', description: 'Defend a connected system from cascading failure.', hint: 'Stabilize the most connected node first.' },
+  { name: "Liar's Dice", path: '/games/liars-dice', description: 'Read uncertainty and make the strongest call.', hint: 'Estimate the whole table, not only your own dice.' },
+  { name: 'Techle', path: '/games/techle', description: 'Identify the technology through precise signals.', hint: 'Use each clue to eliminate an entire category.' },
+  { name: 'Lexicon Lock', path: '/games/lexicon-lock', description: 'Unlock terminology through structured reasoning.', hint: 'Start with the language patterns you can prove.' },
+  { name: 'Biometric Override', path: '/games/biometric-override', description: 'Verify patterns and override the security layer.', hint: 'Accuracy matters more than speed at the beginning.' },
+  { name: 'Core Meltdown', path: '/games/core-meltdown', description: 'Stabilize a system before critical failure.', hint: 'Treat the root cause before the visible symptom.' },
+  { name: 'The Glitch Deck', path: '/games/glitch-deck', description: 'Match anomalies and restore the product flow.', hint: 'Remember both the pattern and its position.' },
+  { name: 'Terminal Defuse', path: '/games/terminal-defuse', description: 'Resolve command-line clues before time expires.', hint: 'Read the full command before committing.' },
+  { name: 'Neural Duel', path: '/games/neural-duel', description: 'Compete through rapid strategic decisions.', hint: 'Adapt to your opponent rather than repeating a pattern.' },
+  { name: 'Quantum Compass', path: '/games/quantum-compass', description: 'Navigate ambiguity using directional clues.', hint: 'Combine weak signals before choosing a direction.' },
+] as const;

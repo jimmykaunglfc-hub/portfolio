@@ -4,7 +4,9 @@ import { createClient } from '@supabase/supabase-js';
 import nodemailer from 'nodemailer';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+// Server-side chat writes must use the service role. The former anon-first order
+// allowed email alerts to succeed while RLS silently rejected the inbox record.
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const RTH_TRIGGERS = [
@@ -12,10 +14,41 @@ const RTH_TRIGGERS = [
   "contact", "email", "talk to jimmy", "speak to", "meeting", "appointment"
 ];
 
+export async function GET(req: Request) {
+  const sessionId = new URL(req.url).searchParams.get('sessionId') || '';
+  if (!/^session-[a-zA-Z0-9-]{20,80}$/.test(sessionId)) {
+    return Response.json({ error: 'Invalid chat session.' }, { status: 400 });
+  }
+  const { data, error } = await supabase
+    .from('chat_history')
+    .select('id, ai_response, created_at')
+    .eq('session_id', sessionId)
+    .eq('user_message', 'SYSTEM_ADMIN_OVERRIDE')
+    .order('created_at', { ascending: true });
+  if (error) {
+    console.error('Admin reply retrieval failed:', error);
+    return Response.json({ error: 'Replies are temporarily unavailable.' }, { status: 500 });
+  }
+  return Response.json({ replies: data || [] }, { headers: { 'Cache-Control': 'no-store' } });
+}
+
+type IncomingChatMessage = {
+  role?: string;
+  content?: string | Array<{ text?: string }>;
+  parts?: Array<{ text?: string }>;
+};
+
+function messageText(message: IncomingChatMessage) {
+  if (typeof message.content === 'string') return message.content;
+  if (Array.isArray(message.parts)) return message.parts.map((part) => part.text || '').join('');
+  if (Array.isArray(message.content)) return message.content.map((part) => part.text || '').join('');
+  return '';
+}
+
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { messages } = body;
+    const body = await req.json() as { messages?: IncomingChatMessage[] };
+    const messages = body.messages;
     const url = new URL(req.url);
     const sessionId = url.searchParams.get('sessionId');
     
@@ -23,28 +56,36 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ error: "No messages available" }), { status: 400 });
     }
 
-    const lastUserMessageObj = messages.filter((m: any) => m.role === 'user').pop();
-    let originalUserMessageText = "";
-    
-    if (lastUserMessageObj) {
-      if (typeof lastUserMessageObj.content === 'string') {
-        originalUserMessageText = lastUserMessageObj.content;
-      } else if (Array.isArray(lastUserMessageObj.parts)) {
-        originalUserMessageText = lastUserMessageObj.parts.map((p: any) => p.text || "").join("");
-      } else if (Array.isArray(lastUserMessageObj.content)) {
-        originalUserMessageText = lastUserMessageObj.content.map((c: any) => c.text || "").join("");
-      }
-    }
+    const lastUserMessageObj = messages.filter((message) => message.role === 'user').pop();
+    const originalUserMessageText = lastUserMessageObj ? messageText(lastUserMessageObj) : '';
       
     const cleanUserMessage: string = originalUserMessageText.trim().toLowerCase();
     const activeSessionId: string = sessionId || `session-${Date.now()}`;
 
     const requiresHuman = RTH_TRIGGERS.some(trigger => cleanUserMessage.includes(trigger));
 
-    // ============================================================================
-    // 1. FIRE EMAIL ALERTS
-    // ============================================================================
+    // Persist an RTH request before sending the email or starting the stream.
+    // This makes the admin inbox the source of truth even when the visitor closes
+    // the page before Gemini finishes generating its response.
+    let routedTicketId: string | null = null;
     if (requiresHuman) {
+      const { data: ticket, error: ticketError } = await supabase
+        .from('chat_history')
+        .insert({
+          session_id: activeSessionId,
+          user_message: originalUserMessageText,
+          ai_response: 'Scouse routed this conversation to human support.',
+          requires_human: true,
+        })
+        .select('id')
+        .single();
+
+      if (ticketError) {
+        console.error('RTH persistence failed before email dispatch:', ticketError);
+      } else {
+        routedTicketId = ticket.id;
+      }
+
       try {
         await sendSMTPAlert(originalUserMessageText, activeSessionId);
         console.log("✅ SMTP Alert successful!");
@@ -67,14 +108,10 @@ export async function POST(req: Request) {
       gamesData: liveGamesData || []
     };
 
-    const alternatingMessages: any[] = [];
+    const alternatingMessages: Array<{ role: 'user' | 'assistant'; content: string }> = [];
     for (const msg of messages) {
       const normalizedRole = msg.role === 'user' ? 'user' : 'assistant';
-      let textContent = "";
-      
-      if (typeof msg.content === 'string') textContent = msg.content;
-      else if (Array.isArray(msg.parts)) textContent = msg.parts.map((p: any) => p.text || "").join("");
-      else if (Array.isArray(msg.content)) textContent = msg.content.map((c: any) => c.text || "").join("");
+      const textContent = messageText(msg);
 
       if (alternatingMessages.length > 0 && alternatingMessages[alternatingMessages.length - 1].role === normalizedRole) {
         alternatingMessages[alternatingMessages.length - 1].content += "\n" + textContent;
@@ -112,12 +149,16 @@ export async function POST(req: Request) {
       onFinish: async ({ text }) => {
         try {
           if (originalUserMessageText && supabaseUrl && supabaseKey) {
-            await supabase.from('chat_history').insert({
-              session_id: activeSessionId,
-              user_message: originalUserMessageText,
-              ai_response: text,
-              requires_human: requiresHuman // Seamlessly flags true or false!
-            });
+            const operation = routedTicketId
+              ? supabase.from('chat_history').update({ ai_response: text }).eq('id', routedTicketId)
+              : supabase.from('chat_history').insert({
+                  session_id: activeSessionId,
+                  user_message: originalUserMessageText,
+                  ai_response: text,
+                  requires_human: requiresHuman,
+                });
+            const { error } = await operation;
+            if (error) console.error('Chat history persistence rejected:', error);
           }
         } catch (err) {
           console.error("Failed chat logging:", err);
@@ -125,9 +166,9 @@ export async function POST(req: Request) {
       }
     });
 
-    return result.toUIMessageStreamResponse({ originalMessages: messages });
+    return result.toUIMessageStreamResponse();
 
-  } catch (globalError: any) {
+  } catch (globalError: unknown) {
     console.error("Global chat router catch intercept:", globalError);
     return new Response("System Error", { status: 500 });
   }

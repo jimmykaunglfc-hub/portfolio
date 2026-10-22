@@ -2,7 +2,7 @@
 
 import { useChat } from "@ai-sdk/react";
 import { type UIMessage, DefaultChatTransport } from "ai";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { X, Send, User, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
@@ -31,7 +31,7 @@ export default function AIChat() {
   }, [isOpen]);
   
   // 1. GENERATE A STABLE SESSION ID
-  const [sessionId] = useState(() => `session-${Date.now()}-${Math.floor(Math.random() * 10000)}`);
+  const [sessionId] = useState(() => `session-${crypto.randomUUID()}`);
   
   // 2. USE THE STRICT TRANSPORT API & PASS SESSION ID IN URL
   const { messages, setMessages, sendMessage, status, error } = useChat({
@@ -41,6 +41,23 @@ export default function AIChat() {
   });
 
   const isLoading = status === "submitted" || status === "streaming";
+  const deliveredReplyIds = useRef(new Set<string>());
+
+  const receiveAdminReply = useCallback((row: { id?: string; ai_response?: string }) => {
+    const replyId = String(row.id || '');
+    if (!replyId || !row.ai_response || deliveredReplyIds.current.has(replyId)) return;
+    deliveredReplyIds.current.add(replyId);
+    if (audioRef.current) {
+      audioRef.current.volume = 0.8;
+      audioRef.current.play().catch(() => {});
+    }
+    if (!isOpenRef.current) setHasUnread(true);
+    setMessages((previous: UIMessage[]) => [...previous, {
+      id: replyId,
+      role: 'assistant',
+      parts: [{ type: 'text', text: row.ai_response as string }],
+    }]);
+  }, [setMessages]);
 
   // 3. THE REALTIME LISTENER WITH SOUND & BADGE
   useEffect(() => {
@@ -58,34 +75,7 @@ export default function AIChat() {
         },
         (payload) => {
           const newRow = payload.new;
-          if (newRow.user_message === 'SYSTEM_ADMIN_OVERRIDE') {
-            
-            // 🔊 PLAY NOTIFICATION SOUND VIA REF
-            if (audioRef.current) {
-              audioRef.current.volume = 0.8;
-              const playPromise = audioRef.current.play();
-              if (playPromise !== undefined) {
-                playPromise.catch((err) => {
-                  console.warn("Browser blocked the audio, or file is missing:", err);
-                });
-              }
-            }
-
-            // 🔴 TRIGGER UNREAD BADGE IF CHAT IS CLOSED
-            if (!isOpenRef.current) {
-              setHasUnread(true);
-            }
-
-            // Append the message to the UI
-            setMessages((prevMessages: UIMessage[]) => [
-              ...prevMessages,
-              {
-                id: newRow.id || Date.now().toString(),
-                role: 'assistant',
-                parts: [{ type: 'text', text: newRow.ai_response }]
-              }
-            ]);
-          }
+          if (newRow.user_message === 'SYSTEM_ADMIN_OVERRIDE') receiveAdminReply(newRow);
         }
       )
       .subscribe();
@@ -93,7 +83,27 @@ export default function AIChat() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [sessionId, setMessages]);
+  }, [sessionId, receiveAdminReply]);
+
+  // RLS-safe fallback: only fetch human replies belonging to this unguessable
+  // browser session. This keeps CS delivery working even when Realtime is not
+  // permitted to expose chat_history to the anonymous Supabase role.
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const poll = async () => {
+      try {
+        const response = await fetch(`/api/chat?sessionId=${encodeURIComponent(sessionId)}`, { cache: 'no-store' });
+        if (!response.ok) return;
+        const payload = await response.json() as { replies?: Array<{ id: string; ai_response: string }> };
+        payload.replies?.forEach(receiveAdminReply);
+      } catch {
+        // Realtime remains the primary path; the next polling cycle retries.
+      }
+    };
+    void poll();
+    const timer = window.setInterval(() => void poll(), 7000);
+    return () => window.clearInterval(timer);
+  }, [messages.length, receiveAdminReply, sessionId]);
 
   useEffect(() => {
     if (messagesEndRef.current) {

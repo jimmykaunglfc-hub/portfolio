@@ -38,10 +38,12 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   const renderInlineStyles = (text: string) => {
-    const boldRegex = /\*\*(.*?)\*\*/g;
-    return text.split(boldRegex).map((part, i) => {
-      if (i % 2 === 1) {
-        return <strong key={i} className="font-extrabold text-gray-900 dark:text-white">{part}</strong>;
+    return text.split(/(\*\*.*?\*\*|`.*?`)/g).map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={index} className="font-extrabold text-gray-900 dark:text-white">{part.slice(2, -2)}</strong>;
+      }
+      if (part.startsWith('`') && part.endsWith('`')) {
+        return <code key={index} className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[.9em] text-[#315fc4] dark:bg-white/10 dark:text-[#9bc1ff]">{part.slice(1, -1)}</code>;
       }
       return part;
     });
