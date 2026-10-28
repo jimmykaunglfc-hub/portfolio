@@ -1,161 +1,125 @@
 import * as THREE from 'three';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { journeyIcon, productFacets } from './journey-geometry';
+import { createJourneyStudio } from './journey-studio';
+import { frameDelta, flowPhase } from './journey-timing';
 
-/** A single digital system: signals → semantic clusters → architecture → runtime → launch. */
-export function createCreationScene(host: HTMLElement) {
-  const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true, powerPreference:'low-power' });
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
-  renderer.setClearColor(0x060c18,0);
-  renderer.toneMapping=THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure=1.25;
-  host.appendChild(renderer.domElement);
-  const scene=new THREE.Scene();
-  scene.fog=new THREE.FogExp2(0x07101e,.025);
-  const camera=new THREE.PerspectiveCamera(48,1,.1,100);
-  scene.add(new THREE.HemisphereLight(0xbceaff,0x071021,2.3));
-  const key=new THREE.DirectionalLight(0xc5edff,5);key.position.set(-4,6,8);scene.add(key);
-  const rim=new THREE.PointLight(0x5a99ff,55);rim.position.set(4,-1,4);scene.add(rim);
-  const world=new THREE.Group();scene.add(world);
-  const colors=[0x81c9ff,0x6aebd5,0xb2b8ff];
-  const materials=colors.map(color=>new THREE.MeshPhysicalMaterial({color,metalness:.65,roughness:.18,clearcoat:1,emissive:color,emissiveIntensity:.17}));
-  const sphere=new THREE.SphereGeometry(.12,20,14);
-  const glowMaterial=new THREE.ShaderMaterial({
-    uniforms:{tint:{value:new THREE.Color(0x82c9ff)}},transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
-    vertexShader:'varying vec3 n; varying vec3 v; void main(){vec4 p=modelViewMatrix*vec4(position,1.);n=normalize(normalMatrix*normal);v=normalize(-p.xyz);gl_Position=projectionMatrix*p;}',
-    fragmentShader:'varying vec3 n;varying vec3 v;uniform vec3 tint;void main(){float f=pow(1.-abs(dot(normalize(n),normalize(v))),2.5);gl_FragColor=vec4(tint,f*.28);}',
+export function createCreationScene(host:HTMLElement){
+ const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'low-power'});
+ renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(0x070d19,0);
+ renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;host.appendChild(renderer.domElement);
+ const scene=new THREE.Scene(),world=new THREE.Group();scene.add(world);
+ const camera=new THREE.PerspectiveCamera(44,1,.1,80);
+ const studio=createJourneyStudio(scene,renderer);
+ scene.add(new THREE.HemisphereLight(0xc2eaff,0x182238,1.1));
+ const key=new THREE.DirectionalLight(0xecf7ff,2.8);key.position.set(-3,5,6);scene.add(key);
+ const rim=new THREE.DirectionalLight(0x6ebcff,2.4);rim.position.set(4,1,-3);scene.add(rim);
+ const colors=[0x8cbdff,0x77d9c7,0xb9aff0];
+ const materials=colors.map(color=>new THREE.MeshPhysicalMaterial({color,metalness:.45,roughness:.24,clearcoat:1,emissive:color,emissiveIntensity:.07}));
+ const signalMaterials=colors.flatMap(color=>[
+  new THREE.MeshPhysicalMaterial({color,metalness:.12,roughness:.13,clearcoat:1,transparent:true,opacity:.63,envMapIntensity:1.5}),
+  new THREE.MeshPhysicalMaterial({color,metalness:.78,roughness:.3,clearcoat:.3,envMapIntensity:1.1}),
+  new THREE.MeshPhysicalMaterial({color,metalness:.05,roughness:.25,clearcoat:1,envMapIntensity:.8}),
+ ]);
+ const textures:THREE.Texture[]=[];
+ const label=(value:string)=>{
+  const canvas=document.createElement('canvas');canvas.width=768;canvas.height=96;
+  const ctx=canvas.getContext('2d')!;ctx.font='500 31px sans-serif';ctx.textAlign='center';ctx.fillStyle='#c4d8ed';ctx.fillText(value,384,58);
+  const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;textures.push(texture);
+  const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,transparent:true,depthTest:false}));sprite.scale.set(2.6,.325,1);return sprite;
+ };
+ const roots=[new THREE.Vector3(-2.8,.35,0),new THREE.Vector3(0,.35,0),new THREE.Vector3(2.8,.35,0)];
+ const nodes=Array.from({length:6},(_,i)=>new THREE.Vector3((Math.floor(i/2)-1)*2.8,i%2?-1.2:1.25,0));
+ const signals=Array.from({length:45},(_,i)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.075+(i%5)*.009,24,16),signalMaterials[(i%3)*3+Math.floor(i/3)%3]);world.add(m);return m;});
+ const rootLabels=roots.map((pos,i)=>{
+  const a=label(['Customer / Needs','Business / Value','Technology / Feasibility'][i]);a.position.copy(pos).add(new THREE.Vector3(0,-.95,0));world.add(a);
+  const b=label(['DESIRE','VISION','SOLUTION'][i]);b.position.copy(pos).add(new THREE.Vector3(0,-.95,0));world.add(b);return [a,b];
+ });
+ const rootIcons=roots.map((pos,i)=>{const icon=journeyIcon([0,2,4][i],materials[i]);icon.position.copy(pos);world.add(icon);return icon;});
+ const names=['Empathy','Experience','Direction','Value','Architecture','Reliability'];
+ const icons=nodes.map((pos,i)=>{const g=new THREE.Group(),icon=journeyIcon(i,materials[Math.floor(i/2)]);g.add(icon);const title=label(names[i]);title.position.y=-.74;title.scale.multiplyScalar(.75);g.add(title);g.position.copy(pos);world.add(g);return {group:g,icon,title};});
+ const paths=nodes.map((end,i)=>{
+  const start=roots[Math.floor(i/2)],curve=new THREE.CubicBezierCurve3(start,start.clone().add(new THREE.Vector3(i%2?.45:-.45,0,.4)),end.clone().add(new THREE.Vector3(0,i%2?.6:-.6,.4)),end);
+  const mat=new THREE.LineBasicMaterial({color:colors[Math.floor(i/2)],transparent:true,opacity:.5});const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(50)),mat);world.add(line);return {curve,line,mat};
+ });
+ const flow=new THREE.Group();world.add(flow);
+ const circuits=[[0,2],[2,4],[4,5],[5,3],[3,1],[1,0],[2,3]].map(([a,b],i)=>{
+  const start=nodes[a],end=nodes[b],mid=start.clone().lerp(end,.5);mid.z=-.45;
+  const curve=new THREE.CatmullRomCurve3([start,start.clone().lerp(mid,.5),mid,end.clone().lerp(mid,.5),end]);
+  const mat=new THREE.LineBasicMaterial({color:0x82bedc,transparent:true,opacity:.35});const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(40)),mat);flow.add(line);
+  const packet=new THREE.Mesh(new THREE.SphereGeometry(.045,10,8),materials[i%3]);flow.add(packet);return {curve,line,packet};
+ });
+ const product=new THREE.Group();world.add(product);
+ const facets=productFacets().map(({geometry,center,normal,sides},i)=>{
+  const mat=new THREE.MeshPhysicalMaterial({color:sides===4?0x8ebbd0:sides===5?0xc7dce9:0x769bbd,metalness:.25,roughness:.7,clearcoat:0,side:THREE.DoubleSide,transparent:true});
+  const mesh=new THREE.Mesh(geometry,mat);mesh.position.copy(center);product.add(mesh);
+  const edge=new THREE.LineSegments(new THREE.EdgesGeometry(geometry,28),new THREE.LineBasicMaterial({color:0xb6e5ef,transparent:true,opacity:.3}));mesh.add(edge);
+  return {mesh,mat,edge,center,normal,seed:i};
+ });
+ const core=new THREE.Mesh(new THREE.IcosahedronGeometry(.75,2),new THREE.MeshBasicMaterial({color:0x9bdde8,wireframe:true,transparent:true,opacity:.08}));product.add(core);
+ const laser=new THREE.Group();world.add(laser);
+ const laserLine=new THREE.Mesh(new THREE.BoxGeometry(4.3,.012,.012),new THREE.MeshBasicMaterial({color:0xb7ffeb}));laserLine.position.z=1.8;laser.add(laserLine);
+ const laserPlane=new THREE.Mesh(new THREE.PlaneGeometry(4.3,3.5),new THREE.MeshBasicMaterial({color:0x68f1d1,transparent:true,opacity:.075,side:THREE.DoubleSide,depthWrite:false}));laserPlane.rotation.x=-Math.PI/2;laser.add(laserPlane);
+ const scanLight=new THREE.PointLight(0x7dffdb,0,6);scanLight.position.z=2;laser.add(scanLight);
+ // World-space confirmations live outside the sculpture silhouette, never on a card.
+ const confirmations=['Experience aligned','Value confirmed','Release readiness'].map((name,i)=>{
+  const group=new THREE.Group(),title=label(name),status=label('✓  PASSED');
+  title.position.y=.1;status.position.y=-.23;status.scale.multiplyScalar(.65);status.material.color.setHex(0x98edcf);
+  title.material.depthTest=true;status.material.depthTest=true;
+  title.material.depthWrite=false;status.material.depthWrite=false;
+  group.add(title,status);world.add(group);return {group,title,status,threshold:3.8+i*.235};
+ });
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ let progress=0,opened=0,disposed=false,frame=0,time=0,previous=0;
+ const smooth=(n:number)=>{n=THREE.MathUtils.clamp(n,0,1);return n*n*(3-2*n);};
+ function draw(){
+  if(disposed)return;
+  const p=progress*5,gather=smooth(p),direction=smooth((p-1)/.8),split=smooth((p-2)/.8),form=smooth((p-3)/.65),polish=smooth((p-4.3)/.7);
+  const spin=reduced.matches?0:time;
+  const fitWidth=Math.max(11,4.25/(Math.tan(22*Math.PI/180)*camera.aspect));
+  const distance=THREE.MathUtils.lerp(fitWidth,camera.aspect<.8?13:11,form);
+  camera.position.set(Math.sin(progress*Math.PI)*.25,.35,distance-opened*6.8);camera.lookAt(0,.2,0);
+  studio.update(progress,opened,spin,camera);
+  signals.forEach((s,i)=>{
+   const a=i*2.399,root=roots[i%3],start=new THREE.Vector3(Math.cos(a)*(1.2+(i%8)*.30),Math.sin(a)*1.8,Math.sin(i*1.7)*1.0-1);
+   const target=root.clone().add(new THREE.Vector3(Math.cos(a)*.46,Math.sin(a)*.46,Math.sin(i)*.25));
+   s.position.lerpVectors(start,target,gather);s.scale.setScalar(Math.max(.001,1-direction));s.visible=p<1.85;
   });
-  const signals=Array.from({length:90},(_,i)=>{
-    const group=new THREE.Group();const ball=new THREE.Mesh(sphere,materials[i%3]);group.add(ball);
-    const halo=new THREE.Mesh(sphere,glowMaterial);halo.scale.setScalar(1.7);group.add(halo);world.add(group);return group;
+  rootLabels.forEach(([a,b],i)=>{a.visible=p>.35&&p<1.8;b.visible=p>1.1&&p<2.9;a.material.opacity=gather*(1-direction);b.material.opacity=direction*(1-split);a.position.x=b.position.x=roots[i].x;});
+  rootIcons.forEach(icon=>{icon.visible=p>1&&p<2.9;icon.scale.setScalar(Math.max(.001,direction*(1-split)));icon.rotation.y=Math.sin(spin*.25)*.12;});
+  paths.forEach(({line,mat},i)=>{line.visible=p>1.65&&p<3.05;line.geometry.setDrawRange(0,Math.floor(split*51));mat.opacity=.6*(1-form);icons[i].group.position.copy(paths[i].curve.getPoint(split));});
+  icons.forEach(({group,icon,title},i)=>{
+   group.visible=p>2&&p<3.7;group.scale.setScalar(Math.max(.001,split*(1-form)));group.position.lerp(new THREE.Vector3(0,0,-.4),form);icon.rotation.y=Math.sin(spin*.3+i)*.12;title.material.opacity=1-form;
   });
-  const centers=[new THREE.Vector3(-3.1,1,-1),new THREE.Vector3(0,-.6,0),new THREE.Vector3(3.1,1,-1)];
-  const nodes=[new THREE.Vector3(-3,1.4,-1),new THREE.Vector3(0,1.4,-1),new THREE.Vector3(3,1.4,-1),new THREE.Vector3(-3,-1.4,0),new THREE.Vector3(0,-1.4,0),new THREE.Vector3(3,-1.4,0)];
-  const textures:THREE.Texture[]=[];
-  function label(text:string,color='#bce4ff') {
-    const canvas=document.createElement('canvas');canvas.width=512;canvas.height=80;
-    const ctx=canvas.getContext('2d')!;ctx.font='500 26px monospace';ctx.fillStyle=color;ctx.textAlign='center';ctx.fillText(text,256,48);
-    const texture=new THREE.CanvasTexture(canvas);textures.push(texture);
-    const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,transparent:true,depthTest:false}));sprite.scale.set(2.4,.375,1);return sprite;
-  }
-  const clusters=centers.map((center,i)=>{
-    const group=new THREE.Group();group.position.copy(center);
-    const cage=new THREE.Mesh(new THREE.IcosahedronGeometry(1.1,1),new THREE.MeshBasicMaterial({color:colors[i],wireframe:true,transparent:true,opacity:.15}));group.add(cage);
-    const title=label(['CUSTOMER / NEEDS','BUSINESS / VALUE','TECHNOLOGY / FEASIBILITY'][i]);title.position.y=-1.45;group.add(title);world.add(group);return group;
+  flow.visible=p>2.6&&p<3.7;flow.scale.setScalar(Math.max(.001,1-form));
+  circuits.forEach(({packet,curve,line},i)=>{packet.position.copy(curve.getPoint(reduced.matches?.5:flowPhase(spin,i*.14)));(line.material as THREE.LineBasicMaterial).opacity=split*.4*(1-form);});
+  product.visible=p>3;product.scale.setScalar(Math.max(.001,form)*(1+opened*.5));product.rotation.set(.18+Math.sin(spin*.12)*.09,spin*.09,.12);product.position.y=-.12;
+  const scanY=1.9-smooth((p-3.65)/.65)*3.8;laser.visible=p>3.65&&p<4.35;laser.position.y=scanY;scanLight.intensity=laser.visible?5:0;
+  confirmations.forEach(({group,title,status,threshold},i)=>{
+   const compact=camera.aspect<1.35,reveal=smooth((p-threshold)/.10);
+   const fade=1-smooth((p-(compact&&i<2?threshold+.18:4.43))/.12);
+   group.visible=p>=threshold&&p<4.55&&opened===0;
+   // On narrow screens show one confirmation at a time below the product.
+   group.position.set(compact?0:i===1?-3.35:3.35,compact?-2.45:[1.05,.05,-1.05][i],.2+(1-reveal)*.65);
+   group.position.y-=(1-reveal)*.18;
+   group.scale.setScalar((compact?1.05:1.1)*(.82+.18*reveal));
+   title.material.opacity=status.material.opacity=reveal*fade;
   });
-  const runtime=new THREE.Group();world.add(runtime);
-  const serviceGeometry=new RoundedBoxGeometry(1.45,1.1,.35,3,.09);
-  const serviceMaterial=new THREE.MeshPhysicalMaterial({color:0x122b45,metalness:.65,roughness:.24,clearcoat:1,transparent:true,opacity:.95});
-  const serviceNames=['EXPERIENCE','API GATEWAY','IDENTITY','WORKFLOWS','DATA LAYER','OBSERVABILITY'];
-  const services=nodes.map((pos,i)=>{
-    const group=new THREE.Group();group.position.copy(pos);
-    const body=new THREE.Mesh(serviceGeometry,serviceMaterial);group.add(body);
-    const edges=new THREE.LineSegments(new THREE.EdgesGeometry(serviceGeometry,25),new THREE.LineBasicMaterial({color:0x74b9e6,transparent:true,opacity:.7}));group.add(edges);
-    const title=label(serviceNames[i]);title.position.set(0,-.85,.2);title.scale.multiplyScalar(.65);group.add(title);
-    for(let j=0;j<4;j++) {const line=new THREE.Mesh(new THREE.BoxGeometry(.55+(j%2)*.35,.025,.01),materials[i%3]);line.position.set(-.12,.25-j*.14,.19);group.add(line);}
-    const led=new THREE.Mesh(new THREE.SphereGeometry(.045,8,6),materials[1]);led.position.set(.52,.35,.22);group.add(led);
-    runtime.add(group);return group;
+  facets.forEach(({mesh,mat,edge,center,normal,seed})=>{
+   const draft=(1-polish)*(.08+Math.sin(spin*.7+seed)*.025),burst=smooth(opened)*5;
+   mesh.position.copy(center).addScaledVector(normal,draft+burst);mesh.rotation.set(opened*Math.sin(seed)*.9,opened*Math.cos(seed)*.9,0);
+   mat.roughness=.72-polish*.57;mat.metalness=.2+polish*.4;mat.clearcoat=polish;mat.opacity=1-smooth((opened-.55)/.45);edge.material.opacity=.3*mat.opacity;
+   const surfaceY=center.clone().applyEuler(product.rotation).y+product.position.y;
+   mat.emissive.setHex(0x65d7bf);mat.emissiveIntensity=laser.visible?Math.max(0,1-Math.abs(surfaceY-scanY)*4)*.32:.015*polish;
   });
-  const links=[[0,1],[1,2],[0,3],[1,4],[2,5],[3,4],[4,5],[0,4],[4,2]];
-  const linksGeometry=new THREE.BufferGeometry();const positions=new Float32Array(links.length*6);
-  linksGeometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
-  const linksMaterial=new THREE.LineBasicMaterial({color:0x63c9ee,transparent:true,opacity:.5});
-  const connections=new THREE.LineSegments(linksGeometry,linksMaterial);world.add(connections);
-  const packets=links.map((_,i)=>{const packet=new THREE.Mesh(new THREE.SphereGeometry(.055,8,6),materials[i%3]);world.add(packet);return packet;});
-  const grid=new THREE.GridHelper(70,45,0x204c68,0x102c42);grid.position.set(0,-3,-15);world.add(grid);
-  const starsGeometry=new THREE.BufferGeometry();const starPositions=new Float32Array(180*3);
-  for(let i=0;i<180;i++){starPositions.set([Math.sin(i*12.37)*18,Math.cos(i*4.79)*10,-i*.22],i*3);}
-  starsGeometry.setAttribute('position',new THREE.BufferAttribute(starPositions,3));
-  const stars=new THREE.Points(starsGeometry,new THREE.PointsMaterial({color:0x80bce9,size:.035,transparent:true,opacity:.45}));scene.add(stars);
-  const portal=new THREE.Group();world.add(portal);portal.position.z=1;
-  // A finished software workspace, rather than a frame around an abstract object.
-  const productCanvas=document.createElement('canvas');productCanvas.width=1600;productCanvas.height=960;
-  const ui=productCanvas.getContext('2d')!;
-  const rect=(x:number,y:number,w:number,h:number,r:number,fill:string,stroke?:string)=>{
-    ui.beginPath();ui.roundRect(x,y,w,h,r);ui.fillStyle=fill;ui.fill();
-    if(stroke){ui.strokeStyle=stroke;ui.lineWidth=2;ui.stroke();}
-  };
-  const text=(value:string,x:number,y:number,size:number,color='#e5edf8',weight=400)=>{
-    ui.font=`${weight} ${size}px system-ui, sans-serif`;ui.fillStyle=color;ui.fillText(value,x,y);
-  };
-  rect(0,0,1600,960,28,'#0c1728','#344b65');
-  rect(0,0,1600,82,28,'#132136');
-  text('KHNCO.',38,52,26,'#eef5ff',700);
-  text('PRODUCT WORKSPACE',230,50,15,'#829bb7',600);
-  rect(1330,24,230,34,17,'#153d3b');text('●  Release ready',1360,47,16,'#9ce0cb',500);
-  ui.fillStyle='#26374d';ui.fillRect(0,82,1600,1);ui.fillRect(242,83,1,877);
-  text('WORKSPACE',30,138,13,'#718ba8',600);
-  ['Overview','Product roadmap','Delivery','Insights'].forEach((item,i)=>{
-    if(i===0)rect(18,161,204,54,9,'#203852');
-    rect(34,180+i*67,14,14,4,i===0?'#9ac9f5':'#526e8d');
-    text(item,64,193+i*67,17,i===0?'#e5f0ff':'#91a6be',i===0?600:400);
-  });
-  text('DESIGNED FOR IMPACT',30,891,12,'#718ba8',600);
-  text('Platform overview',290,159,37,'#eff5ff',600);
-  text('From clear direction to confident delivery.',292,200,19,'#8fa5bd');
-  const metrics=[['STRATEGY','Aligned','A shared product direction'],['DELIVERY','Connected','Teams, services & workflows'],['QUALITY','Validated','Ready for the next chapter']];
-  metrics.forEach(([name,value,detail],i)=>{
-    const x=292+i*420;rect(x,244,396,168,14,'#132237','#2a3d55');
-    text(name,x+24,281,13,'#8faac6',600);text(value,x+24,332,32,'#dcecff',600);text(detail,x+24,378,16,'#8fa5bd');
-  });
-  rect(292,444,804,346,14,'#111f32','#2a3d55');
-  text('One connected product',318,489,23,'#e0ecfa',600);
-  text('A clear path from insight to impact',318,522,16,'#8fa5bd');
-  ui.strokeStyle='#365976';ui.lineWidth=3;ui.beginPath();ui.moveTo(405,626);ui.lineTo(982,626);ui.stroke();
-  ['Discover','Build','Validate','Launch'].forEach((name,i)=>{
-    const x=402+i*192;rect(x-28,598,56,56,14,i===3?'#91cbd7':'#233e59');
-    text(String(i+1).padStart(2,'0'),x-13,634,19,i===3?'#0d2435':'#c0dbf5',600);
-    ui.textAlign='center';text(name,x,692,17,'#c7d9eb',500);ui.textAlign='left';
-  });
-  rect(1120,444,408,346,14,'#111f32','#2a3d55');text('Release checklist',1144,489,22,'#e0ecfa',600);
-  ['Experience aligned','Services connected','Quality reviewed','Operations ready'].forEach((name,i)=>{
-    text('✓',1148,548+i*59,20,'#8bd5c0',600);text(name,1182,548+i*59,17,'#bdccdf');
-  });
-  rect(292,820,1236,88,12,'#172c40');
-  text('Built to evolve.',318,872,24,'#e3f0ff',600);text('Product leadership. Engineering clarity. Lasting impact.',535,870,18,'#9db4cd');
-  const productTexture=new THREE.CanvasTexture(productCanvas);productTexture.colorSpace=THREE.SRGBColorSpace;
-  productTexture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());textures.push(productTexture);
-  const shell=new THREE.Mesh(new RoundedBoxGeometry(5.85,3.53,.09,4,.055),new THREE.MeshPhysicalMaterial({color:0x263e55,metalness:.5,roughness:.4}));portal.add(shell);
-  const surface=new THREE.Mesh(new THREE.PlaneGeometry(5.8,3.48),new THREE.MeshBasicMaterial({map:productTexture,toneMapped:false}));surface.position.z=.055;portal.add(surface);
-  const scan=new THREE.Mesh(new THREE.PlaneGeometry(8,.025),new THREE.MeshBasicMaterial({color:0x9effdc,transparent:true,opacity:.8,side:THREE.DoubleSide}));scan.position.z=.5;world.add(scan);
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  let progress=0,opened=0,disposed=false,visible=true,frame=0,previous=0,time=0;
-  const ease=(n:number)=>{n=THREE.MathUtils.clamp(n,0,1);return n*n*(3-2*n);};
-  const mix=THREE.MathUtils.lerp;
-  function draw() {
-    if(disposed)return;
-    const p=progress*5,gather=ease(p),map=ease(p-1),assemble=ease(p-2),validate=ease(p-3),launch=ease(p-4);
-    const portrait=camera.aspect<.8;
-    // Move through the field, not just past flat slides. Foreground signals cross the lens.
-    camera.position.set(Math.sin(progress*Math.PI*2)*.75*(1-opened),1.3-progress*.9,(portrait?16:12)-progress*1.15-opened*6);
-    camera.lookAt(0,.35,-.7);
-    world.rotation.y=Math.sin(progress*Math.PI)*.15;
-    signals.forEach((signal,i)=>{
-      const a=i*2.399,n=Math.floor(i/3),category=i%3,center=centers[category];
-      const scattered=[Math.cos(a)*(3+(i%9)*.37),Math.sin(a)*3.4,Math.sin(i*1.7)*5];
-      const clustered=[center.x+Math.cos(a)*.85,center.y+Math.sin(a)*.85,center.z+Math.sin(n)*.55];
-      const node=nodes[i%6];const arranged=[node.x+Math.cos(a)*.45,node.y+Math.sin(a)*.3,node.z];
-      const sway=reduced.matches?0:Math.sin(time*.6+i)*.025*(1-assemble);
-      signal.position.set(...scattered.map((v,j)=>mix(mix(v,clustered[j],gather),arranged[j],map)+(j===1?sway:0)) as [number,number,number]);
-      signal.scale.setScalar((.65+(i%4)*.2)*(1-assemble*.8));signal.visible=launch<.6;
-    });
-    clusters.forEach((cluster,i)=>{cluster.visible=p>.25&&p<2.8;cluster.scale.setScalar(Math.max(.001,gather*(1-map*.9)));cluster.rotation.y=(reduced.matches?0:time*.045)*(i%2?1:-1);});
-    runtime.visible=p>1.2&&launch<.98;serviceMaterial.opacity=.95*(1-launch);services.forEach((service,i)=>{
-      service.scale.setScalar(Math.max(.001,map));service.position.copy(nodes[i]);service.position.z+=assemble*(i%2?-.65:.4)-launch*3;
-      service.position.x*=1+launch*.9;service.rotation.y=(1-assemble)*(i%2?-.3:.3);
-    });
-    links.forEach(([a,b],i)=>{const start=services[a].position,end=services[b].position;positions.set([start.x,start.y,start.z,end.x,end.y,end.z],i*6);const travel=reduced.matches?.5:(time*.23+i*.17+progress*3)%1;packets[i].position.lerpVectors(start,end,travel);packets[i].visible=p>2.1&&launch<.8;});
-    linksGeometry.attributes.position.needsUpdate=true;linksGeometry.computeBoundingSphere();connections.visible=p>1.2;linksMaterial.opacity=map*.6*(1-launch);
-    (grid.material as THREE.Material).transparent=true;(grid.material as THREE.Material).opacity=1-launch*.92;
-    scan.visible=p>3.1&&p<4.2;scan.position.y=2.3-validate*4.6;
-    portal.visible=p>4;portal.scale.setScalar(Math.max(.001,launch)*(1+opened*1.6));portal.position.z=1+opened*2;
-    portal.rotation.y=-.035*launch*(1-opened);portal.rotation.x=.015*launch*(1-opened);
-    renderer.render(scene,camera);
-  }
-  function tick(now:number){frame=0;if(disposed||!visible||document.hidden)return;time+=Math.min((now-previous)/1000,.05);previous=now;draw();if(!reduced.matches)frame=requestAnimationFrame(tick);}
-  function wake(){if(!frame&&!disposed&&visible&&!document.hidden){previous=performance.now();frame=requestAnimationFrame(tick);}}
-  const visibility=new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible)wake();else{cancelAnimationFrame(frame);frame=0;}});visibility.observe(host);
-  const change=()=>{cancelAnimationFrame(frame);frame=0;wake();};document.addEventListener('visibilitychange',change);reduced.addEventListener('change',change);
-  const resize=()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();draw();};
-  const observer=new ResizeObserver(resize);observer.observe(host);resize();wake();
-  return {update(p:number,o=0){progress=p;opened=o;if(visible)draw();},dispose(){disposed=true;cancelAnimationFrame(frame);observer.disconnect();visibility.disconnect();document.removeEventListener('visibilitychange',change);reduced.removeEventListener('change',change);const geometries=new Set<THREE.BufferGeometry>(),mats=new Set<THREE.Material>();scene.traverse(object=>{if(object instanceof THREE.Mesh||object instanceof THREE.LineSegments||object instanceof THREE.Points){geometries.add(object.geometry);}if('material' in object){const material=object.material as THREE.Material|THREE.Material[];(Array.isArray(material)?material:[material]).forEach(m=>mats.add(m));}});geometries.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());renderer.dispose();renderer.domElement.remove();}};
+  core.material.opacity=.08*(1-opened);renderer.render(scene,camera);
+ }
+ // The sticky canvas is clipped by changing ancestors during the journey. An
+ // IntersectionObserver is not a reliable authority for its render state.
+ // Explicit progress updates must ALWAYS render, including reverse entry.
+ function tick(now:number){frame=0;if(disposed||document.hidden||opened>=1)return;time+=frameDelta(now,previous);previous=now;draw();if(!reduced.matches)frame=requestAnimationFrame(tick);}
+ function wake(){if(!frame&&!disposed&&!document.hidden&&opened<1){previous=performance.now();frame=requestAnimationFrame(tick);}}
+ const change=()=>{cancelAnimationFrame(frame);frame=0;wake();};document.addEventListener('visibilitychange',change);reduced.addEventListener('change',change);
+ const resize=()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();draw();};
+ const observer=new ResizeObserver(resize);observer.observe(host);resize();wake();
+ return {update(p:number,o=0){progress=THREE.MathUtils.clamp(p,0,1);opened=o;draw();wake();},dispose(){disposed=true;cancelAnimationFrame(frame);observer.disconnect();document.removeEventListener('visibilitychange',change);reduced.removeEventListener('change',change);const geometries=new Set<THREE.BufferGeometry>(),mats=new Set<THREE.Material>();scene.traverse(object=>{if(object instanceof THREE.Mesh||object instanceof THREE.Line||object instanceof THREE.Points)geometries.add(object.geometry);if('material' in object){const material=object.material as THREE.Material|THREE.Material[];(Array.isArray(material)?material:[material]).forEach(m=>mats.add(m));}});geometries.forEach(g=>g.dispose());mats.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());studio.dispose();renderer.dispose();renderer.domElement.remove();}};
 }
