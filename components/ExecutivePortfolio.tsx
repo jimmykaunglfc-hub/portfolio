@@ -20,6 +20,10 @@ const caseStudies = [
     organization: 'KBZ Bank · Transaction Banking',
     summary: 'Led digital-channel work across KBZPay and m/i Banking, including the UI/UX relaunch and mobile and internet banking platform migrations.',
     tags: ['Product delivery', 'UX/UI', 'Platform migration'],
+    role: 'Digital-channel leadership',
+    focus: 'Connect the customer journey to platform delivery.',
+    delivery: 'UI/UX relaunch and mobile and internet banking platform migrations across KBZPay and m/i Banking.',
+    lens: 'Product experience, platform dependencies, and coordinated delivery are parts of one system—not separate workstreams.',
   },
   {
     number: '02',
@@ -28,6 +32,10 @@ const caseStudies = [
     organization: 'KBZ Bank · CEO Project Office',
     summary: 'Delivered transformation initiatives including queue management, banking-process automation, and the Hub & Spoke Cash Management Model.',
     tags: ['Operating model', 'Automation', 'Change delivery'],
+    role: 'Operational transformation',
+    focus: 'Translate operational complexity into repeatable systems.',
+    delivery: 'Queue management, banking-process automation, and the Hub & Spoke Cash Management Model.',
+    lens: 'Process reengineering connects the customer-facing journey to the operating model behind it.',
   },
   {
     number: '03',
@@ -36,6 +44,10 @@ const caseStudies = [
     organization: 'digit7s · Head of Digital Operations',
     summary: 'Leading product management, QA, and product operations across planning, testing strategy, release execution, and cross-functional collaboration.',
     tags: ['QA strategy', 'Product operations', 'Leadership'],
+    role: 'Head of Digital Operations',
+    focus: 'Connect product management, quality assurance, and operations.',
+    delivery: 'Ongoing leadership across product planning, testing strategy, release execution, and cross-functional collaboration.',
+    lens: 'Reliable delivery depends on shared priorities, a clear operating rhythm, and quality built into the lifecycle.',
   },
 ];
 
@@ -105,14 +117,15 @@ export default function ExecutivePortfolio() {
           <p>I work where strategy must survive real constraints: teams, risk, regulations, time, and the customer experience.</p>
         </div>
         <div className="exec-case-grid">
-          {caseStudies.map((study, index) => (
+          {caseStudies.map((study) => (
             <article key={study.number} className="exec-case">
               <div className="exec-case__top"><span>{study.number}</span><Target size={19} /></div>
-              <div className={`exec-case__visual exec-case__visual--${index}`} aria-hidden="true"><span /><span /><span /><i /><i /><i /></div>
+              <div className="case-leadership"><span aria-hidden="true">JK</span><div><strong>Jimmy · {study.role}</strong><small>Connecting people, process, and product</small></div></div>
               <p className="exec-case__label">{study.label}</p>
               <h3>{study.title}</h3>
               <p className="exec-case__org">{study.organization}</p>
               <p className="exec-case__summary">{study.summary}</p>
+              <details className="case-lens"><summary>Explore the leadership perspective</summary><dl><dt>Leadership focus</dt><dd>{study.focus}</dd><dt>{study.number === '03' ? 'Current remit' : 'Delivery scope'}</dt><dd>{study.delivery}</dd><dt>My framework lens</dt><dd>{study.lens}</dd></dl></details>
               <div className="exec-tags">{study.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
             </article>
           ))}
